@@ -6,7 +6,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UtilSpring implements ApplicationContextAware {
+public class FlySpring implements ApplicationContextAware {
     private static ApplicationContext sApplicationContext;
 
     @Override

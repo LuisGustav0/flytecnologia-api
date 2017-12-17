@@ -1,4 +1,4 @@
-package com.flytecnologia.core;
+package com.flytecnologia.core.security;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

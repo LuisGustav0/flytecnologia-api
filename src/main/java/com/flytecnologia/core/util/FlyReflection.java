@@ -7,7 +7,7 @@ import org.springframework.beans.BeanWrapperImpl;
 import java.util.HashSet;
 import java.util.Set;
 
-public class UtilReflection {
+public class FlyReflection {
     public static void copyPropertiesIngoreNullProperties(Object src, Object target) {
         BeanUtils.copyProperties(src, target, getNullPropertyNames(src));
     }

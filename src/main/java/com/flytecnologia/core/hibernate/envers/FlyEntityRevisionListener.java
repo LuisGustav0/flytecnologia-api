@@ -2,7 +2,7 @@ package com.flytecnologia.core.hibernate.envers;
 
 import com.flytecnologia.core.ip.FlyIp;
 import com.flytecnologia.core.user.FlyUserDetails;
-import com.flytecnologia.core.util.UtilSpring;
+import com.flytecnologia.core.util.FlySpring;
 import org.hibernate.envers.RevisionListener;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,7 +15,7 @@ public class FlyEntityRevisionListener implements RevisionListener {
 
     @Override
     public void newRevision(Object revisionEntity) {
-        FlyIp flyIp = (FlyIp) UtilSpring.getBean( "flyIp" );
+        FlyIp flyIp = (FlyIp) FlySpring.getBean( "flyIp" );
 
         FlyRevisionsEntity revEntity = (FlyRevisionsEntity) revisionEntity;
         revEntity.setUser(getUser());

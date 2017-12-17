@@ -1,7 +1,5 @@
 package com.flytecnologia.core.security;
 
-import com.flytecnologia.core.FlyRoles;
-import com.flytecnologia.core.FlyRoles;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.security.access.expression.SecurityExpressionRoot;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionOperations;
