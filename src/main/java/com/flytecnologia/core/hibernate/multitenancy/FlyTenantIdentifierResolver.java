@@ -21,7 +21,7 @@ public class FlyTenantIdentifierResolver implements CurrentTenantIdentifierResol
             );
 
             if (tenantId != null) {
-                return tenantId;
+                return FlyMultiTenantConstants.DEFAULT_TENANT_SUFFIX + tenantId;
             }
         }
         return FlyMultiTenantConstants.DEFAULT_TENANT_ID;

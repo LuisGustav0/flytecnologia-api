@@ -18,6 +18,7 @@ public class FlyAppProperty {
 
     public static class Security {
         private boolean enableHttps;
+        private String allowOrigin;
 
         public boolean isEnableHttps() {
             return enableHttps;
@@ -25,6 +26,14 @@ public class FlyAppProperty {
 
         public void setEnableHttps(boolean enableHttps) {
             this.enableHttps = enableHttps;
+        }
+
+        public String getAllowOrigin() {
+            return allowOrigin;
+        }
+
+        public void setAllowOrigin(String allowOrigin) {
+            this.allowOrigin = allowOrigin;
         }
     }
 

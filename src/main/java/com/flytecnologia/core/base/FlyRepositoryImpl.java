@@ -40,7 +40,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity> implements FlyRepos
     private void addPaginationInfo(TypedQuery<?> query, Pageable pageable) {
         int actualPage = pageable.getPageNumber();
         int qtdRecordsPerPage = pageable.getPageSize();
-        int firtRecordOfPage = ((actualPage - 1) * qtdRecordsPerPage);
+        int firtRecordOfPage = actualPage * qtdRecordsPerPage;
 
         query.setFirstResult(firtRecordOfPage);
         query.setMaxResults(qtdRecordsPerPage);

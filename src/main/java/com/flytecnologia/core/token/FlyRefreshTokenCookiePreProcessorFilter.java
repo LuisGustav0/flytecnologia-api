@@ -30,14 +30,14 @@ public class FlyRefreshTokenCookiePreProcessorFilter implements Filter {
 
         HttpServletRequest req = (HttpServletRequest) request;
 
-        req = defineRefreshCookie(req);
+        req = addRequestInformation(req);
 
-        defineTenantId(req);
+        req.setAttribute("cl", getTenantId(req));
 
         chain.doFilter(req, response);
     }
 
-    private HttpServletRequest defineRefreshCookie(HttpServletRequest req) {
+    private HttpServletRequest addRequestInformation(HttpServletRequest req) {
         if ("/oauth/token".equalsIgnoreCase(req.getRequestURI())
                 && "refresh_token".equals(req.getParameter("grant_type"))
                 && req.getCookies() != null) {
@@ -45,21 +45,22 @@ public class FlyRefreshTokenCookiePreProcessorFilter implements Filter {
             for (Cookie cookie : req.getCookies()) {
                 if (cookie.getName().equals("refreshToken")) {
                     String refreshToken = cookie.getValue();
-                    req = new MyServletRequestWrapper(req, refreshToken);
+                    return new MyServletRequestWrapper(req, refreshToken);
                 }
             }
         }
+
         return req;
     }
 
-    private void defineTenantId(HttpServletRequest req) {
+    private String getTenantId(HttpServletRequest req) {
         String tenant = req.getHeader(FlyMultiTenantConstants.REQUEST_HEADER_ID);
 
         if (tenant != null) {
-            req.setAttribute(FlyMultiTenantConstants.REQUEST_HEADER_ID, tenant);
-        } else {
-            req.setAttribute(FlyMultiTenantConstants.REQUEST_HEADER_ID, FlyMultiTenantConstants.DEFAULT_TENANT_ID);
+            return tenant;
         }
+
+        return FlyMultiTenantConstants.DEFAULT_TENANT_ID;
     }
 
     @Override
@@ -73,11 +74,12 @@ public class FlyRefreshTokenCookiePreProcessorFilter implements Filter {
     }
 
     /*Como não é possível alterar a requisição, uma nova requisição é criada com os dados da requisição
-    * atual mais o refresh token*/
+     * atual mais o refresh token*/
     static class MyServletRequestWrapper extends HttpServletRequestWrapper {
         private String refreshToken;
 
-        private MyServletRequestWrapper(HttpServletRequest request, String refreshToken) {
+        private MyServletRequestWrapper(HttpServletRequest request,
+                                        String refreshToken) {
             super(request);
             this.refreshToken = refreshToken;
         }
