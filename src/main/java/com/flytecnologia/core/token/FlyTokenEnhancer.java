@@ -1,5 +1,6 @@
 package com.flytecnologia.core.token;
 
+import com.flytecnologia.core.hibernate.multitenancy.FlyMultiTenantConstants;
 import com.flytecnologia.core.user.FlyUserDetails;
 import com.flytecnologia.core.user.FlyUser;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
@@ -16,7 +17,8 @@ public class FlyTokenEnhancer implements TokenEnhancer{
         FlyUser user = ((FlyUserDetails) authentication.getUserAuthentication().getPrincipal()).getUser();
 
         Map<String, Object> additionalInfo = new HashMap<>();
-        additionalInfo.put("cl", user.getTenant().replace("client_",""));
+        additionalInfo.put(FlyMultiTenantConstants.REQUEST_HEADER_ID,
+                user.getTenant().replace("client_",""));
         additionalInfo.put("username", user.getUsername());
 
         ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);

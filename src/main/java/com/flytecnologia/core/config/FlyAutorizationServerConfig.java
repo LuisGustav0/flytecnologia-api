@@ -1,5 +1,6 @@
 package com.flytecnologia.core.config;
 
+import com.flytecnologia.core.token.FlyJwtTokenStore;
 import com.flytecnologia.core.token.FlyTokenEnhancer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +16,6 @@ import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
-import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 import java.util.Arrays;
 
@@ -82,7 +82,7 @@ public class FlyAutorizationServerConfig extends AuthorizationServerConfigurerAd
     /*local de armazenagem dos tokens*/
     @Bean
     public TokenStore tokenStore() {
-        return new JwtTokenStore(jwtAccessTokenConverter);
+        return new FlyJwtTokenStore(jwtAccessTokenConverter);
     }
 
     @Bean
