@@ -62,7 +62,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity> implements FlyRepos
 
         return new FlyPageableResult(list,
                 pageable.getPageNumber(),
-                pageable.getPageNumber(),
+                pageable.getPageSize(),
                 total,
                 list.size());
     }
