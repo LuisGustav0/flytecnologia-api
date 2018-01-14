@@ -1,9 +1,9 @@
 package com.flytecnologia.core.token;
 
-import com.flytecnologia.core.user.FlyUserDetails;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -39,20 +39,22 @@ public class FlyTokenUserDetails {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         Authentication authentication = securityContext.getAuthentication();
 
-        if (authentication != null && authentication.getPrincipal() instanceof FlyUserDetails)
-            return ((FlyUserDetails) authentication.getPrincipal()).getUsername();
+
+        if (authentication != null) {
+            if(authentication.getPrincipal() instanceof String)
+                return (String)authentication.getPrincipal();
+
+            if(authentication.getPrincipal() instanceof UserDetails)
+                return ((UserDetails) authentication.getPrincipal()).getUsername();
+        }
 
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
 
         if (requestAttributes != null) {
-            String username = (String) requestAttributes.getAttribute(
+            return (String) requestAttributes.getAttribute(
                     "username",
                     RequestAttributes.SCOPE_REQUEST
             );
-
-            if (username != null) {
-                return username;
-            }
         }
 
         return "";
