@@ -38,7 +38,7 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
                                                                   HttpHeaders headers, HttpStatus status,
                                                                   WebRequest request) {
-        List<Erro> erros = getListOfErros("message.invalid", ex);
+        List<Error> erros = getListOfErros("message.invalid", ex);
         return handleExceptionInternal(ex, erros, headers, HttpStatus.BAD_REQUEST, request);
     }
 
@@ -46,14 +46,14 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   HttpHeaders headers, HttpStatus status,
                                                                   WebRequest request) {
-        List<Erro> erros = createListOfErros(ex.getBindingResult());
+        List<Error> erros = createListOfErros(ex.getBindingResult());
         return handleExceptionInternal(ex, erros, headers, HttpStatus.BAD_REQUEST, request);
     }
 
     @ExceptionHandler({EmptyResultDataAccessException.class})
     public ResponseEntity<Object> handleEmptyResultDataAccessException(EmptyResultDataAccessException ex,
                                                                        WebRequest request) {
-        List<Erro> erros = getListOfErros("resource.not-found", ex);
+        List<Error> erros = getListOfErros("resource.not-found", ex);
         return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
@@ -61,7 +61,7 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({InvalidParameterException.class})
     public ResponseEntity<Object> handleDataIntegrityViolationException(InvalidParameterException ex,
                                                                         WebRequest request) {
-        List<Erro> errors = null;
+        List<Error> errors = null;
 
         if(ex.getMessage().contains(" ")){
             errors = getListOfErros("resource.invalid-parameter", ex);
@@ -76,44 +76,44 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({DataIntegrityViolationException.class})
     public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException ex,
                                                                         WebRequest request) {
-        List<Erro> errors = getListOfErros("resource.operation-not-allowed", ex);
+        List<Error> errors = getListOfErros("resource.operation-not-allowed", ex);
         return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
     @ExceptionHandler({BusinessException.class})
     public ResponseEntity<Object> handleDataIntegrityViolationException(BusinessException ex,
                                                                         WebRequest request) {
-        List<Erro> errors = getListOfErros(ex.getMessage(), null);
+        List<Error> errors = getListOfErros(ex.getMessage(), null);
         return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
-    private List<Erro> getListOfErros(String fieldError, Exception ex){
+    private List<Error> getListOfErros(String fieldError, Exception ex){
         String msgUser = getMessage(fieldError);
         String msgDev = ex != null ? ExceptionUtils.getRootCauseMessage(ex) : "";
-        return Arrays.asList(new Erro(msgUser, msgDev));
+        return Arrays.asList(new Error(msgUser, msgDev));
     }
 
     private String getMessage(String field){
         return messageSource.getMessage(field, null, LocaleContextHolder.getLocale());
     }
 
-    private List<Erro> createListOfErros(BindingResult bindingResult) {
-        List<Erro> erros = new ArrayList<>();
+    private List<Error> createListOfErros(BindingResult bindingResult) {
+        List<Error> erros = new ArrayList<>();
 
         for (FieldError fieldError : bindingResult.getFieldErrors()) {
             String msgUser = messageSource.getMessage(fieldError, LocaleContextHolder.getLocale());
             String msgDev = fieldError.toString();
-            erros.add(new Erro(msgUser, msgDev));
+            erros.add(new Error(msgUser, msgDev));
         }
 
         return erros;
     }
 
-    public static class Erro {
+    public static class Error {
         private String msgUser;
         private String msgDev;
 
-        private Erro(String msgUser, String msgDev) {
+        private Error(String msgUser, String msgDev) {
             this.msgUser = msgUser;
             this.msgDev = msgDev;
         }
