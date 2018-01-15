@@ -20,6 +20,7 @@ public class FlyTokenEnhancer implements TokenEnhancer{
         additionalInfo.put(FlyMultiTenantConstants.REQUEST_HEADER_ID,
                 user.getTenant().replace("client_",""));
         additionalInfo.put("username", user.getUsername());
+        additionalInfo.put("userId", user.getId());
 
         ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
 

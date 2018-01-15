@@ -48,8 +48,10 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity> implements FlyRepos
 
     protected FlyPageableResult getMapOfResults(Class<? extends FlyResume> resumeClass,
                                                 Pageable pageable, StringBuilder hql, StringBuilder hqlFrom,
-                                                Map<String, Object> filters) {
+                                                StringBuilder hqlOrderBy, Map<String, Object> filters) {
         Long total = getTotalRecords(hqlFrom, filters);
+
+        hqlFrom.append(" ").append(hqlOrderBy);
 
         TypedQuery<?> query = getEntityManager().createQuery(hql.append(hqlFrom).toString(), resumeClass);
 
