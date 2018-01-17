@@ -2,7 +2,6 @@ package com.flytecnologia.core.model;
 
 
 import com.flytecnologia.core.hibernate.envers.FlyEntityListener;
-import com.flytecnologia.core.hibernate.envers.FlyEntityListener;
 
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
@@ -11,7 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
-import javax.persistence.Version;
 import java.io.Serializable;
 import java.util.Map;
 
@@ -36,7 +34,7 @@ public abstract class FlyEntity implements Serializable {
         this.id = id;
     }
 
-    @Version
+    /*@Version
     @Column(name = "version")
     private Integer version;
 
@@ -47,7 +45,7 @@ public abstract class FlyEntity implements Serializable {
     public Integer getVersion() {
         return version;
     }
-
+*/
 
     @Override
     public int hashCode() {

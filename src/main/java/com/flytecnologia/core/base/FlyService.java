@@ -85,9 +85,9 @@ public abstract class FlyService<T extends FlyEntity> {
             throw new BusinessException("flyserivice.differentId");
         }
 
-        if (entity.getVersion() != null && !entity.getVersion().equals(entitySaved.getVersion())) {
+        /*if (entity.getVersion() != null && !entity.getVersion().equals(entitySaved.getVersion())) {
             throw new BusinessException("flyserivice.differentVersion");
-        }
+        }*/
 
         beforeSave(entity, entitySaved);
 
