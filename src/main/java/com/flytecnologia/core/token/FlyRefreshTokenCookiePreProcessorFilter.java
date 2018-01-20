@@ -32,7 +32,7 @@ public class FlyRefreshTokenCookiePreProcessorFilter implements Filter {
 
         req = addRequestInformation(req);
 
-        req.setAttribute("cl", getTenantId(req));
+        req.setAttribute(FlyMultiTenantConstants.REQUEST_HEADER_ID, getTenantId(req));
 
         chain.doFilter(req, response);
     }

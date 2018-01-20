@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.net.URI;
 import java.time.LocalDate;
+import java.util.Map;
 
 public abstract class FlyController<T extends FlyEntity> {
     protected abstract FlyService<T> getService();
@@ -68,5 +69,10 @@ public abstract class FlyController<T extends FlyEntity> {
     public FlyPageableResult search(FlyFilter filter, Pageable pageable) {
         return getService().search(filter, pageable);
     }*/
+
+    @GetMapping(value = "/defaultValues")
+    public Map<String, Object> getDefaultValues(){
+        return getService().getDefaultValues();
+    }
 
 }

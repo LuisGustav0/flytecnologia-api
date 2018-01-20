@@ -18,7 +18,7 @@ public class FlyTokenEnhancer implements TokenEnhancer{
 
         Map<String, Object> additionalInfo = new HashMap<>();
         additionalInfo.put(FlyMultiTenantConstants.REQUEST_HEADER_ID,
-                user.getTenant().replace("client_",""));
+                user.getTenant().replace(FlyMultiTenantConstants.DEFAULT_TENANT_SUFFIX,""));
         additionalInfo.put("username", user.getUsername());
         additionalInfo.put("userId", user.getId());
 

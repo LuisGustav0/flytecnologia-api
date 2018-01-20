@@ -1,5 +1,6 @@
 package com.flytecnologia.core.security;
 
+import com.flytecnologia.core.config.property.FlyAppProperty;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.security.access.expression.SecurityExpressionRoot;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionOperations;
@@ -15,6 +16,10 @@ public class FlyHasAuthorityMethodSecurityExpressionRoot
     private Object returnObject;
     private Object target;
 
+    private FlyAppProperty flyAppProperty;
+
+    private final String ROLE_DEBUG = "ROLE_DEBUG";
+
     public FlyHasAuthorityMethodSecurityExpressionRoot(Authentication authentication) {
         super(authentication);
     }
@@ -22,14 +27,18 @@ public class FlyHasAuthorityMethodSecurityExpressionRoot
     public FlyHasAuthorityMethodSecurityExpressionRoot(Authentication authentication,
                                                        MethodInvocation methodInvocation) {
         super(authentication);
+
         this.method = methodInvocation.getMethod();
     }
 
     public String getAuthorityCreate() {
+        if (flyAppProperty.getApp().isDebug())
+            return ROLE_DEBUG;
+
         FlyRoles flyRoles = target.getClass().getAnnotation(FlyRoles.class);
 
-        if(flyRoles != null){
-            if(!StringUtils.isEmpty(flyRoles.defaultName()))
+        if (flyRoles != null) {
+            if (!StringUtils.isEmpty(flyRoles.defaultName()))
                 return "ROLE_C_" + flyRoles.defaultName().toUpperCase();
 
             return flyRoles.create();
@@ -39,10 +48,13 @@ public class FlyHasAuthorityMethodSecurityExpressionRoot
     }
 
     public String getAuthorityRead() {
+        if (flyAppProperty.getApp().isDebug())
+            return ROLE_DEBUG;
+
         FlyRoles flyRoles = target.getClass().getAnnotation(FlyRoles.class);
 
-        if(flyRoles != null){
-            if(!StringUtils.isEmpty(flyRoles.defaultName()))
+        if (flyRoles != null) {
+            if (!StringUtils.isEmpty(flyRoles.defaultName()))
                 return "ROLE_R_" + flyRoles.defaultName().toUpperCase();
 
             return flyRoles.read();
@@ -52,10 +64,13 @@ public class FlyHasAuthorityMethodSecurityExpressionRoot
     }
 
     public String getAuthorityUpdate() {
+        if (flyAppProperty.getApp().isDebug())
+            return ROLE_DEBUG;
+
         FlyRoles flyRoles = target.getClass().getAnnotation(FlyRoles.class);
 
-        if(flyRoles != null){
-            if(!StringUtils.isEmpty(flyRoles.defaultName()))
+        if (flyRoles != null) {
+            if (!StringUtils.isEmpty(flyRoles.defaultName()))
                 return "ROLE_U_" + flyRoles.defaultName().toUpperCase();
             return flyRoles.update();
         }
@@ -64,10 +79,13 @@ public class FlyHasAuthorityMethodSecurityExpressionRoot
     }
 
     public String getAuthorityDelete() {
+        if (flyAppProperty.getApp().isDebug())
+            return ROLE_DEBUG;
+
         FlyRoles flyRoles = target.getClass().getAnnotation(FlyRoles.class);
 
-        if(flyRoles != null){
-            if(!StringUtils.isEmpty(flyRoles.defaultName()))
+        if (flyRoles != null) {
+            if (!StringUtils.isEmpty(flyRoles.defaultName()))
                 return "ROLE_D_" + flyRoles.defaultName().toUpperCase();
             return flyRoles.delete();
         }
@@ -98,5 +116,9 @@ public class FlyHasAuthorityMethodSecurityExpressionRoot
 
     public void setThis(Object target) {
         this.target = target;
+    }
+
+    public void setFlyAppProperty(FlyAppProperty flyAppProperty) {
+        this.flyAppProperty = flyAppProperty;
     }
 }

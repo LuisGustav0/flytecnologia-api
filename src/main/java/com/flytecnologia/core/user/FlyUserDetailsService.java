@@ -1,5 +1,6 @@
 package com.flytecnologia.core.user;
 
+import com.flytecnologia.core.token.FlyTokenUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -45,4 +46,10 @@ public class FlyUserDetailsService implements UserDetailsService {
 
         return authorities;
     }
+
+    public static Long getCurrentUserId() {
+        return FlyTokenUserDetails.getCurrentUserId();
+    }
+
+
 }

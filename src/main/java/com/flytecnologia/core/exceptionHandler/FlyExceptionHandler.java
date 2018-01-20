@@ -2,6 +2,7 @@ package com.flytecnologia.core.exceptionHandler;
 
 import com.flytecnologia.core.exception.BusinessException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -16,7 +17,10 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.security.InvalidParameterException;
@@ -30,7 +34,7 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
     private MessageSource messageSource;
 
     @Autowired
-    public FlyExceptionHandler(MessageSource messageSource){
+    public FlyExceptionHandler(MessageSource messageSource) {
         this.messageSource = messageSource;
     }
 
@@ -59,14 +63,13 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
 
 
     @ExceptionHandler({InvalidParameterException.class})
-    public ResponseEntity<Object> handleDataIntegrityViolationException(InvalidParameterException ex,
-                                                                        WebRequest request) {
+    public ResponseEntity<Object> handleInvalidParameterException(InvalidParameterException ex,
+                                                                  WebRequest request) {
         List<Error> errors = null;
 
-        if(ex.getMessage().contains(" ")){
+        if (ex.getMessage().contains(" ")) {
             errors = getListOfErros("resource.invalid-parameter", ex);
-        }
-        else {
+        } else {
             errors = getListOfErros(ex.getMessage(), ex);
         }
 
@@ -76,25 +79,47 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({DataIntegrityViolationException.class})
     public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException ex,
                                                                         WebRequest request) {
-        List<Error> errors = getListOfErros("resource.operation-not-allowed", ex);
+
+        String fieldError = "resource.operation-not-allowed";
+
+        if (ex.getCause() instanceof ConstraintViolationException) {
+            fieldError = ((ConstraintViolationException) ex.getCause()).getConstraintName();
+        }
+
+        List<Error> errors = getListOfErros(fieldError, ex);
         return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
     @ExceptionHandler({BusinessException.class})
-    public ResponseEntity<Object> handleDataIntegrityViolationException(BusinessException ex,
-                                                                        WebRequest request) {
+    public ResponseEntity<Object> handleBusinessException(BusinessException ex,
+                                                          WebRequest request) {
         List<Error> errors = getListOfErros(ex.getMessage(), null);
         return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
-    private List<Error> getListOfErros(String fieldError, Exception ex){
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    public ResponseEntity<Object> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex,
+                                                                       WebRequest request) {
+        List<Error> erros = getListOfErros("message.maxUploadSize", ex);
+        return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+
+    private List<Error> getListOfErros(String fieldError, Exception ex) {
         String msgUser = getMessage(fieldError);
         String msgDev = ex != null ? ExceptionUtils.getRootCauseMessage(ex) : "";
         return Arrays.asList(new Error(msgUser, msgDev));
     }
 
-    private String getMessage(String field){
-        return messageSource.getMessage(field, null, LocaleContextHolder.getLocale());
+    private String getMessage(String field) {
+        try {
+            return messageSource.getMessage(field, null, LocaleContextHolder.getLocale());
+        } catch (Exception ex) {
+            return field;
+        }
+
     }
 
     private List<Error> createListOfErros(BindingResult bindingResult) {

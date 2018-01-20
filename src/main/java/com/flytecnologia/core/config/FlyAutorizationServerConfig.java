@@ -25,7 +25,14 @@ import java.util.Arrays;
 public class FlyAutorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
     @Value("${security.oauth2.resource.jwt.key-value}")
-    String secretKey;
+    private String secretKey;
+
+    @Value("${security.oauth2.resource.jwt.key-value-angular}")
+    private String secretKeyAngular;
+
+    @Value("${security.oauth2.resource.jwt.key-value-mobile}")
+    private String secretKeyMobile;
+
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -37,14 +44,14 @@ public class FlyAutorizationServerConfig extends AuthorizationServerConfigurerAd
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory()
                 .withClient("angular")
-                .secret("ges@fr@1010")
+                .secret(secretKeyAngular)
                 .scopes("read", "write", "mobile")
                 .authorizedGrantTypes("password", "refresh_token")
-                .accessTokenValiditySeconds(1800) //duration's token
+                .accessTokenValiditySeconds(5) //duration's token
                 .refreshTokenValiditySeconds(3600*24) //1 day
             .and()
                 .withClient("mobile")
-                .secret("ges@fr@1111")
+                .secret(secretKeyMobile)
                 .scopes("read", "mobile")
                 .authorizedGrantTypes("password", "refresh_token")
                 .accessTokenValiditySeconds(1800) //duration's token

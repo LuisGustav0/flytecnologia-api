@@ -95,4 +95,8 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity> implements FlyRepos
     protected boolean isFalse(Boolean value) {
         return value != null && !value;
     }
+
+    public T getReference(Long id) {
+        return getEntityManager().getReference(getEntityClass(), id);
+    }
 }

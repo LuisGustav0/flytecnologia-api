@@ -1,5 +1,6 @@
 package com.flytecnologia.core.security;
 
+import com.flytecnologia.core.config.property.FlyAppProperty;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionOperations;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
@@ -11,8 +12,15 @@ public class FlyMethodSecurityExpressionRoot extends OAuth2MethodSecurityExpress
     private AuthenticationTrustResolver trustResolver =
             new AuthenticationTrustResolverImpl();
 
+    private FlyAppProperty flyAppProperty;
+
     public FlyMethodSecurityExpressionRoot() {
         super();
+    }
+
+    public FlyMethodSecurityExpressionRoot(FlyAppProperty flyAppProperty) {
+        super();
+        this.flyAppProperty = flyAppProperty;
     }
 
     @Override
@@ -26,7 +34,7 @@ public class FlyMethodSecurityExpressionRoot extends OAuth2MethodSecurityExpress
         root.setRoleHierarchy(getRoleHierarchy());
         root.setThis(invocation.getThis());
         root.setDefaultRolePrefix(getDefaultRolePrefix());
-
+        root.setFlyAppProperty(flyAppProperty);
         return root;
     }
 

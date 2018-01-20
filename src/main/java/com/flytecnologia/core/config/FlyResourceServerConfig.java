@@ -1,5 +1,6 @@
 package com.flytecnologia.core.config;
 
+import com.flytecnologia.core.config.property.FlyAppProperty;
 import com.flytecnologia.core.security.FlyMethodSecurityExpressionRoot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +25,9 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Res
 @EnableResourceServer
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class FlyResourceServerConfig extends ResourceServerConfigurerAdapter {
+
+    @Autowired
+    private FlyAppProperty flyAppProperty;
 
     private UserDetailsService userDetailsService;
 
@@ -77,6 +81,6 @@ public class FlyResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Bean
     protected MethodSecurityExpressionHandler createExpressionHandler() {
-        return new FlyMethodSecurityExpressionRoot();
+        return new FlyMethodSecurityExpressionRoot(flyAppProperty);
     }
 }

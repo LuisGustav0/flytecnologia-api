@@ -1,7 +1,7 @@
 package com.flytecnologia.core.base;
 
-import com.flytecnologia.core.model.FlyEntity;
 import com.flytecnologia.core.exception.BusinessException;
+import com.flytecnologia.core.model.FlyEntity;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -10,6 +10,9 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class FlyService<T extends FlyEntity> {
 
@@ -41,9 +44,10 @@ public abstract class FlyService<T extends FlyEntity> {
         return messageSource.getMessage(field, null, LocaleContextHolder.getLocale());
     }
 
-    protected FlyRepositoryImpl getFlyRepositoryImpl(){
-        return (FlyRepositoryImpl)getRepository();
+    protected FlyRepositoryImpl<T> getFlyRepositoryImpl() {
+        return (FlyRepositoryImpl<T>) getRepository();
     }
+
     protected Class<T> getEntityClass() {
         return getFlyRepositoryImpl().getEntityClass();
     }
@@ -140,5 +144,15 @@ public abstract class FlyService<T extends FlyEntity> {
         if (object == null) {
             throw new BusinessException(message);
         }
+    }
+
+    public Map<String, Object> getDefaultValues() {
+        Map<String, Object> mapOfValues = new HashMap<>();
+        addDefaultValues(mapOfValues);
+        return mapOfValues;
+    }
+
+    public void addDefaultValues(Map<String, Object> mapOfValues) {
+
     }
 }

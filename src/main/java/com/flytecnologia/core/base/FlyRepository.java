@@ -7,4 +7,5 @@ import javax.persistence.EntityManager;
 public interface FlyRepository<T extends FlyEntity> {
     EntityManager getEntityManager();
     Class<T> getEntityClass();
+    T getReference(Long id);
 }
