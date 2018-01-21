@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.net.URI;
@@ -30,7 +31,7 @@ public abstract class FlyController<T extends FlyEntity> {
 
     @PostMapping
     @PreAuthorize("hasAuthority(getAuthorityCreate()) and #oauth2.hasScope('write')")
-    public ResponseEntity<T> save(@Valid @RequestBody T entity, HttpServletResponse response) {
+    public ResponseEntity<T> save(@Valid @RequestBody T entity, HttpServletRequest request, HttpServletResponse response) {
         entity = getService().save(entity);
 
         addHeaderLocationForCreation(response, entity.getId());
