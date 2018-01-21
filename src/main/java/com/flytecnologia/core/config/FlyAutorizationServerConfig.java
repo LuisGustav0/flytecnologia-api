@@ -47,15 +47,15 @@ public class FlyAutorizationServerConfig extends AuthorizationServerConfigurerAd
                 .secret(secretKeyAngular)
                 .scopes("read", "write", "mobile")
                 .authorizedGrantTypes("password", "refresh_token")
-                .accessTokenValiditySeconds(5) //duration's token
-                .refreshTokenValiditySeconds(3600*24) //1 day
+                .accessTokenValiditySeconds(60 * 10) //duration's token
+                .refreshTokenValiditySeconds(3600 * 24) //1 day
             .and()
                 .withClient("mobile")
                 .secret(secretKeyMobile)
                 .scopes("read", "mobile")
                 .authorizedGrantTypes("password", "refresh_token")
                 .accessTokenValiditySeconds(1800) //duration's token
-                .refreshTokenValiditySeconds(3600*24) //1 day
+                .refreshTokenValiditySeconds(3600 * 24) //1 day
         ;
     }
 
@@ -80,10 +80,10 @@ public class FlyAutorizationServerConfig extends AuthorizationServerConfigurerAd
 
     @Bean
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
-        final JwtAccessTokenConverter converter  = new JwtAccessTokenConverter();
+        final JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
         converter.setSigningKey(secretKey);
 
-        return converter ;
+        return converter;
     }
 
     /*local de armazenagem dos tokens*/
