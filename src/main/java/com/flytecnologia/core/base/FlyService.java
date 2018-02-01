@@ -146,13 +146,23 @@ public abstract class FlyService<T extends FlyEntity> {
         }
     }
 
-    public Map<String, Object> getDefaultValues() {
+    public Map<String, Object> defaultValuesCrud() {
         Map<String, Object> mapOfValues = new HashMap<>();
-        addDefaultValues(mapOfValues);
+        addDefaultValuesCrud(mapOfValues);
         return mapOfValues;
     }
 
-    public void addDefaultValues(Map<String, Object> mapOfValues) {
+    public void addDefaultValuesCrud(Map<String, Object> mapOfValues) {
+
+    }
+
+    public Map<String, Object> defaultValuesSearch() {
+        Map<String, Object> mapOfValues = new HashMap<>();
+        addDefaultValuesCrud(mapOfValues);
+        return mapOfValues;
+    }
+
+    public void addDefaultValuesSearch(Map<String, Object> mapOfValues) {
 
     }
 }

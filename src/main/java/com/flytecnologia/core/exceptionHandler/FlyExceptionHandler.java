@@ -1,6 +1,7 @@
 package com.flytecnologia.core.exceptionHandler;
 
 import com.flytecnologia.core.exception.BusinessException;
+import com.flytecnologia.core.exception.InvalidDataException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +55,15 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, erros, headers, HttpStatus.BAD_REQUEST, request);
     }
 
-    @ExceptionHandler({EmptyResultDataAccessException.class})
+    @ExceptionHandler(InvalidDataException.class)
+    public ResponseEntity<Object> handleInvalidDataException(InvalidDataException ex,
+                                                             HttpHeaders headers,
+                                                             WebRequest request) {
+        List<Error> erros = createListOfErros(ex.getBindingResult());
+        return handleExceptionInternal(ex, erros, headers, HttpStatus.BAD_REQUEST, request);
+    }
+
+    @ExceptionHandler(EmptyResultDataAccessException.class)
     public ResponseEntity<Object> handleEmptyResultDataAccessException(EmptyResultDataAccessException ex,
                                                                        WebRequest request) {
         List<Error> erros = getListOfErros("resource.not-found", ex);
@@ -62,10 +71,10 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
 
-    @ExceptionHandler({InvalidParameterException.class})
+    @ExceptionHandler(InvalidParameterException.class)
     public ResponseEntity<Object> handleInvalidParameterException(InvalidParameterException ex,
                                                                   WebRequest request) {
-        List<Error> errors = null;
+        List<Error> errors;
 
         if (ex.getMessage().contains(" ")) {
             errors = getListOfErros("resource.invalid-parameter", ex);
@@ -76,7 +85,7 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
-    @ExceptionHandler({DataIntegrityViolationException.class})
+    @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException ex,
                                                                         WebRequest request) {
 
@@ -90,7 +99,7 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
-    @ExceptionHandler({BusinessException.class})
+    @ExceptionHandler(BusinessException.class)
     public ResponseEntity<Object> handleBusinessException(BusinessException ex,
                                                           WebRequest request) {
         List<Error> errors = getListOfErros(ex.getMessage(), null);

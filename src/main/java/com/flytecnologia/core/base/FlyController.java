@@ -1,9 +1,11 @@
 package com.flytecnologia.core.base;
 
 import com.flytecnologia.core.model.FlyEntity;
+import com.flytecnologia.core.spring.ValidatorUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.net.URI;
@@ -31,8 +32,15 @@ public abstract class FlyController<T extends FlyEntity> {
 
     @PostMapping
     @PreAuthorize("hasAuthority(getAuthorityCreate()) and #oauth2.hasScope('write')")
-    public ResponseEntity<T> save(@Valid @RequestBody T entity, HttpServletRequest request, HttpServletResponse response) {
-        entity = getService().save(entity);
+    public ResponseEntity<T> save(@Valid @RequestBody EntityAux<T> entityAux,
+                                  HttpServletResponse response)
+            throws MethodArgumentNotValidException, SecurityException {
+
+        ValidatorUtil.validate(entityAux.getEntity(), this.getClass(), "save");
+
+        entityAux.getEntity().setParameters(entityAux.getParameters());
+
+        T entity = getService().save(entityAux.getEntity());
 
         addHeaderLocationForCreation(response, entity.getId());
 
@@ -55,13 +63,20 @@ public abstract class FlyController<T extends FlyEntity> {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority(getAuthorityUpdate()) and #oauth2.hasScope('write')")
-    public ResponseEntity<T> update(@PathVariable Long id, @Valid @RequestBody T entity) {
-        entity = getService().update(id, entity);
+    public ResponseEntity<T> update(@PathVariable Long id, @Valid @RequestBody EntityAux<T> entityAux)
+            throws MethodArgumentNotValidException {
+
+        ValidatorUtil.validate(entityAux.getEntity(), this.getClass(), "update");
+
+        entityAux.getEntity().setParameters(entityAux.getParameters());
+
+        T entity = getService().update(id, entityAux.getEntity());
+
         return ResponseEntity.ok(entity);
     }
 
     @GetMapping(value = "/today")
-    public LocalDate getToday(){
+    public LocalDate getToday() {
         return LocalDate.now();
     }
 
@@ -71,9 +86,37 @@ public abstract class FlyController<T extends FlyEntity> {
         return getService().search(filter, pageable);
     }*/
 
-    @GetMapping(value = "/defaultValues")
-    public Map<String, Object> getDefaultValues(){
-        return getService().getDefaultValues();
+    @GetMapping(value = "/defaultValuesCrud")
+    public Map<String, Object> defaultValuesCrud() {
+        return getService().defaultValuesCrud();
     }
 
+    @GetMapping(value = "/defaultValuesSearch")
+    public Map<String, Object> defaultValuesSearch() {
+        return getService().defaultValuesSearch();
+    }
+
+    static class EntityAux<T extends FlyEntity> {
+        private Map<String, Object> parameters;
+        private T entity;
+
+        public EntityAux() {
+        }
+
+        public Map<String, Object> getParameters() {
+            return parameters;
+        }
+
+        public void setParameters(Map<String, Object> parameters) {
+            this.parameters = parameters;
+        }
+
+        public T getEntity() {
+            return entity;
+        }
+
+        public void setEntity(T entity) {
+            this.entity = entity;
+        }
+    }
 }
