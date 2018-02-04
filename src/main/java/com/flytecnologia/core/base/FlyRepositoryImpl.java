@@ -47,7 +47,8 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity> implements FlyRepos
     }
 
     protected FlyPageableResult getMapOfResults(Class<? extends FlyResume> resumeClass,
-                                                Pageable pageable, StringBuilder hql, StringBuilder hqlFrom,
+                                                Pageable pageable, StringBuilder hql,
+                                                StringBuilder hqlFrom,
                                                 StringBuilder hqlOrderBy, Map<String, Object> filters) {
         Long total = getTotalRecords(hqlFrom, filters);
 
@@ -58,12 +59,13 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity> implements FlyRepos
         if (filters != null)
             filters.forEach((label, value) -> query.setParameter(label, value));
 
-        addPaginationInfo(query, pageable);
+        if (pageable.getPageNumber() != 99999998)
+            addPaginationInfo(query, pageable);
 
         List<?> list = query.getResultList();
 
         return new FlyPageableResult(list,
-                pageable.getPageNumber(),
+                pageable.getPageNumber() != 99999998 ? pageable.getPageNumber() : 0,
                 pageable.getPageSize(),
                 total,
                 list.size());
