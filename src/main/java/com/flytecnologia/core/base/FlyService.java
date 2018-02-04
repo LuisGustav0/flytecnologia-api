@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -130,6 +131,10 @@ public abstract class FlyService<T extends FlyEntity> {
 
     protected boolean isEmpty(Object value) {
         return StringUtils.isEmpty(value);
+    }
+
+    protected boolean isEmptyList(Collection<?> list) {
+        return list == null || list.isEmpty();
     }
 
     protected boolean isTrue(Boolean value) {
