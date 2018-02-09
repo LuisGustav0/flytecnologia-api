@@ -2,6 +2,7 @@ package com.flytecnologia.core.base;
 
 import com.flytecnologia.core.exception.BusinessException;
 import com.flytecnologia.core.model.FlyEntity;
+import com.flytecnologia.core.search.FlyAutoCompleteFilter;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -13,6 +14,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public abstract class FlyService<T extends FlyEntity> {
@@ -123,6 +125,20 @@ public abstract class FlyService<T extends FlyEntity> {
         getRepository().delete(entity);
 
         afterDelete(id);
+    }
+
+    public List<Map<String, Object>> getListAutocomplete(FlyAutoCompleteFilter acFilter, Map<String, Object> params) {
+        beforeSearchAutoComplete(acFilter, params);
+
+        return autocomplete(acFilter, params);
+
+    }
+
+    protected List<Map<String, Object>> autocomplete(FlyAutoCompleteFilter acFilter, Map<String, Object> params) {
+        return null;
+    }
+
+    private void beforeSearchAutoComplete(FlyAutoCompleteFilter acFilter, Map<String, Object> params) {
     }
 
     protected boolean isNotEmpty(Object value) {

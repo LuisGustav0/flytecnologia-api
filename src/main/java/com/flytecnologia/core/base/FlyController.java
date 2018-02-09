@@ -1,6 +1,7 @@
 package com.flytecnologia.core.base;
 
 import com.flytecnologia.core.model.FlyEntity;
+import com.flytecnologia.core.search.FlyAutoCompleteFilter;
 import com.flytecnologia.core.spring.ValidatorUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.net.URI;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 public abstract class FlyController<T extends FlyEntity> {
@@ -94,6 +96,12 @@ public abstract class FlyController<T extends FlyEntity> {
     @GetMapping(value = "/defaultValuesSearch")
     public Map<String, Object> defaultValuesSearch() {
         return getService().defaultValuesSearch();
+    }
+
+    @GetMapping(value = "/autocomplete")
+    @PreAuthorize("#oauth2.hasScope('read')")
+    public ResponseEntity<List<Map<String, Object>>> autocomplete(FlyAutoCompleteFilter acFilter, Map<String, Object> params) {
+        return new ResponseEntity<>(getService().getListAutocomplete(acFilter, params), HttpStatus.OK);
     }
 
     static class EntityAux<T extends FlyEntity> {
