@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
@@ -19,7 +18,7 @@ import java.util.Map;
 
 public abstract class FlyService<T extends FlyEntity> {
 
-    protected abstract JpaRepository<T, Long> getRepository();
+    protected abstract FlyRepository<T, Long> getRepository();
 
     public T findById(Long id) {
         return getRepository().findOne(id);
@@ -47,12 +46,8 @@ public abstract class FlyService<T extends FlyEntity> {
         return messageSource.getMessage(field, null, LocaleContextHolder.getLocale());
     }
 
-    protected FlyRepositoryImpl<T> getFlyRepositoryImpl() {
-        return (FlyRepositoryImpl<T>) getRepository();
-    }
-
     protected Class<T> getEntityClass() {
-        return getFlyRepositoryImpl().getEntityClass();
+        return getRepository().getEntityClass();
     }
 
     @Transactional
@@ -68,8 +63,8 @@ public abstract class FlyService<T extends FlyEntity> {
         return entity;
     }
 
-    protected String getEntityClassName() {
-        return getEntityClass().getSimpleName();
+    protected String getEntityName() {
+        return getRepository().getEntityName();
     }
 
     protected void treatEntity(T entity, T entitySaved) {
@@ -85,7 +80,7 @@ public abstract class FlyService<T extends FlyEntity> {
         T entitySaved = getRepository().findOne(id);
 
         if (entitySaved == null) {
-            throw new EmptyResultDataAccessException("update " + getEntityClassName() + " -> " + id, 1);
+            throw new EmptyResultDataAccessException("update " + getEntityName() + " -> " + id, 1);
         }
 
         if (!id.equals(entity.getId())) {
@@ -117,7 +112,7 @@ public abstract class FlyService<T extends FlyEntity> {
         T entity = getRepository().findOne(id);
 
         if (entity == null) {
-            throw new EmptyResultDataAccessException("delete " + getEntityClassName() + " -> " + id, 1);
+            throw new EmptyResultDataAccessException("delete " + getEntityName() + " -> " + id, 1);
         }
 
         beforeDelete(entity);
@@ -130,15 +125,10 @@ public abstract class FlyService<T extends FlyEntity> {
     public List<Map<String, Object>> getListAutocomplete(FlyAutoCompleteFilter acFilter, Map<String, Object> params) {
         beforeSearchAutoComplete(acFilter, params);
 
-        return autocomplete(acFilter, params);
-
+        return getRepository().getItensAutocomplete(acFilter, params);
     }
 
-    protected List<Map<String, Object>> autocomplete(FlyAutoCompleteFilter acFilter, Map<String, Object> params) {
-        return null;
-    }
-
-    private void beforeSearchAutoComplete(FlyAutoCompleteFilter acFilter, Map<String, Object> params) {
+    protected void beforeSearchAutoComplete(FlyAutoCompleteFilter acFilter, Map<String, Object> params) {
     }
 
     protected boolean isNotEmpty(Object value) {
