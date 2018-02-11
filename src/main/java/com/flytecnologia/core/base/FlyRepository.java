@@ -21,4 +21,7 @@ public interface FlyRepository<T extends FlyEntity, PK extends Serializable> ext
     T getReference(Long id);
 
     List<Map<String, Object>> getItensAutocomplete(FlyAutoCompleteFilter acFilter, Map<String, Object> params);
+    Map<String, Object> getItemAutocomplete(FlyAutoCompleteFilter acFilter, Map<String, Object> params);
+
+    boolean isEmpty(Object value);
 }

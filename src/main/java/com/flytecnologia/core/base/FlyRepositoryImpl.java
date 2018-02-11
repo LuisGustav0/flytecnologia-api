@@ -1,5 +1,6 @@
 package com.flytecnologia.core.base;
 
+import com.flytecnologia.core.exception.BusinessException;
 import com.flytecnologia.core.model.FlyEntity;
 import com.flytecnologia.core.search.FlyAutoCompleteFilter;
 import com.flytecnologia.core.search.FlyPageableResult;
@@ -97,7 +98,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity> {
     }
 
     protected boolean isEmpty(Object value) {
-        return StringUtils.isEmpty(value);
+        return StringUtils.isEmpty(value) || "undefined".equals(value) || "null".equals(value);
     }
 
     protected boolean isTrue(Boolean value) {
@@ -117,9 +118,18 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity> {
 
     }
 
+    protected void notNull(Object object, String message) {
+        if (object == null) {
+            throw new BusinessException(message);
+        }
+    }
+
     public List<Map<String, Object>> getItensAutocomplete(FlyAutoCompleteFilter acFilter, Map<String, Object> params) {
         if (isEmpty(acFilter.getValue()))
             return null;
+
+        notNull(acFilter.getFieldValue(), "fieldValue is required");
+        notNull(acFilter.getFieldDescription(), "fieldDescription is required");
 
         StringBuilder hql = new StringBuilder()
                 .append("select new Map( \n ")
@@ -144,12 +154,14 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity> {
                 .append("where \n ")
                 .append("   fly_to_ascii(lower(")
                 .append(acFilter.getFieldDescription())
-                .append(")) like fly_to_ascii(:value) \n ");
+                .append(")) like fly_to_ascii(:value) or \n ")
+                .append("   CONCAT(").append(acFilter.getFieldValue()).append(", '') = :valueId \n ");
 
         Map<String, Object> filters = new HashMap<>();
         changeWhereAutocomplete(hql, filters, acFilter, params);
 
         filters.put("value", "%" + acFilter.getValue().toLowerCase() + "%");
+        filters.put("valueId", acFilter.getValue());
 
         TypedQuery<?> query = getEntityManager().createQuery(hql.toString(), Map.class);
 
@@ -158,5 +170,50 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity> {
         filters.forEach((label, value) -> query.setParameter(label, value));
 
         return (List<Map<String, Object>>) query.getResultList();
+    }
+
+    public Map<String, Object> getItemAutocomplete(FlyAutoCompleteFilter acFilter, Map<String, Object> params) {
+        if (isEmpty(acFilter.getId()))
+            return null;
+
+        notNull(acFilter.getFieldValue(), "fieldValue is required");
+        notNull(acFilter.getFieldDescription(), "fieldDescription is required");
+
+        StringBuilder hql = new StringBuilder()
+                .append("select new Map( \n ")
+                .append(acFilter.getFieldValue()).append(" as ").append(acFilter.getFieldValue()).append(", \n ")
+                .append(acFilter.getFieldDescription()).append(" as ").append(acFilter.getFieldDescription()).append(" \n ");
+
+        if (!"id".equals(acFilter.getFieldValue())) {
+            hql.append(",id \n ");
+        }
+
+        if (!isEmpty(acFilter.getExtraFieldsAutocomplete())) {
+            String[] extraField = acFilter.getExtraFieldsAutocomplete().split(",");
+
+            for (String field : extraField) {
+                hql.append(",").append(field).append(" as ").append(field).append(" \n ");
+            }
+        }
+
+        hql
+                .append(") from \n ")
+                .append(getEntityClass().getSimpleName()).append(" \n ")
+                .append("where \n ")
+                .append(acFilter.getFieldValue())
+                .append(" = :id\n ");
+
+        Map<String, Object> filters = new HashMap<>();
+        changeWhereAutocomplete(hql, filters, acFilter, params);
+
+        filters.put("id", acFilter.getId() );
+
+        TypedQuery<?> query = getEntityManager().createQuery(hql.toString(), Map.class);
+
+        hql.append("limit 1");
+
+        filters.forEach((label, value) -> query.setParameter(label, value));
+
+        return (Map<String, Object>) query.getSingleResult();
     }
 }

@@ -9,7 +9,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -128,6 +127,12 @@ public abstract class FlyService<T extends FlyEntity> {
         return getRepository().getItensAutocomplete(acFilter, params);
     }
 
+    public Map<String, Object> getItemAutocomplete(FlyAutoCompleteFilter acFilter, Map<String, Object> params) {
+        beforeSearchAutoComplete(acFilter, params);
+
+        return getRepository().getItemAutocomplete(acFilter, params);
+    }
+
     protected void beforeSearchAutoComplete(FlyAutoCompleteFilter acFilter, Map<String, Object> params) {
     }
 
@@ -136,7 +141,7 @@ public abstract class FlyService<T extends FlyEntity> {
     }
 
     protected boolean isEmpty(Object value) {
-        return StringUtils.isEmpty(value);
+        return getRepository().isEmpty(value);
     }
 
     protected boolean isEmptyList(Collection<?> list) {

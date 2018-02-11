@@ -5,6 +5,7 @@ public class FlyAutoCompleteFilter {
     private String fieldValue;
     private String extraFieldsAutocomplete;
     private String value;
+    private Long id;
     private Integer limit;
 
     public String getFieldDescription() {
@@ -45,5 +46,13 @@ public class FlyAutoCompleteFilter {
 
     public void setLimit(Integer limit) {
         this.limit = limit;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }
