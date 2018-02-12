@@ -1,7 +1,7 @@
 package com.flytecnologia.core.base;
 
 import com.flytecnologia.core.model.FlyEntity;
-import com.flytecnologia.core.search.FlyAutoCompleteFilter;
+import com.flytecnologia.core.search.FlyFilter;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
@@ -11,7 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 @NoRepositoryBean
-public interface FlyRepository<T extends FlyEntity, PK extends Serializable> extends JpaRepository<T, PK> {
+public interface FlyRepository<T extends FlyEntity, PK extends Serializable, F extends FlyFilter>
+        extends JpaRepository<T, PK>, FlyRepositorySearch<F> {
     EntityManager getEntityManager();
 
     Class<T> getEntityClass();
@@ -20,8 +21,9 @@ public interface FlyRepository<T extends FlyEntity, PK extends Serializable> ext
 
     T getReference(Long id);
 
-    List<Map<String, Object>> getItensAutocomplete(FlyAutoCompleteFilter acFilter, Map<String, Object> params);
-    Map<String, Object> getItemAutocomplete(FlyAutoCompleteFilter acFilter, Map<String, Object> params);
+    List<Map<String, Object>> getItensAutocomplete(F filter);
+
+    Map<String, Object> getItemAutocomplete(F filter);
 
     boolean isEmpty(Object value);
 }

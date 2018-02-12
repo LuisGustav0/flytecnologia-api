@@ -2,9 +2,8 @@ package com.flytecnologia.core.base;
 
 import com.flytecnologia.core.exception.BusinessException;
 import com.flytecnologia.core.model.FlyEntity;
-import com.flytecnologia.core.search.FlyAutoCompleteFilter;
+import com.flytecnologia.core.search.FlyFilter;
 import com.flytecnologia.core.search.FlyPageableResult;
-import com.flytecnologia.core.search.FlyResume;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.util.StringUtils;
@@ -18,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @NoRepositoryBean
-public abstract class FlyRepositoryImpl<T extends FlyEntity> {
+public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter> {
 
     private Class<T> entityClass;
 
@@ -57,15 +56,14 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity> {
         query.setMaxResults(qtdRecordsPerPage);
     }
 
-    protected FlyPageableResult getMapOfResults(Class<? extends FlyResume> resumeClass,
-                                                Pageable pageable, StringBuilder hql,
+    protected FlyPageableResult getMapOfResults(Pageable pageable, StringBuilder hql,
                                                 StringBuilder hqlFrom,
                                                 StringBuilder hqlOrderBy, Map<String, Object> filters) {
         Long total = getTotalRecords(hqlFrom, filters);
 
         hqlFrom.append(" ").append(hqlOrderBy);
 
-        TypedQuery<?> query = getEntityManager().createQuery(hql.append(hqlFrom).toString(), resumeClass);
+        TypedQuery<?> query = getEntityManager().createQuery(hql.append(hqlFrom).toString(), getEntityClass());
 
         if (filters != null)
             filters.forEach((label, value) -> query.setParameter(label, value));
@@ -114,8 +112,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity> {
     }
 
     protected void changeWhereAutocomplete(StringBuilder hql, Map<String, Object> filters,
-                                           FlyAutoCompleteFilter acFilter, Map<String, Object> params) {
-
+                                           F filter) {
     }
 
     protected void notNull(Object object, String message) {
@@ -124,24 +121,24 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity> {
         }
     }
 
-    public List<Map<String, Object>> getItensAutocomplete(FlyAutoCompleteFilter acFilter, Map<String, Object> params) {
-        if (isEmpty(acFilter.getValue()))
+    public List<Map<String, Object>> getItensAutocomplete(F filter) {
+        if (isEmpty(filter.getAcValue()))
             return null;
 
-        notNull(acFilter.getFieldValue(), "fieldValue is required");
-        notNull(acFilter.getFieldDescription(), "fieldDescription is required");
+        notNull(filter.getAcFieldValue(), "fieldValue is required");
+        notNull(filter.getAcFieldDescription(), "fieldDescription is required");
 
         StringBuilder hql = new StringBuilder()
                 .append("select new Map( \n ")
-                .append(acFilter.getFieldValue()).append(" as ").append(acFilter.getFieldValue()).append(", \n ")
-                .append(acFilter.getFieldDescription()).append(" as ").append(acFilter.getFieldDescription()).append(" \n ");
+                .append(filter.getAcFieldValue()).append(" as ").append(filter.getAcFieldValue()).append(", \n ")
+                .append(filter.getAcFieldDescription()).append(" as ").append(filter.getAcFieldDescription()).append(" \n ");
 
-        if (!"id".equals(acFilter.getFieldValue())) {
+        if (!"id".equals(filter.getAcFieldValue())) {
             hql.append(",id \n ");
         }
 
-        if (!isEmpty(acFilter.getExtraFieldsAutocomplete())) {
-            String[] extraField = acFilter.getExtraFieldsAutocomplete().split(",");
+        if (!isEmpty(filter.getAcExtraFieldsAutocomplete())) {
+            String[] extraField = filter.getAcExtraFieldsAutocomplete().split(",");
 
             for (String field : extraField) {
                 hql.append(",").append(field).append(" as ").append(field).append(" \n ");
@@ -152,44 +149,44 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity> {
                 .append(") from \n ")
                 .append(getEntityClass().getSimpleName()).append(" \n ")
                 .append("where \n ")
-                .append("   fly_to_ascii(lower(")
-                .append(acFilter.getFieldDescription())
+                .append("   (fly_to_ascii(lower(")
+                .append(filter.getAcFieldDescription())
                 .append(")) like fly_to_ascii(:value) or \n ")
-                .append("   CONCAT(").append(acFilter.getFieldValue()).append(", '') = :valueId \n ");
+                .append("   CONCAT(").append(filter.getAcFieldValue()).append(", '') = :valueId) \n ");
 
         Map<String, Object> filters = new HashMap<>();
-        changeWhereAutocomplete(hql, filters, acFilter, params);
+        changeWhereAutocomplete(hql, filters, filter);
 
-        filters.put("value", "%" + acFilter.getValue().toLowerCase() + "%");
-        filters.put("valueId", acFilter.getValue());
+        filters.put("value", "%" + filter.getAcValue().toLowerCase() + "%");
+        filters.put("valueId", filter.getAcValue());
 
         TypedQuery<?> query = getEntityManager().createQuery(hql.toString(), Map.class);
 
-        hql.append("limit ").append(acFilter.getLimit());
+        hql.append("limit ").append(filter.getAcLimit());
 
         filters.forEach((label, value) -> query.setParameter(label, value));
 
         return (List<Map<String, Object>>) query.getResultList();
     }
 
-    public Map<String, Object> getItemAutocomplete(FlyAutoCompleteFilter acFilter, Map<String, Object> params) {
-        if (isEmpty(acFilter.getId()))
+    public Map<String, Object> getItemAutocomplete(F filter) {
+        if (isEmpty(filter.getId()))
             return null;
 
-        notNull(acFilter.getFieldValue(), "fieldValue is required");
-        notNull(acFilter.getFieldDescription(), "fieldDescription is required");
+        notNull(filter.getAcFieldValue(), "fieldValue is required");
+        notNull(filter.getAcFieldDescription(), "fieldDescription is required");
 
         StringBuilder hql = new StringBuilder()
                 .append("select new Map( \n ")
-                .append(acFilter.getFieldValue()).append(" as ").append(acFilter.getFieldValue()).append(", \n ")
-                .append(acFilter.getFieldDescription()).append(" as ").append(acFilter.getFieldDescription()).append(" \n ");
+                .append(filter.getAcFieldValue()).append(" as ").append(filter.getAcFieldValue()).append(", \n ")
+                .append(filter.getAcFieldDescription()).append(" as ").append(filter.getAcFieldDescription()).append(" \n ");
 
-        if (!"id".equals(acFilter.getFieldValue())) {
+        if (!"id".equals(filter.getAcFieldValue())) {
             hql.append(",id \n ");
         }
 
-        if (!isEmpty(acFilter.getExtraFieldsAutocomplete())) {
-            String[] extraField = acFilter.getExtraFieldsAutocomplete().split(",");
+        if (!isEmpty(filter.getAcExtraFieldsAutocomplete())) {
+            String[] extraField = filter.getAcExtraFieldsAutocomplete().split(",");
 
             for (String field : extraField) {
                 hql.append(",").append(field).append(" as ").append(field).append(" \n ");
@@ -200,13 +197,13 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity> {
                 .append(") from \n ")
                 .append(getEntityClass().getSimpleName()).append(" \n ")
                 .append("where \n ")
-                .append(acFilter.getFieldValue())
+                .append(filter.getAcFieldValue())
                 .append(" = :id\n ");
 
         Map<String, Object> filters = new HashMap<>();
-        changeWhereAutocomplete(hql, filters, acFilter, params);
+        changeWhereAutocomplete(hql, filters, filter);
 
-        filters.put("id", acFilter.getId() );
+        filters.put("id", filter.getId());
 
         TypedQuery<?> query = getEntityManager().createQuery(hql.toString(), Map.class);
 
@@ -215,5 +212,9 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity> {
         filters.forEach((label, value) -> query.setParameter(label, value));
 
         return (Map<String, Object>) query.getSingleResult();
+    }
+
+    public FlyPageableResult search(F filter, Pageable pageable) {
+        return null;
     }
 }

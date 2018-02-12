@@ -2,12 +2,14 @@ package com.flytecnologia.core.base;
 
 import com.flytecnologia.core.exception.BusinessException;
 import com.flytecnologia.core.model.FlyEntity;
-import com.flytecnologia.core.search.FlyAutoCompleteFilter;
+import com.flytecnologia.core.search.FlyFilter;
+import com.flytecnologia.core.search.FlyPageableResult;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
@@ -15,9 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class FlyService<T extends FlyEntity> {
+public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
 
-    protected abstract FlyRepository<T, Long> getRepository();
+    protected abstract FlyRepository<T, Long, F> getRepository();
 
     public T findById(Long id) {
         return getRepository().findOne(id);
@@ -121,19 +123,19 @@ public abstract class FlyService<T extends FlyEntity> {
         afterDelete(id);
     }
 
-    public List<Map<String, Object>> getListAutocomplete(FlyAutoCompleteFilter acFilter, Map<String, Object> params) {
-        beforeSearchAutoComplete(acFilter, params);
+    public List<Map<String, Object>> getListAutocomplete(F filter) {
+        beforeSearchAutoComplete(filter);
 
-        return getRepository().getItensAutocomplete(acFilter, params);
+        return getRepository().getItensAutocomplete(filter);
     }
 
-    public Map<String, Object> getItemAutocomplete(FlyAutoCompleteFilter acFilter, Map<String, Object> params) {
-        beforeSearchAutoComplete(acFilter, params);
+    public Map<String, Object> getItemAutocomplete(F filter) {
+        beforeSearchAutoComplete(filter);
 
-        return getRepository().getItemAutocomplete(acFilter, params);
+        return getRepository().getItemAutocomplete(filter);
     }
 
-    protected void beforeSearchAutoComplete(FlyAutoCompleteFilter acFilter, Map<String, Object> params) {
+    protected void beforeSearchAutoComplete(F filter) {
     }
 
     protected boolean isNotEmpty(Object value) {
@@ -180,5 +182,9 @@ public abstract class FlyService<T extends FlyEntity> {
 
     public void addDefaultValuesSearch(Map<String, Object> mapOfValues) {
 
+    }
+
+    public FlyPageableResult search(F filter, Pageable pageable) {
+        return getRepository().search(filter, pageable);
     }
 }

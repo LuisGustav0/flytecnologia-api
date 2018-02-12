@@ -1,8 +1,10 @@
 package com.flytecnologia.core.base;
 
 import com.flytecnologia.core.model.FlyEntity;
-import com.flytecnologia.core.search.FlyAutoCompleteFilter;
+import com.flytecnologia.core.search.FlyFilter;
+import com.flytecnologia.core.search.FlyPageableResult;
 import com.flytecnologia.core.spring.ValidatorUtil;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,8 +25,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-public abstract class FlyController<T extends FlyEntity> {
-    protected abstract FlyService<T> getService();
+public abstract class FlyController<T extends FlyEntity, F extends FlyFilter> {
+    protected abstract FlyService<T, F> getService();
 
     protected void addHeaderLocationForCreation(HttpServletResponse response, Long id) {
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}")
@@ -82,12 +84,6 @@ public abstract class FlyController<T extends FlyEntity> {
         return LocalDate.now();
     }
 
-    /*@GetMapping
-    @PreAuthorize("hasAuthority(getAuthorityRead()) and #oauth2.hasScope('read')")
-    public FlyPageableResult search(FlyFilter filter, Pageable pageable) {
-        return getService().search(filter, pageable);
-    }*/
-
     @GetMapping(value = "/defaultValuesCrud")
     public Map<String, Object> defaultValuesCrud() {
         return getService().defaultValuesCrud();
@@ -100,14 +96,20 @@ public abstract class FlyController<T extends FlyEntity> {
 
     @GetMapping(value = "/getListAutocomplete")
     @PreAuthorize("#oauth2.hasScope('read')")
-    public ResponseEntity<List<Map<String, Object>>> getListAutocomplete(FlyAutoCompleteFilter acFilter, Map<String, Object> params) {
-        return new ResponseEntity<>(getService().getListAutocomplete(acFilter, params), HttpStatus.OK);
+    public ResponseEntity<List<Map<String, Object>>> getListAutocomplete(F filter) {
+        return new ResponseEntity<>(getService().getListAutocomplete(filter), HttpStatus.OK);
     }
 
     @GetMapping(value = "/getItemAutocomplete")
     @PreAuthorize("#oauth2.hasScope('read')")
-    public ResponseEntity<Map<String, Object>> getItemAutocomplete(FlyAutoCompleteFilter acFilter, Map<String, Object> params) {
-        return new ResponseEntity<>(getService().getItemAutocomplete(acFilter, params), HttpStatus.OK);
+    public ResponseEntity<Map<String, Object>> getItemAutocomplete(F filter) {
+        return new ResponseEntity<>(getService().getItemAutocomplete(filter), HttpStatus.OK);
+    }
+
+    @GetMapping
+    @PreAuthorize("hasAuthority(getAuthorityRead()) and #oauth2.hasScope('read')")
+    public FlyPageableResult search(F filter, Pageable pageable) {
+        return getService().search(filter, pageable);
     }
 
     static class EntityAux<T extends FlyEntity> {
