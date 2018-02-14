@@ -176,7 +176,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
 
     public Map<String, Object> defaultValuesSearch() {
         Map<String, Object> mapOfValues = new HashMap<>();
-        addDefaultValuesCrud(mapOfValues);
+        addDefaultValuesSearch(mapOfValues);
         return mapOfValues;
     }
 
