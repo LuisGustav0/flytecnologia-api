@@ -58,7 +58,11 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
     protected FlyPageableResult getMapOfResults(Pageable pageable, StringBuilder hql,
                                                 StringBuilder hqlFrom,
-                                                StringBuilder hqlOrderBy, Map<String, Object> filters) {
+                                                StringBuilder hqlOrderBy, Map<String, Object> filters,
+                                                F filter) {
+        filter.setAutoComplete(false);
+        changeSearchWhere(hqlFrom, filters, filter);
+
         Long total = getTotalRecords(hqlFrom, filters);
 
         hqlFrom.append(" ").append(hqlOrderBy);
@@ -80,8 +84,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
                 list.size());
     }
 
-    private Long getTotalRecords(StringBuilder hqlFrom,
-                                 Map<String, Object> filters) {
+    private Long getTotalRecords(StringBuilder hqlFrom, Map<String, Object> filters) {
         String hqlCount = "select count(*) as qtd " + hqlFrom;
         Query q = getEntityManager().createQuery(hqlCount, Long.class);
 
@@ -111,8 +114,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         return getEntityManager().getReference(getEntityClass(), id);
     }
 
-    protected void changeWhereAutocomplete(StringBuilder hql, Map<String, Object> filters,
-                                           F filter) {
+    protected void changeSearchWhere(StringBuilder hql, Map<String, Object> filters, F filter) {
     }
 
     protected void notNull(Object object, String message) {
@@ -155,7 +157,9 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
                 .append("   CONCAT(").append(filter.getAcFieldValue()).append(", '') = :valueId) \n ");
 
         Map<String, Object> filters = new HashMap<>();
-        changeWhereAutocomplete(hql, filters, filter);
+
+        filter.setAutoComplete(true);
+
 
         filters.put("value", "%" + filter.getAcValue().toLowerCase() + "%");
         filters.put("valueId", filter.getAcValue());
@@ -201,7 +205,10 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
                 .append(" = :id\n ");
 
         Map<String, Object> filters = new HashMap<>();
-        changeWhereAutocomplete(hql, filters, filter);
+
+        filter.setAutoComplete(true);
+
+        changeSearchWhere(hql, filters, filter);
 
         filters.put("id", filter.getId());
 

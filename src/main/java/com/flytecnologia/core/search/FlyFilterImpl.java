@@ -6,6 +6,7 @@ public abstract class FlyFilterImpl implements FlyFilter{
     private String acExtraFieldsAutocomplete;
     private String acValue;
     private Integer acLimit;
+    private boolean isAutoComplete;
 
     private Long id;
 
@@ -49,11 +50,22 @@ public abstract class FlyFilterImpl implements FlyFilter{
         this.acLimit = acLimit;
     }
 
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public void setId(Long id) {
         this.id = id;
+    }
+
+    @Override
+    public boolean isAutoComplete() {
+        return isAutoComplete;
+    }
+
+    public void setAutoComplete(boolean autoComplete) {
+        this.isAutoComplete = autoComplete;
     }
 }

@@ -24,4 +24,8 @@ public interface FlyFilter {
     Long getId();
 
     void setId(Long id);
+
+    boolean isAutoComplete();
+
+    void setAutoComplete(boolean isAutoComplete);
 }
