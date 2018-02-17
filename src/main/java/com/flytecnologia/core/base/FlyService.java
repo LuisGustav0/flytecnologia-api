@@ -57,9 +57,15 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
 
         beforeSave(entity, null);
 
+        Map<String, Object> parameters = entity.getParameters();
+
         entity = getRepository().save(entity);
 
+        entity.setParameters(parameters);
+
         afterSave(entity);
+
+        entity.setParameters(null);
 
         return entity;
     }
@@ -99,9 +105,15 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
         /*Para fazer update todos os versions dos objetos aninhados tem q estar setados*/
         BeanUtils.copyProperties(entity, entitySaved, "id", "gruposPermissaoUsuario");
 
+        Map<String, Object> parameters = entity.getParameters();
+
         entitySaved = getRepository().save(entitySaved);
 
+        entitySaved.setParameters(parameters);
+
         afterSave(entitySaved);
+
+        entitySaved.setParameters(null);
 
         return entitySaved;
     }

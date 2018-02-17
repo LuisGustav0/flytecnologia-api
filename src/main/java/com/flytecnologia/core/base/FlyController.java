@@ -112,11 +112,16 @@ public abstract class FlyController<T extends FlyEntity, F extends FlyFilter> {
         return getService().search(filter, pageable);
     }
 
-    static class EntityAux<T extends FlyEntity> {
+    public static class EntityAux<T extends FlyEntity> {
         private Map<String, Object> parameters;
         private T entity;
 
         public EntityAux() {
+        }
+
+        public EntityAux(T entity, Map<String, Object> parameters) {
+            this.entity = entity;
+            this.parameters = parameters;
         }
 
         public Map<String, Object> getParameters() {
