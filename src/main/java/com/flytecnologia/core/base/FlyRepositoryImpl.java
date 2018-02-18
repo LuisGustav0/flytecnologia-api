@@ -4,6 +4,7 @@ import com.flytecnologia.core.exception.BusinessException;
 import com.flytecnologia.core.model.FlyEntity;
 import com.flytecnologia.core.search.FlyFilter;
 import com.flytecnologia.core.search.FlyPageableResult;
+import com.flytecnologia.core.util.FlyString;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.util.StringUtils;
@@ -149,7 +150,8 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
         hql
                 .append(") from \n ")
-                .append(getEntityClass().getSimpleName()).append(" \n ")
+                .append(getEntityClass().getSimpleName()).append(" as ")
+                .append(FlyString.decapitalizeFirstLetter(getEntityClass().getSimpleName())).append(" \n")
                 .append("where \n ")
                 .append("   (fly_to_ascii(lower(")
                 .append(filter.getAcFieldDescription())
@@ -199,7 +201,8 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
         hql
                 .append(") from \n ")
-                .append(getEntityClass().getSimpleName()).append(" \n ")
+                .append(getEntityClass().getSimpleName()).append(" as ")
+                .append(FlyString.decapitalizeFirstLetter(getEntityClass().getSimpleName())).append(" \n")
                 .append("where \n ")
                 .append(filter.getAcFieldValue())
                 .append(" = :id\n ");

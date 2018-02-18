@@ -7,7 +7,8 @@ public abstract class FlyFilterImpl implements FlyFilter{
     private String acValue;
     private Integer acLimit;
     private boolean isAutoComplete;
-
+    private String sortGridByField;
+    private String typeSortGridByField;
     private Long id;
 
     public String getAcFieldDescription() {
@@ -67,5 +68,21 @@ public abstract class FlyFilterImpl implements FlyFilter{
 
     public void setAutoComplete(boolean autoComplete) {
         this.isAutoComplete = autoComplete;
+    }
+
+    public String getSortGridByField() {
+        return sortGridByField != null && !sortGridByField.contains(" ") ? sortGridByField : null;
+    }
+
+    public void setSortGridByField(String sortGridByField) {
+        this.sortGridByField = sortGridByField;
+    }
+
+    public String getTypeSortGridByField() {
+        return "a".equals(typeSortGridByField) ? "asc" : "desc";
+    }
+
+    public void setTypeSortGridByField(String typeSortGridByField) {
+        this.typeSortGridByField = typeSortGridByField;
     }
 }

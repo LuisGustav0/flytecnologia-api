@@ -28,4 +28,12 @@ public interface FlyFilter {
     boolean isAutoComplete();
 
     void setAutoComplete(boolean isAutoComplete);
+
+    String getSortGridByField();
+
+    void setSortGridByField(String sortGridByField);
+
+    String getTypeSortGridByField();
+
+    void setTypeSortGridByField(String typeSortGridByField);
 }
