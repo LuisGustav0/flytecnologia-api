@@ -114,7 +114,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         return getEntityManager().getReference(getEntityClass(), id);
     }
 
-    protected void changeSearchWhere(StringBuilder hql, Map<String, Object> filters, F filter) {
+    protected void changeSearchWhere(StringBuilder hqlFrom, Map<String, Object> filters, F filter) {
     }
 
     protected void notNull(Object object, String message) {

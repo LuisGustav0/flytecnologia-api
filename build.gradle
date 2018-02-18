@@ -37,7 +37,7 @@ dependencies {
     compile("org.springframework.security:spring-security-jwt:1.0.8.RELEASE")
     compile('org.springframework.security.oauth:spring-security-oauth2:2.2.1.RELEASE')
 
-    compile('org.flywaydb:flyway-core:5.0.2')
+    compile('org.flywaydb:flyway-core:5.0.7')
 
     compile('org.hibernate:hibernate-core:5.2.13.Final')
     compile('org.hibernate:hibernate-ehcache:5.2.13.Final')

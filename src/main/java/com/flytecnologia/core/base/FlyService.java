@@ -12,6 +12,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +29,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
     protected void beforeSave(T entity, T oldEntity) {
     }
 
-    protected void afterSave(T entity) {
+    protected void afterSave(T entity, T oldEntity) {
     }
 
     protected void beforeDelete(T entity) {
@@ -63,7 +64,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
 
         entity.setParameters(parameters);
 
-        afterSave(entity);
+        afterSave(entity, null);
 
         entity.setParameters(null);
 
@@ -111,7 +112,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
 
         entitySaved.setParameters(parameters);
 
-        afterSave(entitySaved);
+        afterSave(entitySaved, entity);
 
         entitySaved.setParameters(null);
 
@@ -198,5 +199,13 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
 
     public FlyPageableResult search(F filter, Pageable pageable) {
         return getRepository().search(filter, pageable);
+    }
+
+    protected void validateDateLessOrEquals(LocalDate firstDate, LocalDate lastDate, String message) {
+        if(firstDate == null || lastDate == null)
+            return;
+
+        if(lastDate.isBefore(firstDate))
+            throw new BusinessException(message);
     }
 }
