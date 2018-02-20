@@ -47,6 +47,13 @@ public class FlyHasAuthorityMethodSecurityExpressionRoot
         return "ACCESS_DENIED";
     }
 
+    public String getAuthority(String role) {
+        if (flyAppProperty.getApp().isDebug())
+            return ROLE_DEBUG;
+
+        return role;
+    }
+
     public String getAuthorityRead() {
         if (flyAppProperty.getApp().isDebug())
             return ROLE_DEBUG;
