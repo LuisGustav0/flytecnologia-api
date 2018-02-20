@@ -47,7 +47,7 @@ public class FlyDatabaseMigration {
     /**
      * Used when creating a new schema for a new client
      */
-    private void migrateSpecificSchema(String schema) {
+    public void migrateSpecificSchema(String schema) {
         flyway.setSchemas(schema);
         flyway.migrate();
     }
