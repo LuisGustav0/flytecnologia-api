@@ -100,6 +100,13 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
     }
 
     protected boolean isEmpty(Object value) {
+        if(value == null)
+            return true;
+
+        if(value instanceof List) {
+            return ((List)value).size() == 0;
+        }
+
         return StringUtils.isEmpty(value) || "undefined".equals(value) || "null".equals(value);
     }
 
