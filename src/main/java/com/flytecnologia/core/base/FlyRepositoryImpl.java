@@ -13,6 +13,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.lang.reflect.ParameterizedType;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -103,8 +104,8 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         if(value == null)
             return true;
 
-        if(value instanceof List) {
-            return ((List)value).size() == 0;
+        if(value instanceof Collection) {
+            return ((Collection)value).isEmpty();
         }
 
         return StringUtils.isEmpty(value) || "undefined".equals(value) || "null".equals(value);
@@ -168,7 +169,6 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         Map<String, Object> filters = new HashMap<>();
 
         filter.setAutoComplete(true);
-
 
         filters.put("value", "%" + filter.getAcValue().toLowerCase() + "%");
         filters.put("valueId", filter.getAcValue());

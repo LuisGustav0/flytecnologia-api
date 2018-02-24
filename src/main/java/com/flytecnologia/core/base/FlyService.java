@@ -13,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -159,10 +158,6 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
         return getRepository().isEmpty(value);
     }
 
-    protected boolean isEmptyList(Collection<?> list) {
-        return list == null || list.isEmpty();
-    }
-
     protected boolean isTrue(Boolean value) {
         return value != null && value;
     }
@@ -177,13 +172,13 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
         }
     }
 
-    public Map<String, Object> defaultValuesCrud() {
+    public Map<String, Object> defaultValues() {
         Map<String, Object> mapOfValues = new HashMap<>();
-        addDefaultValuesCrud(mapOfValues);
+        addDefaultValues(mapOfValues);
         return mapOfValues;
     }
 
-    public void addDefaultValuesCrud(Map<String, Object> mapOfValues) {
+    public void addDefaultValues(Map<String, Object> mapOfValues) {
 
     }
 

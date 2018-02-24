@@ -86,9 +86,9 @@ public abstract class FlyController<T extends FlyEntity, F extends FlyFilter> {
         return LocalDate.now();
     }
 
-    @GetMapping(value = "/defaultValuesCrud")
-    public Map<String, Object> defaultValuesCrud() {
-        return getService().defaultValuesCrud();
+    @GetMapping(value = "/defaultValues")
+    public Map<String, Object> defaultValues() {
+        return getService().defaultValues();
     }
 
     @GetMapping(value = "/defaultValuesSearch")
