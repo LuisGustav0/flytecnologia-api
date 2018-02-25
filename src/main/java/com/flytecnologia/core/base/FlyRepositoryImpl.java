@@ -62,14 +62,23 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
                                                 StringBuilder hqlFrom,
                                                 StringBuilder hqlOrderBy, Map<String, Object> filters,
                                                 F filter) {
+        return getMapOfResults(pageable, hql, hqlFrom, hqlOrderBy, filters, filter, null);
+    }
+
+    protected FlyPageableResult getMapOfResults(Pageable pageable, StringBuilder hql,
+                                                StringBuilder hqlFrom,
+                                                StringBuilder hqlOrderBy, Map<String, Object> filters,
+                                                F filter, String distinctPropertyCount) {
         filter.setAutoComplete(false);
         changeSearchWhere(hqlFrom, filters, filter);
 
-        Long total = getTotalRecords(hqlFrom, filters);
+        Long total = getTotalRecords(hqlFrom, filters, distinctPropertyCount);
 
         hqlFrom.append(" ").append(hqlOrderBy);
 
-        TypedQuery<?> query = getEntityManager().createQuery(hql.append(hqlFrom).toString(), getEntityClass());
+        hql.append(hqlFrom);
+
+        TypedQuery<?> query = getEntityManager().createQuery(hql.toString(), getEntityClass());
 
         if (filters != null)
             filters.forEach((label, value) -> query.setParameter(label, value));
@@ -86,8 +95,10 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
                 list.size());
     }
 
-    private Long getTotalRecords(StringBuilder hqlFrom, Map<String, Object> filters) {
-        String hqlCount = "select count(*) as qtd " + hqlFrom;
+    private Long getTotalRecords(StringBuilder hqlFrom, Map<String, Object> filters, String distinctPropertyCount) {
+        distinctPropertyCount = distinctPropertyCount != null ? " distinct " + distinctPropertyCount : "*";
+
+        String hqlCount = "select count(" + distinctPropertyCount + ") as qtd " + hqlFrom.toString();
         Query q = getEntityManager().createQuery(hqlCount, Long.class);
 
         if (filters != null)
@@ -101,11 +112,11 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
     }
 
     protected boolean isEmpty(Object value) {
-        if(value == null)
+        if (value == null)
             return true;
 
-        if(value instanceof Collection) {
-            return ((Collection)value).isEmpty();
+        if (value instanceof Collection) {
+            return ((Collection) value).isEmpty();
         }
 
         return StringUtils.isEmpty(value) || "undefined".equals(value) || "null".equals(value);
