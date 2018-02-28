@@ -51,5 +51,7 @@ public class FlyUserDetailsService implements UserDetailsService {
         return FlyTokenUserDetails.getCurrentUserId();
     }
 
-
+    public static String getCurrentLogin() {
+        return FlyTokenUserDetails.getCurrentUsername();
+    }
 }
