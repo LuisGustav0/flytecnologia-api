@@ -70,6 +70,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
                                                 StringBuilder hqlOrderBy, Map<String, Object> filters,
                                                 F filter, String distinctPropertyCount) {
         filter.setAutoComplete(false);
+
         changeSearchWhere(hqlFrom, filters, filter);
 
         Long total = getTotalRecords(hqlFrom, filters, distinctPropertyCount);
@@ -127,7 +128,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
     }
 
     protected boolean isFalse(Boolean value) {
-        return value != null && !value;
+        return !isTrue(value);
     }
 
     public T getReference(Long id) {
@@ -184,6 +185,8 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         filters.put("value", "%" + filter.getAcValue().toLowerCase() + "%");
         filters.put("valueId", filter.getAcValue());
 
+        changeSearchWhere(hql, filters, filter);
+
         TypedQuery<?> query = getEntityManager().createQuery(hql.toString(), Map.class);
 
         hql.append("limit ").append(filter.getAcLimit());
@@ -229,9 +232,9 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
         filter.setAutoComplete(true);
 
-        changeSearchWhere(hql, filters, filter);
-
         filters.put("id", filter.getId());
+
+        changeSearchWhere(hql, filters, filter);
 
         TypedQuery<?> query = getEntityManager().createQuery(hql.toString(), Map.class);
 

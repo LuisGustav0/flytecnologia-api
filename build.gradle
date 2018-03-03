@@ -62,7 +62,7 @@ dependencies {
         exclude group: 'org.olap4j', module: 'olap4j'
     }
 
-    runtime group: 'com.lowagie', name: 'itext', version: '2.1.7'
+    compile group: 'com.lowagie', name: 'itext', version: '2.1.7'
 
-    compile group: 'com.itextpdf', name: 'itextpdf', version: '5.5.13'
+    //compile group: 'com.itextpdf', name: 'itextpdf', version: '5.5.13'
 }
