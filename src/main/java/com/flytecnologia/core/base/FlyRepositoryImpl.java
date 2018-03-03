@@ -248,4 +248,56 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
     public FlyPageableResult search(F filter, Pageable pageable) {
         return null;
     }
+
+    public Long getFirstId(F filter) {
+        return getPreviousNextId(filter, "min", "=", null);
+    }
+
+    public Long getLastId(F filter) {
+        return getPreviousNextId(filter, "max", "=", null);
+    }
+
+    private Long getPreviousNextId(F filter, String maxMin, String signal, String orderByType) {
+        String entityName = getEntityName();
+        String alias = entityName.substring(0, 1).toLowerCase() + entityName.substring(1);
+
+        Map<String, Object> filters = new HashMap<>();
+
+        StringBuilder hql = new StringBuilder()
+                .append("select ").append(maxMin).append("(id) from ")
+                .append(getEntityName()).append(" ").append(alias)
+                .append(" where 1=1 ");
+
+        if(isEmpty(maxMin)){
+            hql.append(" and id ").append(signal).append(" :id ");
+            filters.put("id", filter.getId());
+        }
+
+        changeSearchWhere(hql, filters, filter);
+
+        if(!isEmpty(filter.getEntityDetailProperty())) {
+            hql.append(" and ").append(alias).append(".").append(filter.getEntityDetailProperty())
+            .append(".id = :idDetail");
+            filters.put("idDetail", filter.getMasterDetailId());
+        }
+
+        if(orderByType != null) {
+            hql.append(" order by id ").append(orderByType);
+        }
+
+        TypedQuery<Long> query = getEntityManager().createQuery(hql.toString(), Long.class);
+        query.setMaxResults(1);
+
+        filters.forEach((label, value) -> query.setParameter(label, value));
+
+        return query.getSingleResult();
+    }
+
+    public Long getPreviousId(F filter) {
+        return getPreviousNextId(filter, "","<", "desc");
+    }
+
+    public Long getNextId(F filter) {
+        return getPreviousNextId(filter, "",">", "asc");
+    }
 }

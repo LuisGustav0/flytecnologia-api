@@ -10,6 +10,8 @@ public abstract class FlyFilterImpl implements FlyFilter{
     private String sortGridByField;
     private String typeSortGridByField;
     private Long id;
+    private Long masterDetailId;
+    private String entityDetailProperty;
 
     public String getAcFieldDescription() {
         return acFieldDescription;
@@ -84,5 +86,25 @@ public abstract class FlyFilterImpl implements FlyFilter{
 
     public void setTypeSortGridByField(String typeSortGridByField) {
         this.typeSortGridByField = typeSortGridByField;
+    }
+
+    @Override
+    public Long getMasterDetailId() {
+        return masterDetailId;
+    }
+
+    @Override
+    public void setMasterDetailId(Long masterDetailId) {
+        this.masterDetailId = masterDetailId;
+    }
+
+    @Override
+    public String getEntityDetailProperty() {
+        return entityDetailProperty;
+    }
+
+    @Override
+    public void setEntityDetailProperty(String entityDetailProperty) {
+        this.entityDetailProperty = entityDetailProperty;
     }
 }

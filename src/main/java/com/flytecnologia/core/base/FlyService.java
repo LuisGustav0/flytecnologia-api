@@ -197,12 +197,42 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
     }
 
     protected void validateDateLessOrEquals(LocalDate firstDate, LocalDate lastDate, String message) {
-        if(firstDate == null || lastDate == null)
+        if (firstDate == null || lastDate == null)
             return;
 
-        if(lastDate.isBefore(firstDate))
+        if (lastDate.isBefore(firstDate))
             throw new BusinessException(message);
     }
 
+    public Long goToBefore(F filter) {
+        if (filter.getId() == null || filter.getId() == 0) {
+            return getFirstId(filter);
+        }
 
+        return getPreviousId(filter);
+    }
+
+    public Long goToAfter(F filter) {
+        if (filter.getId() == null || filter.getId() == 0) {
+            return getLastId(filter);
+        }
+
+        return getNextId(filter);
+    }
+
+    public Long getFirstId(F filter) {
+        return getRepository().getFirstId(filter);
+    }
+
+    public Long getPreviousId(F filter) {
+        return getRepository().getPreviousId(filter);
+    }
+
+    public Long getLastId(F filter) {
+        return getRepository().getLastId(filter);
+    }
+
+    public Long getNextId(F filter) {
+        return getRepository().getNextId(filter);
+    }
 }

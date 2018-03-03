@@ -58,6 +58,20 @@ public abstract class FlyController<T extends FlyEntity, F extends FlyFilter> {
         return entity != null ? ResponseEntity.ok(entity) : ResponseEntity.notFound().build();
     }
 
+    @GetMapping("/goToAfter")
+    @PreAuthorize("hasAuthority(getAuthorityRead()) and #oauth2.hasScope('read')")
+    public ResponseEntity<Long> goToAfter(F filter) {
+        Long id = getService().goToAfter(filter);
+        return id != null ? ResponseEntity.ok(id) : ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/goToBefore")
+    @PreAuthorize("hasAuthority(getAuthorityRead()) and #oauth2.hasScope('read')")
+    public ResponseEntity<Long> goToBefore(F filter) {
+        Long id = getService().goToBefore(filter);
+        return id != null ? ResponseEntity.ok(id) : ResponseEntity.notFound().build();
+    }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority(getAuthorityDelete()) and #oauth2.hasScope('write')")

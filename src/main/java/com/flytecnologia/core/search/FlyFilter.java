@@ -36,4 +36,12 @@ public interface FlyFilter {
     String getTypeSortGridByField();
 
     void setTypeSortGridByField(String typeSortGridByField);
+
+    Long getMasterDetailId();
+
+    void setMasterDetailId(Long masterDetailId);
+
+    String getEntityDetailProperty();
+
+    void setEntityDetailProperty(String entityDetailProperty);
 }
