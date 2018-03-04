@@ -47,13 +47,17 @@ public class FlyFile {
     }
 
     public void removeFile(String imgImgDir, Long id, String filename) {
-        String dir = imgImgDir + File.separator + id.toString() + File.separator + filename;
+        String dir = getPathFoto(imgImgDir, id, filename);
 
         File folder = new File(dir);
 
         if (folder.exists()) {
             folder.delete();
         }
+    }
+
+    public String getPathFoto(String imgImgDir, Long id, String filename) {
+        return  imgImgDir + File.separator + id.toString() + File.separator + filename;
     }
 
     public void saveImgToFile(String imgImgDir, FlyEntity entity, String fieldname) {

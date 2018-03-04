@@ -82,7 +82,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         TypedQuery<?> query = getEntityManager().createQuery(hql.toString(), getEntityClass());
 
         if (filters != null)
-            filters.forEach((label, value) -> query.setParameter(label, value));
+            filters.forEach(query::setParameter);
 
         if (pageable.getPageNumber() != 99999998)
             addPaginationInfo(query, pageable);
@@ -103,7 +103,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         Query q = getEntityManager().createQuery(hqlCount, Long.class);
 
         if (filters != null)
-            filters.forEach((label, value) -> q.setParameter(label, value));
+            filters.forEach(q::setParameter);
 
         return (Long) q.getSingleResult();
     }
@@ -191,7 +191,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
         hql.append("limit ").append(filter.getAcLimit());
 
-        filters.forEach((label, value) -> query.setParameter(label, value));
+        filters.forEach(query::setParameter);
 
         return (List<Map<String, Object>>) query.getResultList();
     }
@@ -240,7 +240,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
         hql.append("limit 1");
 
-        filters.forEach((label, value) -> query.setParameter(label, value));
+        filters.forEach(query::setParameter);
 
         return (Map<String, Object>) query.getSingleResult();
     }
@@ -288,7 +288,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         TypedQuery<Long> query = getEntityManager().createQuery(hql.toString(), Long.class);
         query.setMaxResults(1);
 
-        filters.forEach((label, value) -> query.setParameter(label, value));
+        filters.forEach(query::setParameter);
 
         return query.getSingleResult();
     }
