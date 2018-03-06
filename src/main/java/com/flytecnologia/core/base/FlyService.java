@@ -220,6 +220,10 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
         return getNextId(filter);
     }
 
+    public byte[] getReport(F filter) {
+        return null;
+    }
+
     public Long getFirstId(F filter) {
         return getRepository().getFirstId(filter);
     }

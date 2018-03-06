@@ -4,8 +4,11 @@ import com.flytecnologia.core.model.FlyEntity;
 import com.flytecnologia.core.search.FlyFilter;
 import com.flytecnologia.core.search.FlyPageableResult;
 import com.flytecnologia.core.spring.ValidatorUtil;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -20,6 +23,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
@@ -156,4 +160,79 @@ public abstract class FlyController<T extends FlyEntity, F extends FlyFilter> {
             this.entity = entity;
         }
     }
+/*
+    @GetMapping(value = "print")
+    @PreAuthorize("hasAuthority(getAuthorityRead()) and #oauth2.hasScope('read')")
+    public ResponseEntity<byte[]> print(F filter)
+            throws IOException {
+
+        byte[] report = getService().getReport(filter);
+
+        InputStream targetStream = new ByteArrayInputStream(report);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setCacheControl("no-cache, no-store, must-revalidate, post-check=0, pre-check=0");
+        headers.setPragma("no-cache");
+        headers.setExpires(0);
+        headers.add("Content-disposition", "attachment; filename=report.pdf");
+        headers.setContentType(MediaType.parseMediaType("application/pdf"));
+
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .contentLength(report.length)
+                //.contentType(MediaType.parseMediaType("application/octet-stream"))
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(report);
+                //.body(new InputStreamResource(targetStream));
+    }*/
+
+
+    /*@GetMapping(value = "print")
+    @PreAuthorize("hasAuthority(getAuthorityRead()) and #oauth2.hasScope('read')")
+    public void print(F filter,
+                                        HttpServletRequest request,
+                                        HttpServletResponse response) throws IOException {
+
+        byte[] report = getService().getReport(filter);
+
+        String fileName = "report.pdf";
+        response.setContentType("application/pdf");
+        response.setHeader("Content-disposition", "attachment; filename="+ fileName);
+
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream(report.length);
+            baos.write(report, 0, report.length);
+            OutputStream os = response.getOutputStream();
+            baos.writeTo(os);
+            os.flush();
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+    }*/
+
+    @GetMapping(value = "print")
+    @PreAuthorize("hasAuthority(getAuthorityRead()) and #oauth2.hasScope('read')")
+    public ResponseEntity<ByteArrayResource> print(F filter) throws IOException {
+
+        byte[] data = getService().getReport(filter);
+
+        String fileName = "report.pdf";
+
+        ByteArrayResource resource = new ByteArrayResource(data);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + fileName);
+        headers.setCacheControl("no-cache, no-store, must-revalidate, post-check=0, pre-check=0");
+        headers.setPragma("no-cache");
+        headers.setExpires(0);
+        headers.setContentType(MediaType.parseMediaType("application/pdf"));
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_PDF)
+                .contentLength(data.length)
+                .body(resource);
+    }
+
 }

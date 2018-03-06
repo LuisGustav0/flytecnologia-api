@@ -1,6 +1,7 @@
 package com.flytecnologia.core.report;
 
 import com.flytecnologia.core.exception.BusinessException;
+import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.JasperRunManager;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -10,6 +11,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +21,7 @@ public class FlyReportUtil {
     public byte[] generarPdf(String filePath,
                              String fileName,
                              Map<String, Object> parameters,
-                             List<?> data) throws Exception {
+                             List<?> data) throws IOException, JRException {
 
         Resource resource = new ClassPathResource(filePath + File.separator + fileName);
 
