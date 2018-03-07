@@ -69,14 +69,4 @@ public class FlyHibernateConfig {
     public MultiTenantConnectionProvider multiTenantConnectionProvider() {
         return new FlyMultiTenantConnectionProviderImpl();
     }
-/*
-    @Bean(name = "currentTenantIdentifierResolver") @Profile("oauth-security")
-    public CurrentTenantIdentifierResolver currentTenantIdentifierResolver() {
-        return new TenantIdentifierResolver();
-    }
-
-    @Bean(name = "currentTenantIdentifierResolver") @Profile("basic-security")
-    public CurrentTenantIdentifierResolver currentTenantIdentifierBasicResolver() {
-        return new TenantBasicIdentifierResolver();
-    }*/
 }
