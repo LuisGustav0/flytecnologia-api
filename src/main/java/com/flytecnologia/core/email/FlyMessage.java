@@ -2,19 +2,26 @@ package com.flytecnologia.core.email;
 
 import org.springframework.core.io.InputStreamSource;
 
+import javax.validation.constraints.Pattern;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
 
 public class FlyMessage {
+    @Pattern(regexp = "^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,6}$")
     private String from;
-    private List<String> to;
-    private String subject;
-    private String text;
 
+    @Pattern(regexp = "^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,6}$")
+    private List<String> to;
+
+    @Pattern(regexp = "^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,6}$")
     private List<String> bcc;
+
+    @Pattern(regexp = "^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,6}$")
     private List<String> cc;
 
+    private String subject;
+    private String text;
     private Map<String, File> files;
     private Map<String, InputStreamSource> inputStreamSources;
 

@@ -14,6 +14,7 @@ import java.util.Properties;
 @Configuration
 @PropertySource("classpath:env/mail.properties")
 public class FlyMailConfig {
+
     @Autowired
     private Environment env;
 
@@ -21,25 +22,18 @@ public class FlyMailConfig {
     public JavaMailSender mailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 
-        mailSender.setHost(env.getProperty("mail.smtp.host"));
-        mailSender.setPort(env.getProperty("mail.smtp.port", Integer.class));
-        mailSender.setUsername(env.getProperty("mail.smtp.username"));
-        mailSender.setPassword(env.getProperty("mail.smtp.password"));
+        mailSender.setHost(env.getProperty("spring.mail.host"));
+        mailSender.setPort(env.getProperty("spring.mail.port", Integer.class));
+        mailSender.setUsername(env.getProperty("spring.mail.username"));
+        mailSender.setPassword(env.getProperty("spring.mail.password"));
+        mailSender.setProtocol(env.getProperty("spring.mail.protocol"));
 
-        Properties props = new Properties();
-        props.put("mail.transport.protocol", "smtp");
+        Properties props = mailSender.getJavaMailProperties();
         props.put("mail.smtp.auth", true);
-        props.put("mail.smtp.starttls.enable", true);
+        //props.put("mail.smtp.starttls.enable", true);
         props.put("mail.smtp.connectiontimeout", 10000);
-
-        mailSender.setJavaMailProperties(props);
+        props.put("mail.default-encoding", "UTF-8");
 
         return mailSender;
     }
-
-    /*
-    * mail.protocol=smtp
-mail.test-connection=false
-mail.properties.mail.smtp.auth=true
-mail.properties.mail.smtp.starttls.enable=true*/
 }

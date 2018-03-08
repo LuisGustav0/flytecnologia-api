@@ -44,7 +44,7 @@ public class FlyEmailService {
 
 
         MimeMessage message = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
         helper.setSubject(flyMessage.getSubject());
         helper.setText(flyMessage.getText());
@@ -84,5 +84,7 @@ public class FlyEmailService {
                 }
             });
         }
+
+        javaMailSender.send(message);
     }
 }
