@@ -13,15 +13,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.security.InvalidParameterException;
@@ -29,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Component
 @ControllerAdvice
 public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -53,6 +53,16 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
                                                                   WebRequest request) {
         List<Error> erros = createListOfErros(ex.getBindingResult());
         return handleExceptionInternal(ex, erros, headers, HttpStatus.BAD_REQUEST, request);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleMissingServletRequestParameter(
+            MissingServletRequestParameterException ex, HttpHeaders headers,
+            HttpStatus status, WebRequest request) {
+        String error = String.format("%s parameter is missing", ex.getParameterName());
+
+        List<Error> erros = getListOfErros(error, ex);
+        return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
     @ExceptionHandler(InvalidDataException.class)
@@ -107,13 +117,38 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
 
-    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    /*@ExceptionHandler(MaxUploadSizeExceededException.class)
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     public ResponseEntity<Object> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex,
                                                                        WebRequest request) {
         List<Error> erros = getListOfErros("message.maxUploadSize", ex);
         return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }*/
+
+    /*@ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> handleException(Exception ex,
+                                                  HttpHeaders headers,
+                                                  HttpStatus status,
+                                                  WebRequest request) {
+
+        if(ex instanceof ConstraintViolationException) {
+            String fieldError = ((ConstraintViolationException) ex.getCause()).getConstraintName();
+
+            List<Error> errors = getListOfErros(fieldError, ex);
+            return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+        }
+
+        List<Error> erros = getListOfErros("message.invalid", ex);
+        return handleExceptionInternal(ex, erros, headers, HttpStatus.BAD_REQUEST, request);
+    }*/
+
+    @ExceptionHandler(value = {ConstraintViolationException.class})
+    protected ResponseEntity<Object> handleNotAuthenticated(RuntimeException ex, WebRequest request) {
+        String fieldError = ((ConstraintViolationException) ex.getCause()).getConstraintName();
+
+        List<Error> errors = getListOfErros(fieldError, ex);
+        return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
     private List<Error> getListOfErros(String fieldError, Exception ex) {

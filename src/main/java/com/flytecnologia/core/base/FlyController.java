@@ -79,7 +79,7 @@ public abstract class FlyController<T extends FlyEntity, F extends FlyFilter> {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority(getAuthorityDelete()) and #oauth2.hasScope('write')")
-    public ResponseEntity<Void> remover(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         getService().delete(id);
 
         return ResponseEntity.status(HttpStatus.OK).build();

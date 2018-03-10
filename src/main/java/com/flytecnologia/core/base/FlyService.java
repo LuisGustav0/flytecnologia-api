@@ -22,6 +22,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
     protected abstract FlyRepository<T, Long, F> getRepository();
 
     public T findById(Long id) {
+        //return getRepository().findById(id).orElse(null);
         return getRepository().findOne(id);
     }
 
@@ -84,7 +85,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
         notNull(entity, "flyserivice.invalidRecord");
         notNull(entity.getId(), "flyserivice.invalidRecord");
 
-        T entitySaved = getRepository().findOne(id);
+        T entitySaved = findById(id);
 
         if (entitySaved == null) {
             throw new EmptyResultDataAccessException("update " + getEntityName() + " -> " + id, 1);
@@ -122,7 +123,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
     public void delete(Long id) {
         notNull(id, "flyserivice.idNotNull");
 
-        T entity = getRepository().findOne(id);
+        T entity = findById(id);
 
         if (entity == null) {
             throw new EmptyResultDataAccessException("delete " + getEntityName() + " -> " + id, 1);

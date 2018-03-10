@@ -47,12 +47,12 @@ public class FlyRefreshTokenPostProcessor implements ResponseBodyAdvice<OAuth2Ac
         String refreshToken = body.getRefreshToken().getValue();
 
         addRefreshTokenInCookie(refreshToken, req, resp);
-        removeRefreshTokenFromBody(token);
+        deleteRefreshTokenFromBody(token);
 
         return body;
     }
 
-    private void removeRefreshTokenFromBody(DefaultOAuth2AccessToken token) {
+    private void deleteRefreshTokenFromBody(DefaultOAuth2AccessToken token) {
         token.setRefreshToken(null);
     }
 

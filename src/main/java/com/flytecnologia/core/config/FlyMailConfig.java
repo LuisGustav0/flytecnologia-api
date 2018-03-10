@@ -30,7 +30,7 @@ public class FlyMailConfig {
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.smtp.auth", true);
-        //props.put("mail.smtp.starttls.enable", true);
+        props.put("mail.smtp.starttls.enable", true);
         props.put("mail.smtp.connectiontimeout", 10000);
         props.put("mail.default-encoding", "UTF-8");
 

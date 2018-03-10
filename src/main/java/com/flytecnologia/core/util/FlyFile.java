@@ -46,7 +46,7 @@ public class FlyFile {
         }
     }
 
-    public void removeFile(String imgImgDir, Long id, String filename) {
+    public void deleteFile(String imgImgDir, Long id, String filename) {
         String dir = getPathFoto(imgImgDir, id, filename);
 
         File folder = new File(dir);
