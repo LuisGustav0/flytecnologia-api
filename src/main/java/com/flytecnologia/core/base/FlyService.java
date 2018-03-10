@@ -4,6 +4,7 @@ import com.flytecnologia.core.exception.BusinessException;
 import com.flytecnologia.core.model.FlyEntity;
 import com.flytecnologia.core.search.FlyFilter;
 import com.flytecnologia.core.search.FlyPageableResult;
+import com.flytecnologia.core.user.FlyUserDetailsService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -54,6 +55,15 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
 
     @Transactional
     public T save(T entity) {
+        if(entity.getId() == null) {
+            return create(entity);
+        }
+
+        return update(entity.getId(), entity);
+    }
+
+    @Transactional
+    public T create(T entity) {
         notNull(entity, "flyserivice.invalidRecord");
 
         beforeSave(entity, null);
@@ -239,5 +249,9 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
 
     public Long getNextId(F filter) {
         return getRepository().getNextId(filter);
+    }
+
+    public Long getUserId() {
+        return FlyUserDetailsService.getCurrentUserId();
     }
 }

@@ -4,6 +4,7 @@ import com.flytecnologia.core.exception.BusinessException;
 import com.flytecnologia.core.model.FlyEntity;
 import com.flytecnologia.core.search.FlyFilter;
 import com.flytecnologia.core.search.FlyPageableResult;
+import com.flytecnologia.core.user.FlyUserDetailsService;
 import com.flytecnologia.core.util.FlyString;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
@@ -299,5 +300,9 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
     public Long getNextId(F filter) {
         return getPreviousNextId(filter, "",">", "asc");
+    }
+
+    public Long getUserId() {
+        return FlyUserDetailsService.getCurrentUserId();
     }
 }

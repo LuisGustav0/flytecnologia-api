@@ -14,13 +14,18 @@ import java.util.Map;
 public class FlyTokenEnhancer implements TokenEnhancer{
     @Override
     public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
-        FlyUser user = ((FlyUserDetails) authentication.getUserAuthentication().getPrincipal()).getUser();
+        FlyUserDetails userDetails = ((FlyUserDetails) authentication.getUserAuthentication().getPrincipal());
+        FlyUser user = userDetails.getUser();
 
         Map<String, Object> additionalInfo = new HashMap<>();
         additionalInfo.put(FlyMultiTenantConstants.REQUEST_HEADER_ID,
                 user.getTenant().replace(FlyMultiTenantConstants.DEFAULT_TENANT_SUFFIX,""));
         additionalInfo.put("username", user.getUsername());
         additionalInfo.put("userId", user.getId());
+
+        if(userDetails.getAdditionalTokenInformation() != null){
+            additionalInfo.putAll(userDetails.getAdditionalTokenInformation());
+        }
 
         ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
 

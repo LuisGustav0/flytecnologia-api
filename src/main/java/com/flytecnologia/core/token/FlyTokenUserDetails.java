@@ -16,23 +16,33 @@ public class FlyTokenUserDetails {
         return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication());
     }
 
-    public static Long getCurrentUserId() {
+    public static Optional<Map<String, Object>> getAuthenticationDecodedDetails() {
         Optional<Authentication> authentication = getAuthentication();
 
-        Optional<Long> opt = authentication.map(a -> {
-            if(!(a.getDetails() instanceof OAuth2AuthenticationDetails))
+        return authentication.map(a -> {
+            if (!(a.getDetails() instanceof OAuth2AuthenticationDetails))
                 return null;
 
             OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) a.getDetails();
-            Integer userId = (Integer) ((Map) details.getDecodedDetails()).get("userId");
-
-            if (userId != null)
-                return userId.longValue();
-
-            return null;
+            return (Map<String, Object>) details.getDecodedDetails();
         });
+    }
 
-        return opt.isPresent() ? opt.get() : null;
+    public static Optional<Object> getAuthenticationInformation(String key) {
+        Optional<Map<String, Object>> auten = getAuthenticationDecodedDetails();
+
+        if(auten.isPresent())
+            return Optional.ofNullable(auten.get().get(key));
+
+
+        return Optional.empty();
+    }
+
+    public static Long getCurrentUserId() {
+        Optional<Object> userId = getAuthenticationInformation("userId");
+
+        return userId.map(o -> ((Integer) o).longValue()).orElse(null);
+
     }
 
     public static String getCurrentUsername() {
@@ -41,10 +51,10 @@ public class FlyTokenUserDetails {
 
 
         if (authentication != null) {
-            if(authentication.getPrincipal() instanceof String)
-                return (String)authentication.getPrincipal();
+            if (authentication.getPrincipal() instanceof String)
+                return (String) authentication.getPrincipal();
 
-            if(authentication.getPrincipal() instanceof UserDetails)
+            if (authentication.getPrincipal() instanceof UserDetails)
                 return ((UserDetails) authentication.getPrincipal()).getUsername();
         }
 

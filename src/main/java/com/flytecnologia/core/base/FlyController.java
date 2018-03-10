@@ -40,7 +40,7 @@ public abstract class FlyController<T extends FlyEntity, F extends FlyFilter> {
 
     @PostMapping
     @PreAuthorize("hasAuthority(getAuthorityCreate()) and #oauth2.hasScope('write')")
-    public ResponseEntity<T> save(@Valid @RequestBody EntityAux<T> entityAux,
+    public ResponseEntity<T> create(@Valid @RequestBody EntityAux<T> entityAux,
                                   HttpServletResponse response)
             throws MethodArgumentNotValidException, SecurityException {
 
@@ -48,7 +48,7 @@ public abstract class FlyController<T extends FlyEntity, F extends FlyFilter> {
 
         entityAux.getEntity().setParameters(entityAux.getParameters());
 
-        T entity = getService().save(entityAux.getEntity());
+        T entity = getService().create(entityAux.getEntity());
 
         addHeaderLocationForCreation(response, entity.getId());
 

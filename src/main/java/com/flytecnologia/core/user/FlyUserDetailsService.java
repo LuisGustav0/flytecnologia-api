@@ -29,7 +29,9 @@ public class FlyUserDetailsService implements UserDetailsService {
 
         FlyUser flyUser = user.orElseThrow(() -> new UsernameNotFoundException(loginInvalid));
 
-        return new FlyUserDetails(flyUser, getPermissoes(login, flyUser.getTenant(), loginInvalid));
+        return new FlyUserDetails(flyUser,
+                getPermissoes(login, flyUser.getTenant(), loginInvalid),
+                userService.getAdditionalTokenInformation(flyUser.getId()));
     }
 
     private Collection<? extends GrantedAuthority> getPermissoes(String login, String tenant, String msgInvalidLogin)
