@@ -189,8 +189,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         changeSearchWhere(hql, filters, filter);
 
         TypedQuery<?> query = getEntityManager().createQuery(hql.toString(), Map.class);
-
-        hql.append("limit ").append(filter.getAcLimit());
+        query.setMaxResults(filter.getAcLimit());
 
         filters.forEach(query::setParameter);
 
@@ -238,8 +237,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         changeSearchWhere(hql, filters, filter);
 
         TypedQuery<?> query = getEntityManager().createQuery(hql.toString(), Map.class);
-
-        hql.append("limit 1");
+        query.setMaxResults(1);
 
         filters.forEach(query::setParameter);
 
@@ -269,20 +267,20 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
                 .append(getEntityName()).append(" ").append(alias)
                 .append(" where 1=1 ");
 
-        if(isEmpty(maxMin)){
+        if (isEmpty(maxMin)) {
             hql.append(" and id ").append(signal).append(" :id ");
             filters.put("id", filter.getId());
         }
 
         changeSearchWhere(hql, filters, filter);
 
-        if(!isEmpty(filter.getEntityDetailProperty())) {
+        if (!isEmpty(filter.getEntityDetailProperty())) {
             hql.append(" and ").append(alias).append(".").append(filter.getEntityDetailProperty())
-            .append(".id = :idDetail");
+                    .append(".id = :idDetail");
             filters.put("idDetail", filter.getMasterDetailId());
         }
 
-        if(orderByType != null) {
+        if (orderByType != null) {
             hql.append(" order by id ").append(orderByType);
         }
 
@@ -295,11 +293,11 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
     }
 
     public Long getPreviousId(F filter) {
-        return getPreviousNextId(filter, "","<", "desc");
+        return getPreviousNextId(filter, "", "<", "desc");
     }
 
     public Long getNextId(F filter) {
-        return getPreviousNextId(filter, "",">", "asc");
+        return getPreviousNextId(filter, "", ">", "asc");
     }
 
     public Long getUserId() {

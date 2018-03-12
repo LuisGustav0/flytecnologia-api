@@ -46,6 +46,10 @@ public abstract class FlyFilterImpl implements FlyFilter{
     }
 
     public Integer getAcLimit() {
+        if(acLimit == null) {
+            acLimit = 7;
+        }
+
         return acLimit;
     }
 
