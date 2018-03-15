@@ -116,33 +116,6 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
-
-    /*@ExceptionHandler(MaxUploadSizeExceededException.class)
-    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-    @ResponseBody
-    public ResponseEntity<Object> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex,
-                                                                       WebRequest request) {
-        List<Error> erros = getListOfErros("message.maxUploadSize", ex);
-        return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
-    }*/
-
-    /*@ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleException(Exception ex,
-                                                  HttpHeaders headers,
-                                                  HttpStatus status,
-                                                  WebRequest request) {
-
-        if(ex instanceof ConstraintViolationException) {
-            String fieldError = ((ConstraintViolationException) ex.getCause()).getConstraintName();
-
-            List<Error> errors = getListOfErros(fieldError, ex);
-            return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
-        }
-
-        List<Error> erros = getListOfErros("message.invalid", ex);
-        return handleExceptionInternal(ex, erros, headers, HttpStatus.BAD_REQUEST, request);
-    }*/
-
     @ExceptionHandler(value = {ConstraintViolationException.class})
     protected ResponseEntity<Object> handleNotAuthenticated(RuntimeException ex, WebRequest request) {
         String fieldError = ((ConstraintViolationException) ex.getCause()).getConstraintName();

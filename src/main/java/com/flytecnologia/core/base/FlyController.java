@@ -62,14 +62,14 @@ public abstract class FlyController<T extends FlyEntity, F extends FlyFilter> {
         return entity != null ? ResponseEntity.ok(entity) : ResponseEntity.notFound().build();
     }
 
-    @GetMapping("/goToAfter")
+    @GetMapping("/after")
     @PreAuthorize("hasAuthority(getAuthorityRead()) and #oauth2.hasScope('read')")
     public ResponseEntity<Long> goToAfter(F filter) {
         Long id = getService().goToAfter(filter);
         return id != null ? ResponseEntity.ok(id) : ResponseEntity.notFound().build();
     }
 
-    @GetMapping("/goToBefore")
+    @GetMapping("/before")
     @PreAuthorize("hasAuthority(getAuthorityRead()) and #oauth2.hasScope('read')")
     public ResponseEntity<Long> goToBefore(F filter) {
         Long id = getService().goToBefore(filter);
@@ -104,23 +104,23 @@ public abstract class FlyController<T extends FlyEntity, F extends FlyFilter> {
         return LocalDate.now();
     }
 
-    @GetMapping(value = "/defaultValues")
+    @GetMapping(value = "/default-values")
     public Map<String, Object> defaultValues() {
         return getService().defaultValues();
     }
 
-    @GetMapping(value = "/defaultValuesSearch")
+    @GetMapping(value = "/default-values-search")
     public Map<String, Object> defaultValuesSearch() {
         return getService().defaultValuesSearch();
     }
 
-    @GetMapping(value = "/getListAutocomplete")
+    @GetMapping(value = "/autocomplete/list")
     @PreAuthorize("#oauth2.hasScope('read')")
     public ResponseEntity<List<Map<String, Object>>> getListAutocomplete(F filter) {
         return new ResponseEntity<>(getService().getListAutocomplete(filter), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/getItemAutocomplete")
+    @GetMapping(value = "/autocomplete/item")
     @PreAuthorize("#oauth2.hasScope('read')")
     public ResponseEntity<Map<String, Object>> getItemAutocomplete(F filter) {
         return new ResponseEntity<>(getService().getItemAutocomplete(filter), HttpStatus.OK);

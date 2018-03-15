@@ -16,15 +16,6 @@ public class FlyFileUploadConfig {
         return commonsMultipartResolver;
     }
 
-   /* @Bean
-    public FilterRegistrationBean multipartFilterRegistrationBean() {
-        final MultipartFilter multipartFilter = new MultipartFilter();
-        final FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean(multipartFilter);
-        filterRegistrationBean.addInitParameter("multipartResolverBeanName", "commonsMultipartResolver");
-        return filterRegistrationBean;
-    }*/
-
-
     @Bean
     @Order(0)
     public MultipartFilter multipartFilter() {
