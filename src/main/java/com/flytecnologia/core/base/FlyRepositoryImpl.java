@@ -194,7 +194,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
         changeSearchWhere(hql, filters, filter);
 
-        TypedQuery<List> query = getEntityManager().createQuery(hql.toString(), List.class);
+        TypedQuery<?> query = getEntityManager().createQuery(hql.toString(), Map.class);
         query.setMaxResults(filter.getAcLimit());
 
         filters.forEach(query::setParameter);

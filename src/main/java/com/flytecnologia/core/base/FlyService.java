@@ -147,7 +147,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
         afterDelete(id);
     }
 
-    public Optional<List> getListAutocomplete(F filter) {
+    public Optional<List> getItensAutocomplete(F filter) {
         beforeSearchAutoComplete(filter);
 
         return getRepository().getItensAutocomplete(filter);
