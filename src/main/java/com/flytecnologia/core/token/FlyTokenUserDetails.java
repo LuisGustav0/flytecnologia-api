@@ -16,7 +16,7 @@ public class FlyTokenUserDetails {
         return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication());
     }
 
-    public static Optional<Map<String, Object>> getAuthenticationDecodedDetails() {
+    public static Optional<Map> getAuthenticationDecodedDetails() {
         Optional<Authentication> authentication = getAuthentication();
 
         return authentication.map(a -> {
@@ -29,20 +29,15 @@ public class FlyTokenUserDetails {
     }
 
     public static Optional<Object> getAuthenticationInformation(String key) {
-        Optional<Map<String, Object>> auten = getAuthenticationDecodedDetails();
+        Optional<Map> auten = getAuthenticationDecodedDetails();
 
-        if(auten.isPresent())
-            return Optional.ofNullable(auten.get().get(key));
-
-
-        return Optional.empty();
+        return auten.map(map -> map.get(key));
     }
 
     public static Long getCurrentUserId() {
         Optional<Object> userId = getAuthenticationInformation("userId");
 
         return userId.map(o -> ((Integer) o).longValue()).orElse(null);
-
     }
 
     public static String getCurrentUsername() {

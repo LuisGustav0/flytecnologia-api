@@ -147,13 +147,13 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
         afterDelete(id);
     }
 
-    public List<Map<String, Object>> getListAutocomplete(F filter) {
+    public Optional<List> getListAutocomplete(F filter) {
         beforeSearchAutoComplete(filter);
 
         return getRepository().getItensAutocomplete(filter);
     }
 
-    public Map<String, Object> getItemAutocomplete(F filter) {
+    public Optional<Map> getItemAutocomplete(F filter) {
         beforeSearchAutoComplete(filter);
 
         return getRepository().getItemAutocomplete(filter);

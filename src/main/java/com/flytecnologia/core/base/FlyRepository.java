@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @NoRepositoryBean
 public interface FlyRepository<T extends FlyEntity, PK extends Serializable, F extends FlyFilter>
@@ -22,9 +23,9 @@ public interface FlyRepository<T extends FlyEntity, PK extends Serializable, F e
 
     T getReference(Long id);
 
-    List<Map<String, Object>> getItensAutocomplete(F filter);
+    Optional<List> getItensAutocomplete(F filter);
 
-    Map<String, Object> getItemAutocomplete(F filter);
+    Optional<Map> getItemAutocomplete(F filter);
 
     boolean isEmpty(Object value);
 }

@@ -118,13 +118,13 @@ public abstract class FlyController<T extends FlyEntity, F extends FlyFilter> {
     @GetMapping(value = "/autocomplete/list")
     @PreAuthorize("#oauth2.hasScope('read')")
     public ResponseEntity<List<Map<String, Object>>> getListAutocomplete(F filter) {
-        return new ResponseEntity<>(getService().getListAutocomplete(filter), HttpStatus.OK);
+        return new ResponseEntity<>(getService().getListAutocomplete(filter).orElse(null), HttpStatus.OK);
     }
 
     @GetMapping(value = "/autocomplete/item")
     @PreAuthorize("#oauth2.hasScope('read')")
     public ResponseEntity<Map<String, Object>> getItemAutocomplete(F filter) {
-        return new ResponseEntity<>(getService().getItemAutocomplete(filter), HttpStatus.OK);
+        return new ResponseEntity<>(getService().getItemAutocomplete(filter).orElse(null), HttpStatus.OK);
     }
 
     @GetMapping
