@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
 
@@ -215,7 +216,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
             throw new BusinessException(message);
     }
 
-    public Long goToBefore(F filter) {
+    public Optional<Long> goToBefore(F filter) {
         if (filter.getId() == null || filter.getId() == 0) {
             return getFirstId(filter);
         }
@@ -223,7 +224,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
         return getPreviousId(filter);
     }
 
-    public Long goToAfter(F filter) {
+    public Optional<Long> goToAfter(F filter) {
         if (filter.getId() == null || filter.getId() == 0) {
             return getLastId(filter);
         }
@@ -235,19 +236,19 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
         return null;
     }
 
-    public Long getFirstId(F filter) {
+    public Optional<Long> getFirstId(F filter) {
         return getRepository().getFirstId(filter);
     }
 
-    public Long getPreviousId(F filter) {
+    public Optional<Long> getPreviousId(F filter) {
         return getRepository().getPreviousId(filter);
     }
 
-    public Long getLastId(F filter) {
+    public Optional<Long> getLastId(F filter) {
         return getRepository().getLastId(filter);
     }
 
-    public Long getNextId(F filter) {
+    public Optional<Long> getNextId(F filter) {
         return getRepository().getNextId(filter);
     }
 

@@ -4,15 +4,17 @@ import com.flytecnologia.core.search.FlyFilter;
 import com.flytecnologia.core.search.FlyPageableResult;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Optional;
+
 public interface FlyRepositorySearch<F extends FlyFilter> {
 
     FlyPageableResult search(F filter, Pageable pageable);
 
-    Long getFirstId(F filter);
+    Optional<Long> getFirstId(F filter);
 
-    Long getPreviousId(F filter);
+    Optional<Long> getPreviousId(F filter);
 
-    Long getLastId(F filter);
+    Optional<Long> getLastId(F filter);
 
-    Long getNextId(F filter);
+    Optional<Long> getNextId(F filter);
 }

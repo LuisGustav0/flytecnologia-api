@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @NoRepositoryBean
 public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter> {
@@ -106,7 +107,12 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         if (filters != null)
             filters.forEach(q::setParameter);
 
-        return (Long) q.getSingleResult();
+        Long total = (Long) q.getResultList().get(0);
+
+        if (total == null)
+            return 0L;
+
+        return total;
     }
 
     protected boolean isNotEmpty(Object value) {
@@ -145,9 +151,9 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         }
     }
 
-    public List<Map<String, Object>> getItensAutocomplete(F filter) {
+    public Optional<List> getItensAutocomplete(F filter) {
         if (isEmpty(filter.getAcValue()))
-            return null;
+            return Optional.empty();
 
         notNull(filter.getAcFieldValue(), "fieldValue is required");
         notNull(filter.getAcFieldDescription(), "fieldDescription is required");
@@ -188,17 +194,17 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
         changeSearchWhere(hql, filters, filter);
 
-        TypedQuery<?> query = getEntityManager().createQuery(hql.toString(), Map.class);
+        TypedQuery<List> query = getEntityManager().createQuery(hql.toString(), List.class);
         query.setMaxResults(filter.getAcLimit());
 
         filters.forEach(query::setParameter);
 
-        return (List<Map<String, Object>>) query.getResultList();
+        return Optional.ofNullable(query.getResultList());
     }
 
-    public Map<String, Object> getItemAutocomplete(F filter) {
+    public Optional<Map> getItemAutocomplete(F filter) {
         if (isEmpty(filter.getId()))
-            return null;
+            return Optional.empty();
 
         notNull(filter.getAcFieldValue(), "fieldValue is required");
         notNull(filter.getAcFieldDescription(), "fieldDescription is required");
@@ -236,27 +242,27 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
         changeSearchWhere(hql, filters, filter);
 
-        TypedQuery<?> query = getEntityManager().createQuery(hql.toString(), Map.class);
+        TypedQuery<Map> query = getEntityManager().createQuery(hql.toString(), Map.class);
         query.setMaxResults(1);
 
         filters.forEach(query::setParameter);
 
-        return (Map<String, Object>) query.getSingleResult();
+        return query.getResultList().stream().findFirst();
     }
 
     public FlyPageableResult search(F filter, Pageable pageable) {
         return null;
     }
 
-    public Long getFirstId(F filter) {
+    public Optional<Long> getFirstId(F filter) {
         return getPreviousNextId(filter, "min", "=", null);
     }
 
-    public Long getLastId(F filter) {
+    public Optional<Long> getLastId(F filter) {
         return getPreviousNextId(filter, "max", "=", null);
     }
 
-    private Long getPreviousNextId(F filter, String maxMin, String signal, String orderByType) {
+    private Optional<Long> getPreviousNextId(F filter, String maxMin, String signal, String orderByType) {
         String entityName = getEntityName();
         String alias = entityName.substring(0, 1).toLowerCase() + entityName.substring(1);
 
@@ -289,14 +295,14 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
         filters.forEach(query::setParameter);
 
-        return query.getSingleResult();
+        return query.getResultList().stream().findFirst();
     }
 
-    public Long getPreviousId(F filter) {
+    public Optional<Long> getPreviousId(F filter) {
         return getPreviousNextId(filter, "", "<", "desc");
     }
 
-    public Long getNextId(F filter) {
+    public Optional<Long> getNextId(F filter) {
         return getPreviousNextId(filter, "", ">", "asc");
     }
 

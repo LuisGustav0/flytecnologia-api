@@ -28,6 +28,7 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public abstract class FlyController<T extends FlyEntity, F extends FlyFilter> {
     protected abstract FlyService<T, F> getService();
@@ -41,7 +42,7 @@ public abstract class FlyController<T extends FlyEntity, F extends FlyFilter> {
     @PostMapping
     @PreAuthorize("hasAuthority(getAuthorityCreate()) and #oauth2.hasScope('write')")
     public ResponseEntity<T> create(@Valid @RequestBody EntityAux<T> entityAux,
-                                  HttpServletResponse response)
+                                    HttpServletResponse response)
             throws MethodArgumentNotValidException, SecurityException {
 
         ValidatorUtil.validate(entityAux.getEntity(), this.getClass(), "save");
@@ -65,15 +66,15 @@ public abstract class FlyController<T extends FlyEntity, F extends FlyFilter> {
     @GetMapping("/after")
     @PreAuthorize("hasAuthority(getAuthorityRead()) and #oauth2.hasScope('read')")
     public ResponseEntity<Long> goToAfter(F filter) {
-        Long id = getService().goToAfter(filter);
-        return id != null ? ResponseEntity.ok(id) : ResponseEntity.notFound().build();
+        Optional<Long> id = getService().goToAfter(filter);
+        return id.isPresent() ? ResponseEntity.ok(id.get()) : ResponseEntity.notFound().build();
     }
 
     @GetMapping("/before")
     @PreAuthorize("hasAuthority(getAuthorityRead()) and #oauth2.hasScope('read')")
     public ResponseEntity<Long> goToBefore(F filter) {
-        Long id = getService().goToBefore(filter);
-        return id != null ? ResponseEntity.ok(id) : ResponseEntity.notFound().build();
+        Optional<Long> id = getService().goToBefore(filter);
+        return id.isPresent() ? ResponseEntity.ok(id.get()) : ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
