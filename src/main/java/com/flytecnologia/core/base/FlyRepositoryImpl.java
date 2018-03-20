@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @NoRepositoryBean
@@ -247,7 +248,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
         filters.forEach(query::setParameter);
 
-        return query.getResultList().stream().findFirst();
+        return query.getResultList().stream().filter(Objects::nonNull).findFirst();
     }
 
     public FlyPageableResult search(F filter, Pageable pageable) {
@@ -295,7 +296,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
         filters.forEach(query::setParameter);
 
-        return query.getResultList().stream().findFirst();
+        return query.getResultList().stream().filter(Objects::nonNull).findFirst();
     }
 
     public Optional<Long> getPreviousId(F filter) {

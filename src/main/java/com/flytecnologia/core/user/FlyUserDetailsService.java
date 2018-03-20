@@ -52,6 +52,9 @@ public class FlyUserDetailsService implements UserDetailsService {
     public static Long getCurrentUserId() {
         return FlyTokenUserDetails.getCurrentUserId();
     }
+    public static String getCurrentSchemaName() {
+        return FlyTokenUserDetails.getCurrentSchemaName();
+    }
 
     public static String getCurrentLogin() {
         return FlyTokenUserDetails.getCurrentUsername();

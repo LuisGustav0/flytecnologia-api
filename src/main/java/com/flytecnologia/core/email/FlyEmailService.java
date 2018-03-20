@@ -5,6 +5,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 @Component
@@ -48,7 +49,7 @@ public class FlyEmailService {
 
         helper.setSubject(flyMessage.getSubject());
         helper.setText(flyMessage.getText());
-        helper.setFrom(flyMessage.getFrom());
+        helper.setFrom(new InternetAddress(flyMessage.getFrom()));
 
         if (flyMessage.getTo() != null) {
             helper.setTo(flyMessage.getTo()

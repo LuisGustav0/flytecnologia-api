@@ -1,5 +1,6 @@
 package com.flytecnologia.core.token;
 
+import com.flytecnologia.core.hibernate.multitenancy.FlyMultiTenantConstants;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -38,6 +39,12 @@ public class FlyTokenUserDetails {
         Optional<Object> userId = getAuthenticationInformation("userId");
 
         return userId.map(o -> ((Integer) o).longValue()).orElse(null);
+    }
+
+    public static String getCurrentSchemaName() {
+        Optional<Object> tenant = getAuthenticationInformation("cl");
+
+        return (String) tenant.orElse(FlyMultiTenantConstants.DEFAULT_TENANT_ID);
     }
 
     public static String getCurrentUsername() {
