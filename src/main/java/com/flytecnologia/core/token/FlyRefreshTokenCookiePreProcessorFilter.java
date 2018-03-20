@@ -1,6 +1,5 @@
 package com.flytecnologia.core.token;
 
-import com.flytecnologia.core.hibernate.multitenancy.FlyMultiTenantConstants;
 import org.apache.catalina.util.ParameterMap;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.Ordered;
@@ -32,7 +31,7 @@ public class FlyRefreshTokenCookiePreProcessorFilter implements Filter {
 
         req = addRequestInformation(req);
 
-        req.setAttribute(FlyMultiTenantConstants.REQUEST_HEADER_ID, getTenantId(req));
+        //req.setAttribute(FlyMultiTenantConstants.REQUEST_HEADER_ID, getTenantId(req));
 
         chain.doFilter(req, response);
     }
@@ -53,15 +52,15 @@ public class FlyRefreshTokenCookiePreProcessorFilter implements Filter {
         return req;
     }
 
-    private String getTenantId(HttpServletRequest req) {
-        String tenant = req.getHeader(FlyMultiTenantConstants.REQUEST_HEADER_ID);
+   /* private String getTenantId(HttpServletRequest req) {
+        String tenant = FlyTokenUserDetails.getCurrentSchemaName();//req.getHeader(FlyMultiTenantConstants.REQUEST_HEADER_ID);
 
         if (tenant != null) {
             return tenant;
         }
 
         return FlyMultiTenantConstants.DEFAULT_TENANT_ID;
-    }
+    }*/
 
     @Override
     public void init(FilterConfig filterConfig) {
