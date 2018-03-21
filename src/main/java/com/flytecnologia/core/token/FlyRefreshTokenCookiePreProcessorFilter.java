@@ -72,8 +72,10 @@ public class FlyRefreshTokenCookiePreProcessorFilter implements Filter {
 
     }
 
-    /*Como não é possível alterar a requisição, uma nova requisição é criada com os dados da requisição
-     * atual mais o refresh token*/
+    /**
+     * Since it is not possible to change the request, a new request is created with the data of the current
+     * request plus the refresh token
+     **/
     static class MyServletRequestWrapper extends HttpServletRequestWrapper {
         private String refreshToken;
 

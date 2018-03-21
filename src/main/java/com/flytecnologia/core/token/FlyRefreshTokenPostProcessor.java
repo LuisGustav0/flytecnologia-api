@@ -19,9 +19,13 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/*Depois que criar o refresh token, antes de devolver a resposta, passa por aqui.
-* Objetivo: Retirar o refresh token da resposta e colocar em um cookie para que não seja acessado
-* via javascript */
+/*
+
+After create the refresh token, before returning the response, go through here.
+
+Objective: Remove the refresh token from the response and put in a cookie so that it is not accessed by javascript
+
+*/
 @Profile("oauth-security")
 @ControllerAdvice
 public class FlyRefreshTokenPostProcessor implements ResponseBodyAdvice<OAuth2AccessToken> {
@@ -29,7 +33,7 @@ public class FlyRefreshTokenPostProcessor implements ResponseBodyAdvice<OAuth2Ac
     @Autowired
     private FlyAppProperty flyAppProperty;
 
-    /*só executa o método beforeBodyWrite se este retornar true*/
+    /*only executes the beforeBodyWrite method if it returns true*/
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
         return returnType.getMethod().getName().equals("postAccessToken");
@@ -41,8 +45,8 @@ public class FlyRefreshTokenPostProcessor implements ResponseBodyAdvice<OAuth2Ac
                                              Class<? extends HttpMessageConverter<?>> selectedConverterType,
                                              ServerHttpRequest request, ServerHttpResponse response) {
 
-        HttpServletRequest req = ((ServletServerHttpRequest)request).getServletRequest();
-        HttpServletResponse resp = ((ServletServerHttpResponse)response).getServletResponse();
+        HttpServletRequest req = ((ServletServerHttpRequest) request).getServletRequest();
+        HttpServletResponse resp = ((ServletServerHttpResponse) response).getServletResponse();
         DefaultOAuth2AccessToken token = (DefaultOAuth2AccessToken) body;
         String refreshToken = body.getRefreshToken().getValue();
 
