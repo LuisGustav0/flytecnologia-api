@@ -21,6 +21,14 @@ public interface FlyFilter {
 
     void setAcLimit(Integer acLimit);
 
+    Boolean getAcFilterDisabledRecords();
+
+    void setAcFilterDisabledRecords(Boolean acFilterDisabledRecords);
+
+    Boolean getInactive();
+
+    void setInactive(Boolean inactive);
+
     Long getId();
 
     void setId(Long id);
@@ -44,4 +52,7 @@ public interface FlyFilter {
     String getEntityDetailProperty();
 
     void setEntityDetailProperty(String entityDetailProperty);
+
+    boolean isIgnoreInactiveFilter();
+    void setIgnoreInactiveFilter(boolean ignoreInactiveFilter);
 }

@@ -86,10 +86,6 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
         return getRepository().getEntityName();
     }
 
-    protected void treatEntity(T entity, T entitySaved) {
-
-    }
-
     @Transactional
     public T update(Long id, T entity) {
         notNull(id, "flyserivice.idNotNull");
@@ -111,8 +107,6 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
         }*/
 
         beforeSave(entity, entitySaved);
-
-        treatEntity(entity, entitySaved);
 
         /*Para fazer update todos os versions dos objetos aninhados tem q estar setados*/
         BeanUtils.copyProperties(entity, entitySaved, "id", "gruposPermissaoUsuario");

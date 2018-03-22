@@ -2,6 +2,7 @@ package com.flytecnologia.core.base;
 
 import com.flytecnologia.core.exception.BusinessException;
 import com.flytecnologia.core.model.FlyEntity;
+import com.flytecnologia.core.model.FlyEntityWithDisabled;
 import com.flytecnologia.core.search.FlyFilter;
 import com.flytecnologia.core.search.FlyPageableResult;
 import com.flytecnologia.core.user.FlyUserDetailsService;
@@ -136,7 +137,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
     }
 
     protected boolean isFalse(Boolean value) {
-        return !isTrue(value);
+        return value != null && !isTrue(value);
     }
 
     public T getReference(Long id) {
@@ -159,6 +160,8 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         notNull(filter.getAcFieldValue(), "fieldValue is required");
         notNull(filter.getAcFieldDescription(), "fieldDescription is required");
 
+        String alias = FlyString.decapitalizeFirstLetter(getEntityClass().getSimpleName());
+
         StringBuilder hql = new StringBuilder()
                 .append("select new Map( \n ")
                 .append(filter.getAcFieldValue()).append(" as ").append(filter.getAcFieldValue()).append(", \n ")
@@ -179,12 +182,18 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         hql
                 .append(") from \n ")
                 .append(getEntityClass().getSimpleName()).append(" as ")
-                .append(FlyString.decapitalizeFirstLetter(getEntityClass().getSimpleName())).append(" \n")
+                .append(alias).append(" \n")
                 .append("where \n ")
                 .append("   (fly_to_ascii(lower(")
                 .append(filter.getAcFieldDescription())
                 .append(")) like fly_to_ascii(:value) or \n ")
                 .append("   CONCAT(").append(filter.getAcFieldValue()).append(", '') = :valueId) \n ");
+
+        String fieldInactive = alias + ".inactive";
+
+        if (this.getEntityClass().getGenericSuperclass().equals(FlyEntityWithDisabled.class)) {
+            hql.append(" and ").append(fieldInactive).append(" is false \n");
+        }
 
         Map<String, Object> filters = new HashMap<>();
 
@@ -240,6 +249,9 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         filter.setAutoComplete(true);
 
         filters.put("id", filter.getId());
+
+        //If it is necessary to load the record, it does not matter whether it is inactive or not
+        filter.setIgnoreInactiveFilter(true);
 
         changeSearchWhere(hql, filters, filter);
 

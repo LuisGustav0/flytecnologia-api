@@ -1,17 +1,20 @@
 package com.flytecnologia.core.search;
 
-public abstract class FlyFilterImpl implements FlyFilter{
+public abstract class FlyFilterImpl implements FlyFilter {
     private String acFieldDescription;
     private String acFieldValue;
     private String acExtraFieldsAutocomplete;
     private String acValue;
     private Integer acLimit;
+    private Boolean acFilterDisabledRecords;
     private boolean isAutoComplete;
     private String sortGridByField;
     private String typeSortGridByField;
     private Long id;
     private Long masterDetailId;
     private String entityDetailProperty;
+    private Boolean inactive;
+    private boolean ignoreInactiveFilter;
 
     public String getAcFieldDescription() {
         return acFieldDescription;
@@ -46,7 +49,7 @@ public abstract class FlyFilterImpl implements FlyFilter{
     }
 
     public Integer getAcLimit() {
-        if(acLimit == null) {
+        if (acLimit == null) {
             acLimit = 7;
         }
 
@@ -93,6 +96,26 @@ public abstract class FlyFilterImpl implements FlyFilter{
     }
 
     @Override
+    public Boolean getInactive() {
+        return inactive;
+    }
+
+    @Override
+    public void setInactive(Boolean inactive) {
+        this.inactive = inactive;
+    }
+
+    @Override
+    public Boolean getAcFilterDisabledRecords() {
+        return acFilterDisabledRecords;
+    }
+
+    @Override
+    public void setAcFilterDisabledRecords(Boolean acFilterDisabledRecords) {
+        this.acFilterDisabledRecords = acFilterDisabledRecords;
+    }
+
+    @Override
     public Long getMasterDetailId() {
         return masterDetailId;
     }
@@ -110,5 +133,15 @@ public abstract class FlyFilterImpl implements FlyFilter{
     @Override
     public void setEntityDetailProperty(String entityDetailProperty) {
         this.entityDetailProperty = entityDetailProperty;
+    }
+
+    @Override
+    public boolean isIgnoreInactiveFilter() {
+        return ignoreInactiveFilter;
+    }
+
+    @Override
+    public void setIgnoreInactiveFilter(boolean ignoreInactiveFilter) {
+        this.ignoreInactiveFilter = ignoreInactiveFilter;
     }
 }

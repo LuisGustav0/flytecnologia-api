@@ -1,10 +1,7 @@
 package com.flytecnologia.core.model;
 
 
-import com.flytecnologia.core.hibernate.envers.FlyEntityListener;
-
 import javax.persistence.Column;
-import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,7 +11,6 @@ import java.io.Serializable;
 import java.util.Map;
 
 @MappedSuperclass
-@EntityListeners(FlyEntityListener.class)
 public abstract class FlyEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -59,17 +55,17 @@ public abstract class FlyEntity implements Serializable {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj == null)
+
+        if (obj == null || getClass() != obj.getClass())
             return false;
-        if (getClass() != obj.getClass())
-            return false;
+
         FlyEntity other = (FlyEntity) obj;
+
         if (getId() == null) {
-            if (other.getId() != null)
-                return false;
-        } else if (!getId().equals(other.getId()))
-            return false;
-        return true;
+            return other.getId() == null;
+        }
+
+        return getId().equals(other.getId());
     }
 
     public Map<String, Object> getParameters() {
