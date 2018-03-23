@@ -1,6 +1,8 @@
-package com.flytecnologia.core.config;
+package com.flytecnologia.core.config.secutity.basic;
 
+import com.flytecnologia.core.user.FlyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,7 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Profile("basic-security")
 @EnableWebSecurity
-public class FlyBasicSecurityConfig extends WebSecurityConfigurerAdapter{
+public class FlyBasicSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -23,7 +25,13 @@ public class FlyBasicSecurityConfig extends WebSecurityConfigurerAdapter{
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
-    public PasswordEncoder passwordEncoder(){
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return new FlyUserDetailsService();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -35,7 +43,7 @@ public class FlyBasicSecurityConfig extends WebSecurityConfigurerAdapter{
                 .httpBasic()
                 .and()
                 .sessionManagement()
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .csrf().disable();
     }

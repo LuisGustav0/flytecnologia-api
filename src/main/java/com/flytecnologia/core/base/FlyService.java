@@ -23,9 +23,9 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
 
     protected abstract FlyRepository<T, Long, F> getRepository();
 
-    public T findById(Long id) {
+    public Optional<T> findById(Long id) {
         //return getRepository().findById(id).orElse(null);
-        return getRepository().findOne(id);
+        return getRepository().findById(id);
     }
 
     protected void beforeSave(T entity, T oldEntity) {
@@ -92,9 +92,9 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
         notNull(entity, "flyserivice.invalidRecord");
         notNull(entity.getId(), "flyserivice.invalidRecord");
 
-        T entitySaved = findById(id);
+        Optional<T> entitySaved = findById(id);
 
-        if (entitySaved == null) {
+        if (!entitySaved.isPresent()) {
             throw new EmptyResultDataAccessException("update " + getEntityName() + " -> " + id, 1);
         }
 
@@ -106,37 +106,37 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
             throw new BusinessException("flyserivice.differentVersion");
         }*/
 
-        beforeSave(entity, entitySaved);
+        beforeSave(entity, entitySaved.get());
 
         /*Para fazer update todos os versions dos objetos aninhados tem q estar setados*/
-        BeanUtils.copyProperties(entity, entitySaved, "id", "gruposPermissaoUsuario");
+        BeanUtils.copyProperties(entity, entitySaved.get(), "id", "gruposPermissaoUsuario");
 
         Map<String, Object> parameters = entity.getParameters();
 
-        entitySaved = getRepository().save(entitySaved);
+        T _entitySaved = getRepository().save(entitySaved.get());
 
-        entitySaved.setParameters(parameters);
+        _entitySaved.setParameters(parameters);
 
-        afterSave(entitySaved, entity);
+        afterSave(_entitySaved, entity);
 
-        entitySaved.setParameters(null);
+        _entitySaved.setParameters(null);
 
-        return entitySaved;
+        return _entitySaved;
     }
 
     @Transactional
     public void delete(Long id) {
         notNull(id, "flyserivice.idNotNull");
 
-        T entity = findById(id);
+        Optional<T> entity = findById(id);
 
-        if (entity == null) {
+        if (!entity.isPresent()) {
             throw new EmptyResultDataAccessException("delete " + getEntityName() + " -> " + id, 1);
         }
 
-        beforeDelete(entity);
+        beforeDelete(entity.get());
 
-        getRepository().delete(entity);
+        getRepository().delete(entity.get());
 
         afterDelete(id);
     }

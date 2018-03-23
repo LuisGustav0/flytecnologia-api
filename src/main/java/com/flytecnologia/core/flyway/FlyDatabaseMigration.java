@@ -39,15 +39,14 @@ public class FlyDatabaseMigration {
     private void migrateAllSpecificSchemas() {
         List<String> schemas = flyUserService.listAllSchemas();
 
-        for (String schema : schemas) {
-            migrateSpecificSchema(schema);
-        }
+        if (schemas != null && schemas.size() > 0)
+            migrateSpecificSchema(schemas.toArray(new String[0]));
     }
 
     /**
      * Used when creating a new schema for a new client
      */
-    public void migrateSpecificSchema(String schema) {
+    public void migrateSpecificSchema(String... schema ) {
         flyway.setSchemas(schema);
         flyway.migrate();
     }

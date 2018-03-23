@@ -1,4 +1,4 @@
-package com.flytecnologia.core.config;
+package com.flytecnologia.core.config.secutity;
 
 import com.flytecnologia.core.token.FlyJwtTokenStore;
 import com.flytecnologia.core.token.FlyTokenEnhancer;

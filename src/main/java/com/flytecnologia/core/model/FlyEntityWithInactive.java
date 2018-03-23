@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @MappedSuperclass
-public abstract class FlyEntityWithDisabled extends FlyEntity implements Serializable {
+public abstract class FlyEntityWithInactive extends FlyEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @NotNull

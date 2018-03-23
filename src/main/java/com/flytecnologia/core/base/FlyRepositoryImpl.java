@@ -2,7 +2,7 @@ package com.flytecnologia.core.base;
 
 import com.flytecnologia.core.exception.BusinessException;
 import com.flytecnologia.core.model.FlyEntity;
-import com.flytecnologia.core.model.FlyEntityWithDisabled;
+import com.flytecnologia.core.model.FlyEntityWithInactive;
 import com.flytecnologia.core.search.FlyFilter;
 import com.flytecnologia.core.search.FlyPageableResult;
 import com.flytecnologia.core.user.FlyUserDetailsService;
@@ -117,11 +117,11 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         return total;
     }
 
-    protected boolean isNotEmpty(Object value) {
+    public boolean isNotEmpty(Object value) {
         return !isEmpty(value);
     }
 
-    protected boolean isEmpty(Object value) {
+    public boolean isEmpty(Object value) {
         if (value == null)
             return true;
 
@@ -191,7 +191,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
         String fieldInactive = alias + ".inactive";
 
-        if (this.getEntityClass().getGenericSuperclass().equals(FlyEntityWithDisabled.class)) {
+        if (this.getEntityClass().getGenericSuperclass().equals(FlyEntityWithInactive.class)) {
             hql.append(" and ").append(fieldInactive).append(" is false \n");
         }
 

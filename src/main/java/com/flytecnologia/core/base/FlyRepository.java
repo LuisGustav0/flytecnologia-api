@@ -2,7 +2,6 @@ package com.flytecnologia.core.base;
 
 import com.flytecnologia.core.model.FlyEntity;
 import com.flytecnologia.core.search.FlyFilter;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
@@ -14,7 +13,7 @@ import java.util.Optional;
 
 @NoRepositoryBean
 public interface FlyRepository<T extends FlyEntity, PK extends Serializable, F extends FlyFilter>
-        extends JpaRepository<T, PK>, CrudRepository<T, PK>, FlyRepositorySearch<F> {
+        extends CrudRepository<T, PK>, FlyRepositorySearch<F> {
     EntityManager getEntityManager();
 
     Class<T> getEntityClass();

@@ -62,14 +62,10 @@ public class FlyTokenUserDetails {
 
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
 
-        if (requestAttributes != null) {
-            return (String) requestAttributes.getAttribute(
-                    "username",
-                    RequestAttributes.SCOPE_REQUEST
-            );
-        }
-
-        return "";
+        return (String) requestAttributes.getAttribute(
+                "username",
+                RequestAttributes.SCOPE_REQUEST
+        );
 
     }
 }
