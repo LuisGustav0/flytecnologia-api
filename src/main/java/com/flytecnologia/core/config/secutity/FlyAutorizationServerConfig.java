@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -44,14 +45,14 @@ public class FlyAutorizationServerConfig extends AuthorizationServerConfigurerAd
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory()
                 .withClient("angular")
-                .secret(secretKeyAngular)
+                .secret(new BCryptPasswordEncoder().encode(secretKeyAngular))
                 .scopes("read", "write", "mobile")
                 .authorizedGrantTypes("password", "refresh_token")
                 .accessTokenValiditySeconds(60 * 10) //duration's token
                 .refreshTokenValiditySeconds(3600 * 24) //1 day
             .and()
                 .withClient("mobile")
-                .secret(secretKeyMobile)
+                .secret(new BCryptPasswordEncoder().encode(secretKeyMobile))
                 .scopes("read", "mobile")
                 .authorizedGrantTypes("password", "refresh_token")
                 .accessTokenValiditySeconds(1800) //duration's token
