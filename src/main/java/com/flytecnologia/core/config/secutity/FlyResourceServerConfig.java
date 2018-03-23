@@ -1,4 +1,4 @@
-package com.flytecnologia.core.config;
+package com.flytecnologia.core.config.secutity;
 
 import com.flytecnologia.core.config.property.FlyAppProperty;
 import com.flytecnologia.core.security.FlyMethodSecurityExpressionRoot;
