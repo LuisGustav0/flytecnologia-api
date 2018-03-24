@@ -6,5 +6,5 @@ public interface FlyUser {
     public String getLogin();
     public String getPassword();
     public String getTenant();
-
+    public String getEmail();
 }

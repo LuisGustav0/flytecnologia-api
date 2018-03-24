@@ -1,6 +1,9 @@
 package com.flytecnologia.core.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,8 +23,13 @@ public abstract class FlyEntity implements Serializable {
     @Column(unique = true, nullable = false)
     private Long id;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Transient
     private Map<String, Object> parameters;
+
+    @Transient
+    @JsonIgnore
+    private boolean doNotAudit;
 
     public Long getId() {
         return id;
@@ -29,6 +37,14 @@ public abstract class FlyEntity implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public boolean isDoNotAudit() {
+        return doNotAudit;
+    }
+
+    public void setDoNotAudit(boolean doNotAudit) {
+        this.doNotAudit = doNotAudit;
     }
 
     /*@Version

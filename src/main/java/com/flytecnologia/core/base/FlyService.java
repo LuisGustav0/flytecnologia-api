@@ -92,11 +92,9 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
         notNull(entity, "flyserivice.invalidRecord");
         notNull(entity.getId(), "flyserivice.invalidRecord");
 
-        Optional<T> entitySaved = findById(id);
+        Optional<T> entitySavedOptional = findById(id);
 
-        if (!entitySaved.isPresent()) {
-            throw new EmptyResultDataAccessException("update " + getEntityName() + " -> " + id, 1);
-        }
+        T entitySaved = entitySavedOptional.orElseThrow(() ->new EmptyResultDataAccessException("update " + getEntityName() + " -> " + id, 1));
 
         if (!id.equals(entity.getId())) {
             throw new BusinessException("flyserivice.differentId");
@@ -106,14 +104,14 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
             throw new BusinessException("flyserivice.differentVersion");
         }*/
 
-        beforeSave(entity, entitySaved.get());
+        beforeSave(entity, entitySaved);
 
         /*Para fazer update todos os versions dos objetos aninhados tem q estar setados*/
-        BeanUtils.copyProperties(entity, entitySaved.get(), "id", "gruposPermissaoUsuario");
+        BeanUtils.copyProperties(entity, entitySaved, "id", "gruposPermissaoUsuario");
 
         Map<String, Object> parameters = entity.getParameters();
 
-        T _entitySaved = getRepository().save(entitySaved.get());
+        T _entitySaved = getRepository().save(entitySaved);
 
         _entitySaved.setParameters(parameters);
 
@@ -128,15 +126,13 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
     public void delete(Long id) {
         notNull(id, "flyserivice.idNotNull");
 
-        Optional<T> entity = findById(id);
+        Optional<T> entityOptional = findById(id);
 
-        if (!entity.isPresent()) {
-            throw new EmptyResultDataAccessException("delete " + getEntityName() + " -> " + id, 1);
-        }
+        T entity = entityOptional.orElseThrow(() -> new EmptyResultDataAccessException("delete " + getEntityName() + " -> " + id, 1));
 
-        beforeDelete(entity.get());
+        beforeDelete(entity);
 
-        getRepository().delete(entity.get());
+        getRepository().delete(entity);
 
         afterDelete(id);
     }

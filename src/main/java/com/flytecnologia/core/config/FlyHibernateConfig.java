@@ -64,6 +64,7 @@ public class FlyHibernateConfig {
                                                                        CurrentTenantIdentifierResolver currentTenantIdentifierResolver) {
         Properties properties = new Properties();
         properties.putAll(jpaProperties.getProperties());
+        properties.put("spring.jpa.properties.org.hibernate.listeners.envers.autoRegister", false);
         properties.put(Environment.MULTI_TENANT, MultiTenancyStrategy.SCHEMA);
         properties.put(Environment.MULTI_TENANT_CONNECTION_PROVIDER, multiTenantConnectionProvider);
         properties.put(Environment.MULTI_TENANT_IDENTIFIER_RESOLVER, currentTenantIdentifierResolver);
