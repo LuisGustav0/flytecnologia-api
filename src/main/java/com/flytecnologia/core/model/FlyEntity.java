@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 @MappedSuperclass
@@ -69,7 +70,10 @@ public abstract class FlyEntity implements Serializable {
     }
 
     public Map<String, Object> getParameters() {
-        return parameters;
+        if(parameters == null)
+            parameters = new HashMap<>();
+
+        return  parameters;
     }
 
     public void setParameters(Map<String, Object> parameters) {

@@ -178,6 +178,12 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
         }
     }
 
+    protected void notEmpty(Object object, String message) {
+        if (isEmpty(object)) {
+            throw new BusinessException(message);
+        }
+    }
+
     public Map<String, Object> defaultValues() {
         Map<String, Object> mapOfValues = new HashMap<>();
         addDefaultValues(mapOfValues);
