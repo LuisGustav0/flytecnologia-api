@@ -10,7 +10,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import java.lang.reflect.Method;
 
-public class ValidatorUtil {
+public class FlyValidatorUtil {
     private static final Validator javaxValidator = Validation.buildDefaultValidatorFactory().getValidator();
     private static final SpringValidatorAdapter validator = new SpringValidatorAdapter(javaxValidator);
 

@@ -3,7 +3,7 @@ package com.flytecnologia.core.base;
 import com.flytecnologia.core.model.FlyEntity;
 import com.flytecnologia.core.search.FlyFilter;
 import com.flytecnologia.core.search.FlyPageableResult;
-import com.flytecnologia.core.spring.ValidatorUtil;
+import com.flytecnologia.core.spring.FlyValidatorUtil;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -45,7 +45,7 @@ public abstract class FlyController<T extends FlyEntity, F extends FlyFilter> {
                                     HttpServletResponse response)
             throws MethodArgumentNotValidException, SecurityException {
 
-        ValidatorUtil.validate(entityAux.getEntity(), this.getClass(), "save");
+        FlyValidatorUtil.validate(entityAux.getEntity(), this.getClass(), "save");
 
         entityAux.getEntity().setParameters(entityAux.getParameters());
 
@@ -91,7 +91,7 @@ public abstract class FlyController<T extends FlyEntity, F extends FlyFilter> {
     public ResponseEntity<T> update(@PathVariable Long id, @Valid @RequestBody EntityAux<T> entityAux)
             throws MethodArgumentNotValidException {
 
-        ValidatorUtil.validate(entityAux.getEntity(), this.getClass(), "update");
+        FlyValidatorUtil.validate(entityAux.getEntity(), this.getClass(), "update");
 
         entityAux.getEntity().setParameters(entityAux.getParameters());
 

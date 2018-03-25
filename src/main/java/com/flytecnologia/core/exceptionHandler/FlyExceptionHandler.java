@@ -67,10 +67,9 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(InvalidDataException.class)
     public ResponseEntity<Object> handleInvalidDataException(InvalidDataException ex,
-                                                             HttpHeaders headers,
                                                              WebRequest request) {
         List<Error> erros = createListOfErros(ex.getBindingResult());
-        return handleExceptionInternal(ex, erros, headers, HttpStatus.BAD_REQUEST, request);
+        return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
     @ExceptionHandler(EmptyResultDataAccessException.class)
