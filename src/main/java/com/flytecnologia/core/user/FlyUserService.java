@@ -10,4 +10,7 @@ public interface FlyUserService {
     List<FlyUserPermission> getPermissions(String login, String tenant);
     List<String> listAllSchemas();
     Map<String, Object> getAdditionalTokenInformation(Long id);
+
+    void sendNewPassword(String username);
+    void resetPassword(String changePasswordKey, String password, String confirmPassword);
 }
