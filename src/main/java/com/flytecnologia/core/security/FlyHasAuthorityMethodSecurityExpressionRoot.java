@@ -39,7 +39,7 @@ public class FlyHasAuthorityMethodSecurityExpressionRoot
 
         if (flyRoles != null) {
             if (!StringUtils.isEmpty(flyRoles.defaultName()))
-                return "ROLE_C_" + flyRoles.defaultName().toUpperCase();
+                return "ROLE_" + flyRoles.defaultName().toUpperCase() + "_C";
 
             return flyRoles.create();
         }
@@ -62,7 +62,7 @@ public class FlyHasAuthorityMethodSecurityExpressionRoot
 
         if (flyRoles != null) {
             if (!StringUtils.isEmpty(flyRoles.defaultName()))
-                return "ROLE_R_" + flyRoles.defaultName().toUpperCase();
+                return "ROLE_" + flyRoles.defaultName().toUpperCase() + "_R";
 
             return flyRoles.read();
         }
@@ -78,7 +78,7 @@ public class FlyHasAuthorityMethodSecurityExpressionRoot
 
         if (flyRoles != null) {
             if (!StringUtils.isEmpty(flyRoles.defaultName()))
-                return "ROLE_U_" + flyRoles.defaultName().toUpperCase();
+                return "ROLE_" + flyRoles.defaultName().toUpperCase() + "_U";
             return flyRoles.update();
         }
 
@@ -93,7 +93,7 @@ public class FlyHasAuthorityMethodSecurityExpressionRoot
 
         if (flyRoles != null) {
             if (!StringUtils.isEmpty(flyRoles.defaultName()))
-                return "ROLE_D_" + flyRoles.defaultName().toUpperCase();
+                return "ROLE_" + flyRoles.defaultName().toUpperCase() + "_D";
             return flyRoles.delete();
         }
 
