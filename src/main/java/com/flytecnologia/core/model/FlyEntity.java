@@ -2,6 +2,7 @@ package com.flytecnologia.core.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.Column;
@@ -14,6 +15,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @MappedSuperclass
 public abstract class FlyEntity implements Serializable {
     private static final long serialVersionUID = 1L;
