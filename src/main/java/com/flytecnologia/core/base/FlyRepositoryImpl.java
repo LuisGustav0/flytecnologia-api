@@ -6,7 +6,6 @@ import com.flytecnologia.core.model.FlyEntityWithInactive;
 import com.flytecnologia.core.search.FlyFilter;
 import com.flytecnologia.core.search.FlyPageableResult;
 import com.flytecnologia.core.user.FlyUserDetailsService;
-import com.flytecnologia.core.util.FlyString;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.util.StringUtils;
@@ -78,7 +77,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
                                                 StringBuilder hqlOrderBy,
                                                 Map<String, Object> parameters,
                                                 F filter, String distinctPropertyCount) {
-        if(hqlWhere == null)
+        if (hqlWhere == null)
             hqlWhere = new StringBuilder("\nwhere 1=1\n");
 
         filter.setAutoComplete(false);
@@ -158,6 +157,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
     protected void changeSearchWhere(StringBuilder hqlWhere, Map<String, Object> parameters, F filter) {
     }
+
     protected void changeSearchJoin(StringBuilder hqlJoin, Map<String, Object> parameters, F filter) {
 
     }
@@ -175,22 +175,23 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         notNull(filter.getAcFieldValue(), "fieldValue is required");
         notNull(filter.getAcFieldDescription(), "fieldDescription is required");
 
-        String alias = FlyString.decapitalizeFirstLetter(getEntityClass().getSimpleName());
+        String entityName = getEntityName();
+        String alias = entityName.substring(0, 1).toLowerCase() + entityName.substring(1);
 
         StringBuilder hql = new StringBuilder()
-                .append("select new Map( \n ")
-                .append(filter.getAcFieldValue()).append(" as ").append(filter.getAcFieldValue()).append(", \n ")
-                .append(filter.getAcFieldDescription()).append(" as ").append(filter.getAcFieldDescription()).append(" \n ");
+                .append("select distinct new Map( \n ")
+                .append(alias).append(".").append(filter.getAcFieldValue()).append(" as ").append(filter.getAcFieldValue()).append(", \n ")
+                .append(alias).append(".").append(filter.getAcFieldDescription()).append(" as ").append(filter.getAcFieldDescription()).append(" \n ");
 
         if (!"id".equals(filter.getAcFieldValue())) {
-            hql.append(",id \n ");
+            hql.append(",").append(alias).append(".id \n ");
         }
 
         if (!isEmpty(filter.getAcExtraFieldsAutocomplete())) {
             String[] extraField = filter.getAcExtraFieldsAutocomplete().split(",");
 
             for (String field : extraField) {
-                hql.append(",").append(field).append(" as ").append(field).append(" \n ");
+                hql.append(",").append(alias).append(".").append(field).append(" as ").append(field).append(" \n ");
             }
         }
 
@@ -200,14 +201,14 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
         hql
                 .append(") from \n ")
-                .append(getEntityClass().getSimpleName()).append(" as ")
+                .append(entityName).append(" as ")
                 .append(alias).append(" \n")
                 .append(hqlJoin).append(" \n")
                 .append("where \n ")
                 .append("   (fly_to_ascii(lower(")
-                .append(filter.getAcFieldDescription())
+                .append(alias).append(".").append(filter.getAcFieldDescription())
                 .append(")) like fly_to_ascii(:value) or \n ")
-                .append("   CONCAT(").append(filter.getAcFieldValue()).append(", '') = :valueId) \n ");
+                .append("   CONCAT(").append(alias).append(".").append(filter.getAcFieldValue()).append(", '') = :valueId) \n ");
 
         String fieldInactive = alias + ".inactive";
 
@@ -237,20 +238,23 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         notNull(filter.getAcFieldValue(), "fieldValue is required");
         notNull(filter.getAcFieldDescription(), "fieldDescription is required");
 
+        String entityName = getEntityName();
+        String alias = entityName.substring(0, 1).toLowerCase() + entityName.substring(1);
+
         StringBuilder hql = new StringBuilder()
-                .append("select new Map( \n ")
-                .append(filter.getAcFieldValue()).append(" as ").append(filter.getAcFieldValue()).append(", \n ")
-                .append(filter.getAcFieldDescription()).append(" as ").append(filter.getAcFieldDescription()).append(" \n ");
+                .append("select distinct new Map( \n ")
+                .append(alias).append(".").append(filter.getAcFieldValue()).append(" as ").append(filter.getAcFieldValue()).append(", \n ")
+                .append(alias).append(".").append(filter.getAcFieldDescription()).append(" as ").append(filter.getAcFieldDescription()).append(" \n ");
 
         if (!"id".equals(filter.getAcFieldValue())) {
-            hql.append(",id \n ");
+            hql.append(",").append(alias).append(".id \n ");
         }
 
         if (!isEmpty(filter.getAcExtraFieldsAutocomplete())) {
             String[] extraField = filter.getAcExtraFieldsAutocomplete().split(",");
 
             for (String field : extraField) {
-                hql.append(",").append(field).append(" as ").append(field).append(" \n ");
+                hql.append(",").append(alias).append(".").append(field).append(" as ").append(field).append(" \n ");
             }
         }
 
@@ -260,11 +264,10 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
         hql
                 .append(") from \n ")
-                .append(getEntityClass().getSimpleName()).append(" as ")
-                .append(FlyString.decapitalizeFirstLetter(getEntityClass().getSimpleName())).append(" \n")
+                .append(entityName).append(" as ").append(alias).append(" \n")
                 .append(hqlJoin).append(" \n")
                 .append("where \n ")
-                .append(filter.getAcFieldValue())
+                .append(alias).append(".").append(filter.getAcFieldValue())
                 .append(" = :id\n ");
 
         filter.setAutoComplete(true);
@@ -300,34 +303,38 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         String entityName = getEntityName();
         String alias = entityName.substring(0, 1).toLowerCase() + entityName.substring(1);
 
-        Map<String, Object> filters = new HashMap<>();
+        Map<String, Object> parameters = new HashMap<>();
+        StringBuilder hqlJoin = new StringBuilder();
+        changeSearchJoin(hqlJoin, parameters, filter);
 
         StringBuilder hql = new StringBuilder()
-                .append("select ").append(maxMin).append("(id) from ")
-                .append(getEntityName()).append(" ").append(alias)
-                .append(" where 1=1 ");
+                .append("select ").append(maxMin).append("(").append(alias).append(".id) from ")
+                .append(getEntityName()).append(" ").append(alias).append("\n")
+                .append(hqlJoin).append("\n")
+                .append("where 1=1 \n");
 
         if (isEmpty(maxMin)) {
-            hql.append(" and id ").append(signal).append(" :id ");
-            filters.put("id", filter.getId());
+            hql.append("    and ").append(alias).append(".id ").append(signal).append(" :id \n");
+            parameters.put("id", filter.getId());
         }
 
-        changeSearchWhere(hql, filters, filter);
+        changeSearchWhere(hql, parameters, filter);
 
         if (!isEmpty(filter.getEntityDetailProperty())) {
-            hql.append(" and ").append(alias).append(".").append(filter.getEntityDetailProperty())
-                    .append(".id = :idDetail");
-            filters.put("idDetail", filter.getMasterDetailId());
+            hql
+                    .append("    and ").append(alias).append(".").append(filter.getEntityDetailProperty())
+                    .append(".id = :idDetail \n");
+            parameters.put("idDetail", filter.getMasterDetailId());
         }
 
         if (orderByType != null) {
-            hql.append(" order by id ").append(orderByType);
+            hql.append(" order by ").append(alias).append(".id ").append(orderByType);
         }
 
         TypedQuery<Long> query = getEntityManager().createQuery(hql.toString(), Long.class);
         query.setMaxResults(1);
 
-        filters.forEach(query::setParameter);
+        parameters.forEach(query::setParameter);
 
         return query.getResultList().stream().filter(Objects::nonNull).findFirst();
     }
