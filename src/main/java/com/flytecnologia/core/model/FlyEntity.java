@@ -33,6 +33,14 @@ public abstract class FlyEntity implements Serializable {
     @JsonIgnore
     private boolean doNotAudit;
 
+    @Transient
+    @JsonIgnore
+    private boolean isIgnoreBeforeSave;
+
+    @Transient
+    @JsonIgnore
+    private boolean isIgnoreAfterSave;
+
     public Long getId() {
         return id;
     }
@@ -47,6 +55,22 @@ public abstract class FlyEntity implements Serializable {
 
     public void setDoNotAudit(boolean doNotAudit) {
         this.doNotAudit = doNotAudit;
+    }
+
+    public boolean isIgnoreBeforeSave() {
+        return isIgnoreBeforeSave;
+    }
+
+    public void setIgnoreBeforeSave(boolean ignoreBeforeSave) {
+        isIgnoreBeforeSave = ignoreBeforeSave;
+    }
+
+    public boolean isIgnoreAfterSave() {
+        return isIgnoreAfterSave;
+    }
+
+    public void setIgnoreAfterSave(boolean ignoreAfterSave) {
+        isIgnoreAfterSave = ignoreAfterSave;
     }
 
     /*@Version
@@ -93,6 +117,7 @@ public abstract class FlyEntity implements Serializable {
 
         return  parameters;
     }
+
 
     public void setParameters(Map<String, Object> parameters) {
         this.parameters = parameters;

@@ -56,7 +56,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
 
     @Transactional
     public T save(T entity) {
-        if(entity.getId() == null) {
+        if (entity.getId() == null) {
             return create(entity);
         }
 
@@ -67,7 +67,11 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
     public T create(T entity) {
         notNull(entity, "flyserivice.invalidRecord");
 
-        beforeSave(entity, null);
+        if (!entity.isIgnoreBeforeSave()) {
+            beforeSave(entity, null);
+        }
+
+        boolean isIgnoreAfterSave = entity.isIgnoreAfterSave();
 
         Map<String, Object> parameters = entity.getParameters();
 
@@ -75,7 +79,9 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
 
         entity.setParameters(parameters);
 
-        afterSave(entity, null);
+        if (!isIgnoreAfterSave) {
+            afterSave(entity, null);
+        }
 
         entity.setParameters(null);
 
@@ -94,7 +100,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
 
         Optional<T> entitySavedOptional = findById(id);
 
-        T entitySaved = entitySavedOptional.orElseThrow(() ->new EmptyResultDataAccessException("update " + getEntityName() + " -> " + id, 1));
+        T entitySaved = entitySavedOptional.orElseThrow(() -> new EmptyResultDataAccessException("update " + getEntityName() + " -> " + id, 1));
 
         if (!id.equals(entity.getId())) {
             throw new BusinessException("flyserivice.differentId");
@@ -104,7 +110,11 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
             throw new BusinessException("flyserivice.differentVersion");
         }*/
 
-        beforeSave(entity, entitySaved);
+        if (!entity.isIgnoreBeforeSave()) {
+            beforeSave(entity, entitySaved);
+        }
+
+        boolean isIgnoreAfterSave = entity.isIgnoreAfterSave();
 
         /*Para fazer update todos os versions dos objetos aninhados tem q estar setados*/
         BeanUtils.copyProperties(entity, entitySaved, "id", "gruposPermissaoUsuario");
@@ -115,7 +125,9 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
 
         _entitySaved.setParameters(parameters);
 
-        afterSave(_entitySaved, entity);
+        if (!isIgnoreAfterSave) {
+            afterSave(_entitySaved, entity);
+        }
 
         _entitySaved.setParameters(null);
 
@@ -124,17 +136,26 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
 
     @Transactional
     public void delete(Long id) {
+        delete(id, false, false);
+    }
+
+    @Transactional
+    public void delete(Long id, boolean isIgnoreBeforeDelete, boolean isIgnoreAfterDelete) {
         notNull(id, "flyserivice.idNotNull");
 
         Optional<T> entityOptional = findById(id);
 
         T entity = entityOptional.orElseThrow(() -> new EmptyResultDataAccessException("delete " + getEntityName() + " -> " + id, 1));
 
-        beforeDelete(entity);
+        if (!isIgnoreBeforeDelete) {
+            beforeDelete(entity);
+        }
 
         getRepository().delete(entity);
 
-        afterDelete(id);
+        if (!isIgnoreAfterDelete) {
+            afterDelete(id);
+        }
     }
 
     public Optional<List> getItensAutocomplete(F filter) {
