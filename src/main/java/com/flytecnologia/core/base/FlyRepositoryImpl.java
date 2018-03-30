@@ -24,6 +24,7 @@ import java.util.Optional;
 
 @NoRepositoryBean
 public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter> {
+    //private static final Logger logger = LogManager.getLogger(FlyRepositoryImpl.class);
 
     private Class<T> entityClass;
 
@@ -64,20 +65,31 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
     protected FlyPageableResult getMapOfResults(Pageable pageable, StringBuilder hql,
                                                 StringBuilder hqlFrom,
-                                                StringBuilder hqlOrderBy, Map<String, Object> filters,
+                                                StringBuilder hqlWhere,
+                                                StringBuilder hqlOrderBy,
+                                                Map<String, Object> filters,
                                                 F filter) {
-        return getMapOfResults(pageable, hql, hqlFrom, hqlOrderBy, filters, filter, null);
+        return getMapOfResults(pageable, hql, hqlFrom, hqlWhere, hqlOrderBy, filters, filter, null);
     }
 
     protected FlyPageableResult getMapOfResults(Pageable pageable, StringBuilder hql,
                                                 StringBuilder hqlFrom,
-                                                StringBuilder hqlOrderBy, Map<String, Object> filters,
+                                                StringBuilder hqlWhere,
+                                                StringBuilder hqlOrderBy,
+                                                Map<String, Object> parameters,
                                                 F filter, String distinctPropertyCount) {
+        if(hqlWhere == null)
+            hqlWhere = new StringBuilder("\nwhere 1=1\n");
+
         filter.setAutoComplete(false);
 
-        changeSearchWhere(hqlFrom, filters, filter);
+        StringBuilder hqlJoin = new StringBuilder();
+        changeSearchJoin(hqlJoin, parameters, filter);
+        changeSearchWhere(hqlWhere, parameters, filter);
 
-        Long total = getTotalRecords(hqlFrom, filters, distinctPropertyCount);
+        hqlFrom.append("\n").append(hqlJoin).append("\n").append(hqlWhere);
+
+        Long total = getTotalRecords(hqlFrom, parameters, distinctPropertyCount);
 
         hqlFrom.append(" ").append(hqlOrderBy);
 
@@ -85,8 +97,8 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
         TypedQuery<?> query = getEntityManager().createQuery(hql.toString(), getEntityClass());
 
-        if (filters != null)
-            filters.forEach(query::setParameter);
+        if (parameters != null)
+            parameters.forEach(query::setParameter);
 
         if (pageable.getPageNumber() != 99999998)
             addPaginationInfo(query, pageable);
@@ -144,7 +156,10 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         return getEntityManager().getReference(getEntityClass(), id);
     }
 
-    protected void changeSearchWhere(StringBuilder hqlFrom, Map<String, Object> filters, F filter) {
+    protected void changeSearchWhere(StringBuilder hqlWhere, Map<String, Object> parameters, F filter) {
+    }
+    protected void changeSearchJoin(StringBuilder hqlJoin, Map<String, Object> parameters, F filter) {
+
     }
 
     protected void notNull(Object object, String message) {
@@ -179,10 +194,15 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
             }
         }
 
+        Map<String, Object> parameters = new HashMap<>();
+        StringBuilder hqlJoin = new StringBuilder();
+        changeSearchJoin(hqlJoin, parameters, filter);
+
         hql
                 .append(") from \n ")
                 .append(getEntityClass().getSimpleName()).append(" as ")
                 .append(alias).append(" \n")
+                .append(hqlJoin).append(" \n")
                 .append("where \n ")
                 .append("   (fly_to_ascii(lower(")
                 .append(filter.getAcFieldDescription())
@@ -195,19 +215,17 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
             hql.append(" and ").append(fieldInactive).append(" is false \n");
         }
 
-        Map<String, Object> filters = new HashMap<>();
-
         filter.setAutoComplete(true);
 
-        filters.put("value", "%" + filter.getAcValue().toLowerCase() + "%");
-        filters.put("valueId", filter.getAcValue());
+        parameters.put("value", "%" + filter.getAcValue().toLowerCase() + "%");
+        parameters.put("valueId", filter.getAcValue());
 
-        changeSearchWhere(hql, filters, filter);
+        changeSearchWhere(hql, parameters, filter);
 
         TypedQuery<?> query = getEntityManager().createQuery(hql.toString(), Map.class);
         query.setMaxResults(filter.getAcLimit());
 
-        filters.forEach(query::setParameter);
+        parameters.forEach(query::setParameter);
 
         return Optional.ofNullable(query.getResultList());
     }
@@ -236,29 +254,32 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
             }
         }
 
+        Map<String, Object> parameters = new HashMap<>();
+        StringBuilder hqlJoin = new StringBuilder();
+        changeSearchJoin(hqlJoin, parameters, filter);
+
         hql
                 .append(") from \n ")
                 .append(getEntityClass().getSimpleName()).append(" as ")
                 .append(FlyString.decapitalizeFirstLetter(getEntityClass().getSimpleName())).append(" \n")
+                .append(hqlJoin).append(" \n")
                 .append("where \n ")
                 .append(filter.getAcFieldValue())
                 .append(" = :id\n ");
 
-        Map<String, Object> filters = new HashMap<>();
-
         filter.setAutoComplete(true);
 
-        filters.put("id", filter.getId());
+        parameters.put("id", filter.getId());
 
         //If it is necessary to load the record, it does not matter whether it is inactive or not
         filter.setIgnoreInactiveFilter(true);
 
-        changeSearchWhere(hql, filters, filter);
+        changeSearchWhere(hql, parameters, filter);
 
         TypedQuery<Map> query = getEntityManager().createQuery(hql.toString(), Map.class);
         query.setMaxResults(1);
 
-        filters.forEach(query::setParameter);
+        parameters.forEach(query::setParameter);
 
         return query.getResultList().stream().filter(Objects::nonNull).findFirst();
     }
