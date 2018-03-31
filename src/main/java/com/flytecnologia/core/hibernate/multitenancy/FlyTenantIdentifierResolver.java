@@ -4,8 +4,6 @@ import com.flytecnologia.core.token.FlyTokenUserDetails;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
 
 @Profile("oauth-security")
 @Component
@@ -13,20 +11,17 @@ public class FlyTenantIdentifierResolver implements CurrentTenantIdentifierResol
 
     @Override
     public String resolveCurrentTenantIdentifier() {
-        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        String tenant = FlyTenantThreadLocal.getTenant();
 
-        if (requestAttributes != null) {
-            /*String tenantId = (String) requestAttributes.getAttribute(
-                    FlyMultiTenantConstants.REQUEST_HEADER_ID,
-                    RequestAttributes.SCOPE_REQUEST
-            );*/
+        if (tenant != null)
+            return tenant;
 
-            String tenantId = FlyTokenUserDetails.getCurrentSchemaName();
+        String tenantId = FlyTokenUserDetails.getCurrentSchemaName();
 
-            if (tenantId != null) {
-                return FlyMultiTenantConstants.DEFAULT_TENANT_SUFFIX + tenantId;
-            }
+        if (tenantId != null) {
+            return FlyMultiTenantConstants.DEFAULT_TENANT_SUFFIX + tenantId;
         }
+
         return FlyMultiTenantConstants.DEFAULT_TENANT_ID;
     }
 

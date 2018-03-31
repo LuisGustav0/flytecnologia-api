@@ -2,6 +2,7 @@ package com.flytecnologia.core.base;
 
 import com.flytecnologia.core.exception.BusinessException;
 import com.flytecnologia.core.model.FlyEntity;
+import com.flytecnologia.core.model.FlyEntityWithInactive;
 import com.flytecnologia.core.search.FlyFilter;
 import com.flytecnologia.core.search.FlyPageableResult;
 import com.flytecnologia.core.user.FlyUserDetailsService;
@@ -75,6 +76,8 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
 
         Map<String, Object> parameters = entity.getParameters();
 
+        addDefaultValuesBeforeCreate(entity);
+
         entity = getRepository().save(entity);
 
         entity.setParameters(parameters);
@@ -86,6 +89,14 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
         entity.setParameters(null);
 
         return entity;
+    }
+
+    private void addDefaultValuesBeforeCreate(T entity) {
+        if (entity instanceof FlyEntityWithInactive) {
+            if (((FlyEntityWithInactive) entity).getInactive() == null) {
+                ((FlyEntityWithInactive) entity).setInactive(false);
+            }
+        }
     }
 
     protected String getEntityName() {
@@ -181,8 +192,16 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
         return getRepository().isEmpty(value);
     }
 
+    protected boolean isTrue(Object value) {
+        return isTrue((Boolean) value);
+    }
+
     protected boolean isTrue(Boolean value) {
         return value != null && value;
+    }
+
+    protected boolean isFalse(Object value) {
+        return isFalse((Boolean) value);
     }
 
     protected boolean isFalse(Boolean value) {

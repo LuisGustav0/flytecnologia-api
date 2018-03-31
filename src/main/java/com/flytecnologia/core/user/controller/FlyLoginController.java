@@ -17,14 +17,14 @@ import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping(value = "login")
-public class LoginController {
+public class FlyLoginController {
 
     private FlyUserService service;
     private FlyAppProperty flyAppProperty;
 
     @Autowired
-    public LoginController(FlyUserService service,
-                           FlyAppProperty flyAppProperty) {
+    public FlyLoginController(FlyUserService service,
+                              FlyAppProperty flyAppProperty) {
         this.service = service;
         this.flyAppProperty = flyAppProperty;
     }

@@ -18,7 +18,7 @@ public class FlyHasAuthorityMethodSecurityExpressionRoot
 
     private FlyAppProperty flyAppProperty;
 
-    private final String ROLE_DEBUG = "ROLE_DEBUG";
+    private final String ROLE_MASTER = "ROLE_DEBUG";
 
     public FlyHasAuthorityMethodSecurityExpressionRoot(Authentication authentication) {
         super(authentication);
@@ -32,8 +32,8 @@ public class FlyHasAuthorityMethodSecurityExpressionRoot
     }
 
     public String getAuthorityCreate() {
-        if (flyAppProperty.getApp().isDebug())
-            return ROLE_DEBUG;
+        if (flyAppProperty.getApp().isDebug() && !flyAppProperty.getApp().isValidatePermissions())
+            return ROLE_MASTER;
 
         FlyRoles flyRoles = target.getClass().getAnnotation(FlyRoles.class);
 
@@ -48,15 +48,15 @@ public class FlyHasAuthorityMethodSecurityExpressionRoot
     }
 
     public String getAuthority(String role) {
-        if (flyAppProperty.getApp().isDebug())
-            return ROLE_DEBUG;
+        if (flyAppProperty.getApp().isDebug() && !flyAppProperty.getApp().isValidatePermissions())
+            return ROLE_MASTER;
 
         return role;
     }
 
     public String getAuthorityRead() {
-        if (flyAppProperty.getApp().isDebug())
-            return ROLE_DEBUG;
+        if (flyAppProperty.getApp().isDebug() && !flyAppProperty.getApp().isValidatePermissions())
+            return ROLE_MASTER;
 
         FlyRoles flyRoles = target.getClass().getAnnotation(FlyRoles.class);
 
@@ -71,8 +71,8 @@ public class FlyHasAuthorityMethodSecurityExpressionRoot
     }
 
     public String getAuthorityUpdate() {
-        if (flyAppProperty.getApp().isDebug())
-            return ROLE_DEBUG;
+        if (flyAppProperty.getApp().isDebug() && !flyAppProperty.getApp().isValidatePermissions())
+            return ROLE_MASTER;
 
         FlyRoles flyRoles = target.getClass().getAnnotation(FlyRoles.class);
 
@@ -86,8 +86,8 @@ public class FlyHasAuthorityMethodSecurityExpressionRoot
     }
 
     public String getAuthorityDelete() {
-        if (flyAppProperty.getApp().isDebug())
-            return ROLE_DEBUG;
+        if (flyAppProperty.getApp().isDebug() && !flyAppProperty.getApp().isValidatePermissions())
+            return ROLE_MASTER;
 
         FlyRoles flyRoles = target.getClass().getAnnotation(FlyRoles.class);
 

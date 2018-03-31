@@ -39,6 +39,7 @@ public class FlyAppProperty {
 
     public static class App {
         private boolean debug;
+        private boolean validatePermissions;
 
         public boolean isDebug() {
             return debug;
@@ -46,6 +47,14 @@ public class FlyAppProperty {
 
         public void setDebug(boolean debug) {
             this.debug = debug;
+        }
+
+        public boolean isValidatePermissions() {
+            return validatePermissions;
+        }
+
+        public void setValidatePermissions(boolean validatePermissions) {
+            this.validatePermissions = validatePermissions;
         }
     }
 }
