@@ -30,13 +30,19 @@ public class FlyCorsFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) resp;
 
-        response.setHeader("Access-Control-Allow-Origin", flyAppProperty.getSecurity().getAllowOrigin());
-        response.setHeader("Access-Control-Allow-Credentials", "true");
+        String allowOrigin = flyAppProperty.getSecurity().getAllowOrigin();
+
+        if(allowOrigin == null || allowOrigin.trim().length() == 0 || "any".equals(allowOrigin)) {
+            allowOrigin = request.getHeader("Origin");
+        }
+
+        response.addHeader("Access-Control-Allow-Origin", allowOrigin);
+        response.addHeader("Access-Control-Allow-Credentials", "true");
 
         if ("OPTIONS".equals(request.getMethod())) {
-            response.setHeader("Access-Control-Allow-Methods", "POST, GET, DELETE, PUT, OPTIONS");
-            response.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept");
-            response.setHeader("Access-Control-Max-Age", "3600");
+            response.addHeader("Access-Control-Allow-Methods", "POST, GET, DELETE, PUT, OPTIONS");
+            response.addHeader("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept");
+            response.addHeader("Access-Control-Max-Age", "3600");
 
             response.setStatus(HttpServletResponse.SC_OK);
         } else {

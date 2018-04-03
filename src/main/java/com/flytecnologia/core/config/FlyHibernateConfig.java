@@ -3,6 +3,7 @@ package com.flytecnologia.core.config;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.flytecnologia.core.hibernate.multitenancy.FlyMultiTenantConnectionProviderImpl;
+import com.flytecnologia.core.hibernate.multitenancy.FlyTenantIdentifierResolver;
 import org.hibernate.MultiTenancyStrategy;
 import org.hibernate.cfg.Environment;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
@@ -25,7 +26,7 @@ import java.util.Properties;
 public class FlyHibernateConfig {
     private JpaProperties jpaProperties;
 
-    public FlyHibernateConfig(JpaProperties jpaProperties){
+    public FlyHibernateConfig(JpaProperties jpaProperties) {
         this.jpaProperties = jpaProperties;
     }
 
@@ -43,20 +44,21 @@ public class FlyHibernateConfig {
         return new HibernateJpaVendorAdapter();
     }
 
-   /** @Bean
-    public DataSource dataSource() {
-        HikariConfig config = new HikariConfig();
-        config.setDriverClassName(driver);
-        config.setJdbcUrl(url);
-        config.setUsername(username);
-        config.setPassword(password);
-        config.addDataSourceProperty("cachePrepStmts", "true");
-        config.addDataSourceProperty("prepStmtCacheSize", "250");
-        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
-        config.addDataSourceProperty("useServerPrepStmts", "true");
-
-        return new HikariDataSource(config);
-    }*/
+    /**
+     * @Bean public DataSource dataSource() {
+     * HikariConfig config = new HikariConfig();
+     * config.setDriverClassName(driver);
+     * config.setJdbcUrl(url);
+     * config.setUsername(username);
+     * config.setPassword(password);
+     * config.addDataSourceProperty("cachePrepStmts", "true");
+     * config.addDataSourceProperty("prepStmtCacheSize", "250");
+     * config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+     * config.addDataSourceProperty("useServerPrepStmts", "true");
+     * <p>
+     * return new HikariDataSource(config);
+     * }
+     */
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource,
@@ -64,14 +66,13 @@ public class FlyHibernateConfig {
                                                                        CurrentTenantIdentifierResolver currentTenantIdentifierResolver) {
         Properties properties = new Properties();
         properties.putAll(jpaProperties.getProperties());
-        properties.put("spring.jpa.properties.org.hibernate.listeners.envers.autoRegister", false);
         properties.put(Environment.MULTI_TENANT, MultiTenancyStrategy.SCHEMA);
         properties.put(Environment.MULTI_TENANT_CONNECTION_PROVIDER, multiTenantConnectionProvider);
         properties.put(Environment.MULTI_TENANT_IDENTIFIER_RESOLVER, currentTenantIdentifierResolver);
 
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource);
-        em.setPackagesToScan("com.flytecnologia","br.com");
+        em.setPackagesToScan("com.flytecnologia", "br.com");
         em.setJpaVendorAdapter(jpaVendorAdapter());
         em.setJpaProperties(properties);
 
@@ -79,13 +80,18 @@ public class FlyHibernateConfig {
     }
 
     @Bean
-    public JpaProperties jpaProperties(){
+    public JpaProperties jpaProperties() {
         return new JpaProperties();
     }
 
     @Bean
     public MultiTenantConnectionProvider multiTenantConnectionProvider() {
         return new FlyMultiTenantConnectionProviderImpl();
+    }
+
+    @Bean
+    public CurrentTenantIdentifierResolver currentTenantIdentifierResolver() {
+        return new FlyTenantIdentifierResolver();
     }
 
     @Bean

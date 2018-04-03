@@ -2,6 +2,7 @@ package com.flytecnologia.core.config.secutity;
 
 import com.flytecnologia.core.config.property.FlyAppProperty;
 import com.flytecnologia.core.security.FlyMethodSecurityExpressionRoot;
+import com.flytecnologia.core.user.FlyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,7 +32,7 @@ public class FlyResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     private UserDetailsService userDetailsService;
 
-    public FlyResourceServerConfig(UserDetailsService userDetailsService){
+    public FlyResourceServerConfig(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
@@ -76,6 +77,10 @@ public class FlyResourceServerConfig extends ResourceServerConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return new FlyUserDetailsService();
+    }
     /*@Bean
     public MethodSecurityExpressionHandler createExpressionHandler() {
         return new OAuth2MethodSecurityExpressionHandler();
