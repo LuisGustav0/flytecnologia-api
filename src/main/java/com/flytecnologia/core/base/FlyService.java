@@ -113,6 +113,9 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
 
         T entitySaved = entitySavedOptional.orElseThrow(() -> new EmptyResultDataAccessException("update " + getEntityName() + " -> " + id, 1));
 
+
+        dispachLazyAtributesToUpdate(entitySaved);
+
         if (!id.equals(entity.getId())) {
             throw new BusinessException("flyserivice.differentId");
         }
@@ -143,6 +146,10 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
         _entitySaved.setParameters(null);
 
         return _entitySaved;
+    }
+
+    @Transactional
+    protected void dispachLazyAtributesToUpdate(T entitySaved) {
     }
 
     @Transactional
@@ -290,5 +297,9 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
 
     public Long getUserId() {
         return FlyUserDetailsService.getCurrentUserId();
+    }
+
+    public Map<String, String> findImageById(Long id, String field) {
+        return getRepository().findImageById(id, field);
     }
 }

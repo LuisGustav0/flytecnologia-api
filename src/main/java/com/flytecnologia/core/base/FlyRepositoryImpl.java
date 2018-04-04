@@ -128,6 +128,21 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         return total;
     }
 
+    public Map<String, String> findImageById(Long id, String field) {
+        if (isEmpty(id) || isEmpty(field))
+            return null;
+
+        String hqlCount = "select  " + field + " from " + getEntityName() + " entity where entity.id = :id ";
+
+        Query q = getEntityManager().createQuery(hqlCount, String.class);
+        q.setParameter("id", id);
+
+        Map<String, String> data = new HashMap<>();
+        data.put(field, (String) q.getResultList().get(0));
+
+        return data;
+    }
+
     public boolean isNotEmpty(Object value) {
         return !isEmpty(value);
     }

@@ -78,6 +78,12 @@ public abstract class FlyController<T extends FlyEntity, F extends FlyFilter> {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    @GetMapping("/find-image-by-id/{id}/{field}")
+    @PreAuthorize("#oauth2.hasScope('read')")
+    public ResponseEntity<Map<String, String>> findImageById(@PathVariable Long id, @PathVariable String field) {
+        return ResponseEntity.ok(getService().findImageById(id, field));
+    }
+
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority(getAuthorityUpdate()) and #oauth2.hasScope('write')")
     public ResponseEntity<T> update(@PathVariable Long id,
