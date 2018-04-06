@@ -71,3 +71,13 @@ dependencies {
 
     //compile group: 'com.itextpdf', name: 'itextpdf', version: '5.5.13'
 }
+
+configurations {
+    compile {
+        exclude group: 'org.eclipse.jetty'
+        exclude group: 'servlet-api'
+        exclude group: 'com.zaxxer'
+        exclude group: 'commons-logging'
+        exclude module: 'jcl-over-slf4j'
+    }
+}

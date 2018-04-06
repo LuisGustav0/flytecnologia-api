@@ -48,14 +48,14 @@ public class FlyAutorizationServerConfig extends AuthorizationServerConfigurerAd
                 .secret(new BCryptPasswordEncoder().encode(secretKeyAngular))
                 .scopes("read", "write", "mobile")
                 .authorizedGrantTypes("password", "refresh_token")
-                .accessTokenValiditySeconds(60 * 10) //duration's token
+                .accessTokenValiditySeconds(60 * 60) //duration's token
                 .refreshTokenValiditySeconds(3600 * 24) //1 day
             .and()
                 .withClient("mobile")
                 .secret(new BCryptPasswordEncoder().encode(secretKeyMobile))
                 .scopes("read", "mobile")
                 .authorizedGrantTypes("password", "refresh_token")
-                .accessTokenValiditySeconds(1800) //duration's token
+                .accessTokenValiditySeconds(60 * 60 * 24 * 120) //duration's token 120 dias
                 .refreshTokenValiditySeconds(3600 * 24) //1 day
         ;
     }
@@ -83,6 +83,7 @@ public class FlyAutorizationServerConfig extends AuthorizationServerConfigurerAd
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
         final JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
         converter.setSigningKey(secretKey);
+        //converter.setVerifierKey(secretKey);
 
         return converter;
     }
