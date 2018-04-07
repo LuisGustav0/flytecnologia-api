@@ -302,4 +302,16 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
     public Map<String, String> findImageById(Long id, String field) {
         return getRepository().findImageById(id, field);
     }
+
+    public String removeBase64Information(String encode) {
+        if (isEmpty(encode))
+            return encode;
+
+        int indexOf = encode.indexOf(";base64,");
+
+        if (indexOf <= 0)
+            return encode;
+
+        return encode.substring(indexOf + 8);
+    }
 }
