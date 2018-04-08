@@ -67,7 +67,15 @@ dependencies {
         exclude group: 'org.olap4j', module: 'olap4j'
     }
 
-    compile group: 'com.lowagie', name: 'itext', version: '2.1.7'
+    compile('com.lowagie:itext:2.1.7') {
+        exclude group: 'org.bouncycastle', module: 'bctsp-jdk14'
+        exclude group: 'bouncycastle', module: 'bcprov-jdk14'
+        exclude group: 'bouncycastle', module: 'bcmail-jdk14'
+    }
+
+    compile('org.bouncycastle:bcmail-jdk15on:1.59')
+    compile('org.bouncycastle:bcprov-jdk15on:1.59')
+    compile('org.bouncycastle:bcprov-ext-jdk15on:1.59')
 
     //compile group: 'com.itextpdf', name: 'itextpdf', version: '5.5.13'
 }
