@@ -1,31 +1,33 @@
 package com.flytecnologia.core.email;
 
+
 import org.springframework.core.io.InputStreamSource;
 
-import javax.validation.constraints.Pattern;
 import java.io.File;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-public class FlyMessage {
+public class FlyMailMessage implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private String from;
     private List<String> to;
     private List<String> bcc;
     private List<String> cc;
     private String subject;
     private String text;
-    private Map<String, File> files;
-    private Map<String, InputStreamSource> inputStreamSources;
+    private Map<String, InputStreamSource> mapInputStream;
 
-    public FlyMessage() {
+    public FlyMailMessage() {
     }
 
-    public FlyMessage(String from, List<String> to, String subject, String text) {
+    /*public FlyMailMessage(String from, List<String> to, String subject, String text) {
         this.from = from;
         this.to = to;
         this.subject = subject;
         this.text = text;
-    }
+    }*/
 
     public String getFrom() {
         return from;
@@ -75,19 +77,11 @@ public class FlyMessage {
         this.cc = cc;
     }
 
-    public Map<String, File> getFiles() {
-        return files;
+    public Map<String, InputStreamSource> getMapInputStream() {
+        return mapInputStream;
     }
 
-    public void setFiles(Map<String, File> files) {
-        this.files = files;
-    }
-
-    public Map<String, InputStreamSource> getInputStreamSources() {
-        return inputStreamSources;
-    }
-
-    public void setInputStreamSources(Map<String, InputStreamSource> inputStreamSources) {
-        this.inputStreamSources = inputStreamSources;
+    public void setMapInputStream(Map<String, InputStreamSource> mapInputStream) {
+        this.mapInputStream = mapInputStream;
     }
 }

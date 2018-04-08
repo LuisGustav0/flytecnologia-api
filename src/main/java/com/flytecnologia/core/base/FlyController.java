@@ -21,7 +21,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.IOException;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
@@ -205,7 +204,7 @@ public abstract class FlyController<T extends FlyEntity, F extends FlyFilter> {
 
     @GetMapping(value = "print")
     @PreAuthorize("hasAuthority(getAuthorityRead()) and #oauth2.hasScope('read')")
-    public ResponseEntity<ByteArrayResource> print(F filter) throws IOException {
+    public ResponseEntity<ByteArrayResource> print(F filter) {
 
         byte[] data = getService().getReport(filter);
 
