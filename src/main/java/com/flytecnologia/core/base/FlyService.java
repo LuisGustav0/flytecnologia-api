@@ -255,6 +255,14 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
         if (firstDate == null || lastDate == null)
             return;
 
+        if (lastDate.isBefore(firstDate) || !lastDate.isEqual(firstDate))
+            throw new BusinessException(message);
+    }
+
+    protected void validateDateLess(LocalDate firstDate, LocalDate lastDate, String message) {
+        if (firstDate == null || lastDate == null)
+            return;
+
         if (lastDate.isBefore(firstDate))
             throw new BusinessException(message);
     }

@@ -25,7 +25,7 @@ public class FlyUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
         String loginInvalid = userService.getMessageInvalidLogin();
 
-        Optional<FlyUser> user = userService.findByLogin(login);
+        Optional<FlyUser> user = userService.findByLoginOrEmail(login);
 
         FlyUser flyUser = user.orElseThrow(() -> new UsernameNotFoundException(loginInvalid));
 
@@ -34,11 +34,11 @@ public class FlyUserDetailsService implements UserDetailsService {
                 userService.getAdditionalTokenInformation(flyUser.getId()));
     }
 
-    private Collection<? extends GrantedAuthority> getPermissoes(String login, String tenant, String msgInvalidLogin)
+    private Collection<? extends GrantedAuthority> getPermissoes(String loginOrEmail, String tenant, String msgInvalidLogin)
             throws UsernameNotFoundException {
         Set<SimpleGrantedAuthority> authorities = new HashSet<>();
 
-        List<FlyUserPermission> permissions = userService.getPermissions(login, tenant);
+        List<FlyUserPermission> permissions = userService.getPermissions(loginOrEmail, tenant);
 
         if (permissions == null || permissions.isEmpty()) {
             throw new UsernameNotFoundException(msgInvalidLogin);
