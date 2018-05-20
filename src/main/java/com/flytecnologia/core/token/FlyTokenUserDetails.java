@@ -42,7 +42,7 @@ public class FlyTokenUserDetails {
     }
 
     public static String getCurrentSchemaName() {
-        Optional<Object> tenant = getAuthenticationInformation("cl");
+        Optional<Object> tenant = getAuthenticationInformation(FlyMultiTenantConstants.REQUEST_HEADER_ID);
 
         return (String) tenant.orElse(FlyMultiTenantConstants.DEFAULT_TENANT_ID);
     }
