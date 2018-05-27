@@ -14,18 +14,16 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
+public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> implements FlyValidationBase {
 
     protected abstract FlyRepository<T, Long, F> getRepository();
 
     public Optional<T> findById(Long id) {
-        //return getRepository().findById(id).orElse(null);
         return getRepository().findById(id);
     }
 
@@ -39,6 +37,12 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
     }
 
     protected void afterDelete(Long id) {
+    }
+
+    protected void beforeDeleteAll(List<T> entities) {
+    }
+
+    protected void afterDeleteAll(List<T> entities) {
     }
 
     @Autowired
@@ -176,10 +180,34 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
         }
     }
 
-    public Optional<List> getItensAutocomplete(F filter) {
+    @Transactional
+    public void deleteAll(List<T> entities) {
+        deleteAll(entities, false, false);
+    }
+
+    @Transactional
+    public void deleteAll(List<T> entities, boolean isIgnoreBeforeDelete, boolean isIgnoreAfterDelete) {
+        notNull(entities, "flyserivice.listOfEntityNotNull");
+
+        if (!isIgnoreBeforeDelete) {
+            beforeDeleteAll(entities);
+        }
+
+        getRepository().deleteAll(entities);
+
+        if (!isIgnoreAfterDelete) {
+            afterDeleteAll(entities);
+        }
+    }
+
+    public boolean existsById(Long id) {
+        return getRepository().existsById(id);
+    }
+
+    public Optional<List> getItemsAutocomplete(F filter) {
         beforeSearchAutoComplete(filter);
 
-        return getRepository().getItensAutocomplete(filter);
+        return getRepository().getItemsAutocomplete(filter);
     }
 
     public Optional<Map> getItemAutocomplete(F filter) {
@@ -189,42 +217,6 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
     }
 
     protected void beforeSearchAutoComplete(F filter) {
-    }
-
-    protected boolean isNotEmpty(Object value) {
-        return !isEmpty(value);
-    }
-
-    protected boolean isEmpty(Object value) {
-        return getRepository().isEmpty(value);
-    }
-
-    protected boolean isTrue(Object value) {
-        return isTrue((Boolean) value);
-    }
-
-    protected boolean isTrue(Boolean value) {
-        return value != null && value;
-    }
-
-    protected boolean isFalse(Object value) {
-        return isFalse((Boolean) value);
-    }
-
-    protected boolean isFalse(Boolean value) {
-        return value != null && !value;
-    }
-
-    protected void notNull(Object object, String message) {
-        if (object == null) {
-            throw new BusinessException(message);
-        }
-    }
-
-    protected void notEmpty(Object object, String message) {
-        if (isEmpty(object)) {
-            throw new BusinessException(message);
-        }
     }
 
     public Map<String, Object> defaultValues() {
@@ -249,24 +241,6 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> {
 
     public FlyPageableResult search(F filter, Pageable pageable) {
         return getRepository().search(filter, pageable);
-    }
-
-    protected void validateDateLessOrEquals(LocalDate firstDate, LocalDate lastDate, String message) {
-        if (firstDate == null || lastDate == null)
-            return;
-
-        if(!lastDate.isEqual(firstDate)) {
-            if (lastDate.isBefore(firstDate))
-                throw new BusinessException(message);
-        }
-    }
-
-    protected void validateDateLess(LocalDate firstDate, LocalDate lastDate, String message) {
-        if (firstDate == null || lastDate == null)
-            return;
-
-        if (lastDate.isBefore(firstDate))
-            throw new BusinessException(message);
     }
 
     public Optional<Long> goToBefore(F filter) {

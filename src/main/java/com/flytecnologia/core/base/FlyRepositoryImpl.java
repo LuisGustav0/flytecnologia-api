@@ -1,6 +1,5 @@
 package com.flytecnologia.core.base;
 
-import com.flytecnologia.core.exception.BusinessException;
 import com.flytecnologia.core.model.FlyEntity;
 import com.flytecnologia.core.model.FlyEntityWithInactive;
 import com.flytecnologia.core.search.FlyFilter;
@@ -8,13 +7,11 @@ import com.flytecnologia.core.search.FlyPageableResult;
 import com.flytecnologia.core.user.FlyUserDetailsService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
-import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.lang.reflect.ParameterizedType;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +19,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 @NoRepositoryBean
-public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter> {
+public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter>
+        implements FlyValidationBase {
     //private static final Logger logger = LogManager.getLogger(FlyRepositoryImpl.class);
 
     private Class<T> entityClass;
@@ -143,29 +141,6 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         return data;
     }
 
-    public boolean isNotEmpty(Object value) {
-        return !isEmpty(value);
-    }
-
-    public boolean isEmpty(Object value) {
-        if (value == null)
-            return true;
-
-        if (value instanceof Collection) {
-            return ((Collection) value).isEmpty();
-        }
-
-        return StringUtils.isEmpty(value) || "undefined".equals(value) || "null".equals(value);
-    }
-
-    protected boolean isTrue(Boolean value) {
-        return value != null && value;
-    }
-
-    protected boolean isFalse(Boolean value) {
-        return value != null && !isTrue(value);
-    }
-
     public T getReference(Long id) {
         return getEntityManager().getReference(getEntityClass(), id);
     }
@@ -177,13 +152,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
     }
 
-    protected void notNull(Object object, String message) {
-        if (object == null) {
-            throw new BusinessException(message);
-        }
-    }
-
-    public Optional<List> getItensAutocomplete(F filter) {
+    public Optional<List> getItemsAutocomplete(F filter) {
         if (isEmpty(filter.getAcValue()))
             return Optional.empty();
 

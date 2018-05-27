@@ -20,7 +20,5 @@ public interface FlyRepository<T extends FlyEntity, PK extends Serializable, F e
 
     T getReference(Long id);
 
-    boolean isEmpty(Object value);
-
     Map<String, String> findImageById(Long id, String field);
 }
