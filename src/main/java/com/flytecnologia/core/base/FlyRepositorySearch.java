@@ -20,7 +20,7 @@ public interface FlyRepositorySearch<F extends FlyFilter> {
 
     Optional<Long> getNextId(F filter);
 
-    Optional<List> getItensAutocomplete(F filter);
+    Optional<List> getItemsAutocomplete(F filter);
 
     Optional<Map> getItemAutocomplete(F filter);
 }
