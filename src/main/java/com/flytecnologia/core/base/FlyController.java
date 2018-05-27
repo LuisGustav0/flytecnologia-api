@@ -107,8 +107,8 @@ public abstract class FlyController<T extends FlyEntity, F extends FlyFilter> {
 
     @GetMapping(value = "/autocomplete/list")
     @PreAuthorize("#oauth2.hasScope('read')")
-    public ResponseEntity<List> getItensAutocomplete(F filter) {
-        return new ResponseEntity<>(getService().getItensAutocomplete(filter).orElse(null), HttpStatus.OK);
+    public ResponseEntity<List> getItemsAutocomplete(F filter) {
+        return new ResponseEntity<>(getService().getItemsAutocomplete(filter).orElse(null), HttpStatus.OK);
     }
 
     @GetMapping(value = "/autocomplete/item")
