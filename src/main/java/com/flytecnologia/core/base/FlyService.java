@@ -6,6 +6,7 @@ import com.flytecnologia.core.model.FlyEntityWithInactive;
 import com.flytecnologia.core.search.FlyFilter;
 import com.flytecnologia.core.search.FlyPageableResult;
 import com.flytecnologia.core.user.FlyUserDetailsService;
+import org.hibernate.metadata.ClassMetadata;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -14,6 +15,10 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.Basic;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -117,8 +122,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
 
         T entitySaved = entitySavedOptional.orElseThrow(() -> new EmptyResultDataAccessException("update " + getEntityName() + " -> " + id, 1));
 
-
-        dispachLazyAtributesToUpdate(entitySaved);
+        invokeBaseLazyAtributesToUpdate(entitySaved);
 
         if (!id.equals(entity.getId())) {
             throw new BusinessException("flyserivice.differentId");
@@ -152,8 +156,30 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         return _entitySaved;
     }
 
-    @Transactional
-    protected void dispachLazyAtributesToUpdate(T entitySaved) {
+    private void invokeBaseLazyAtributesToUpdate(T entitySaved) {
+        Field[] fields = getEntityClass().getDeclaredFields();
+
+        for(Field field : fields){
+            Annotation[] annotations = field.getDeclaredAnnotations();
+
+            if(annotations != null && annotations.length > 0) {
+                String name = field.getName();
+
+                for(Annotation annotation : annotations) {
+                    if(annotation instanceof Basic) {
+                        try {
+                            String methodName =  "get" + name.substring(0, 1).toUpperCase() + name.substring(1);
+
+                            Method method = getEntityClass().getDeclaredMethod(methodName) ;
+
+                            method.invoke(entitySaved);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @Transactional
