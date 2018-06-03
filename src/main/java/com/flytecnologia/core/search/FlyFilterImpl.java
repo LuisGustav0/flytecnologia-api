@@ -15,6 +15,8 @@ public abstract class FlyFilterImpl implements FlyFilter {
     private String entityDetailProperty;
     private Boolean inactive;
     private boolean ignoreInactiveFilter;
+    private String reportName;
+    private String pdfName;
 
     public String getAcFieldDescription() {
         return acFieldDescription;
@@ -143,5 +145,23 @@ public abstract class FlyFilterImpl implements FlyFilter {
     @Override
     public void setIgnoreInactiveFilter(boolean ignoreInactiveFilter) {
         this.ignoreInactiveFilter = ignoreInactiveFilter;
+    }
+
+    public String getReportName() {
+        return reportName;
+    }
+
+    public void setReportName(String reportName) {
+        this.reportName = reportName;
+    }
+
+    @Override
+    public String getPdfName() {
+        return pdfName;
+    }
+
+    @Override
+    public void setPdfName(String pdfName) {
+        this.pdfName = pdfName;
     }
 }

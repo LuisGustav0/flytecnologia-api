@@ -123,92 +123,11 @@ public abstract class FlyController<T extends FlyEntity, F extends FlyFilter> {
         return getService().search(filter, pageable);
     }
 
-  /*  public static class EntityAux<T extends FlyEntity> {
-        private Map<String, Object> parameters;
-        private T entity;
-
-        public EntityAux() {
-        }
-
-        public EntityAux(T entity, Map<String, Object> parameters) {
-            this.entity = entity;
-            this.parameters = parameters;
-        }
-
-        public Map<String, Object> getParameters() {
-            return parameters;
-        }
-
-        public void setParameters(Map<String, Object> parameters) {
-            this.parameters = parameters;
-        }
-
-        public T getEntity() {
-            return entity;
-        }
-
-        public void setEntity(T entity) {
-            this.entity = entity;
-        }
-    }*/
-/*
-    @GetMapping(value = "print")
-    @PreAuthorize("hasAuthority(getAuthorityRead()) and #oauth2.hasScope('read')")
-    public ResponseEntity<byte[]> print(F filter)
-            throws IOException {
-
-        byte[] report = getService().getReport(filter);
-
-        InputStream targetStream = new ByteArrayInputStream(report);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setCacheControl("no-cache, no-store, must-revalidate, post-check=0, pre-check=0");
-        headers.setPragma("no-cache");
-        headers.setExpires(0);
-        headers.add("Content-disposition", "attachment; filename=report.pdf");
-        headers.setContentType(MediaType.parseMediaType("application/pdf"));
-
-        return ResponseEntity
-                .ok()
-                .headers(headers)
-                .contentLength(report.length)
-                //.contentType(MediaType.parseMediaType("application/octet-stream"))
-                .contentType(MediaType.APPLICATION_PDF)
-                .body(report);
-                //.body(new InputStreamResource(targetStream));
-    }*/
-
-
-    /*@GetMapping(value = "print")
-    @PreAuthorize("hasAuthority(getAuthorityRead()) and #oauth2.hasScope('read')")
-    public void print(F filter,
-                                        HttpServletRequest request,
-                                        HttpServletResponse response) throws IOException {
-
-        byte[] report = getService().getReport(filter);
-
-        String fileName = "report.pdf";
-        response.setContentType("application/pdf");
-        response.setHeader("Content-disposition", "attachment; filename="+ fileName);
-
-        try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream(report.length);
-            baos.write(report, 0, report.length);
-            OutputStream os = response.getOutputStream();
-            baos.writeTo(os);
-            os.flush();
-        } catch (Exception e1) {
-            e1.printStackTrace();
-        }
-    }*/
-
-    @GetMapping(value = "print")
-    @PreAuthorize("hasAuthority(getAuthorityRead()) and #oauth2.hasScope('read')")
-    public ResponseEntity<ByteArrayResource> print(F filter) {
+    protected ResponseEntity<ByteArrayResource> print(F filter) {
 
         byte[] data = getService().getReport(filter);
 
-        String fileName = "report.pdf";
+        String fileName = filter.getPdfName() != null ? filter.getPdfName() : "report.pdf";
 
         ByteArrayResource resource = new ByteArrayResource(data);
 

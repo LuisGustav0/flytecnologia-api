@@ -1,5 +1,7 @@
 package com.flytecnologia.core.search;
 
+import com.lowagie.text.pdf.PdfName;
+
 public interface FlyFilter {
     String getAcFieldDescription();
 
@@ -54,5 +56,15 @@ public interface FlyFilter {
     void setEntityDetailProperty(String entityDetailProperty);
 
     boolean isIgnoreInactiveFilter();
+
     void setIgnoreInactiveFilter(boolean ignoreInactiveFilter);
+
+
+    String getReportName();
+
+    void setReportName(String reportName);
+
+    String getPdfName();
+
+    void setPdfName(String pdfName);
 }
