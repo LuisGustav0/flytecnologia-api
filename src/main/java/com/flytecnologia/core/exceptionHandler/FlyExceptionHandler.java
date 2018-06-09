@@ -1,8 +1,12 @@
 package com.flytecnologia.core.exceptionHandler;
 
+import com.flytecnologia.core.base.FlyRepositoryImpl;
+import com.flytecnologia.core.config.property.FlyAppProperty;
 import com.flytecnologia.core.exception.BusinessException;
 import com.flytecnologia.core.exception.InvalidDataException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -31,28 +35,32 @@ import java.util.List;
 @Component
 @ControllerAdvice
 public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
+    private static final Logger logger = LogManager.getLogger(FlyExceptionHandler.class);
 
     private MessageSource messageSource;
+    private FlyAppProperty flyAppProperty;
 
     @Autowired
-    public FlyExceptionHandler(MessageSource messageSource) {
+    public FlyExceptionHandler(MessageSource messageSource,
+                               FlyAppProperty flyAppProperty) {
         this.messageSource = messageSource;
+        this.flyAppProperty = flyAppProperty;
     }
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
                                                                   HttpHeaders headers, HttpStatus status,
                                                                   WebRequest request) {
-        List<Error> erros = getListOfErros("message.invalid", ex);
-        return handleExceptionInternal(ex, erros, headers, HttpStatus.BAD_REQUEST, request);
+        List<Error> errors = getListOfErros("message.invalid", ex);
+        return handleExceptionInternal(ex, errors, headers, HttpStatus.BAD_REQUEST, request);
     }
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   HttpHeaders headers, HttpStatus status,
                                                                   WebRequest request) {
-        List<Error> erros = createListOfErros(ex.getBindingResult());
-        return handleExceptionInternal(ex, erros, headers, HttpStatus.BAD_REQUEST, request);
+        List<Error> errors = createListOfErros(ex.getBindingResult());
+        return handleExceptionInternal(ex, errors, headers, HttpStatus.BAD_REQUEST, request);
     }
 
     @Override
@@ -61,22 +69,22 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
             HttpStatus status, WebRequest request) {
         String error = String.format("%s parameter is missing", ex.getParameterName());
 
-        List<Error> erros = getListOfErros(error, ex);
-        return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+        List<Error> errors = getListOfErros(error, ex);
+        return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
     @ExceptionHandler(InvalidDataException.class)
     public ResponseEntity<Object> handleInvalidDataException(InvalidDataException ex,
                                                              WebRequest request) {
-        List<Error> erros = createListOfErros(ex.getBindingResult());
-        return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+        List<Error> errors = createListOfErros(ex.getBindingResult());
+        return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
     @ExceptionHandler(EmptyResultDataAccessException.class)
     public ResponseEntity<Object> handleEmptyResultDataAccessException(EmptyResultDataAccessException ex,
                                                                        WebRequest request) {
-        List<Error> erros = getListOfErros("resource.not-found", ex);
-        return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+        List<Error> errors = getListOfErros("resource.not-found", ex);
+        return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
 
@@ -112,6 +120,11 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleBusinessException(BusinessException ex,
                                                           WebRequest request) {
         List<Error> errors = getListOfErros(ex.getMessage(), null);
+
+        if(flyAppProperty.getApp().isDebug()) {
+            logger.error(ex.getMessage());
+        }
+
         return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
@@ -139,15 +152,15 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private List<Error> createListOfErros(BindingResult bindingResult) {
-        List<Error> erros = new ArrayList<>();
+        List<Error> errors = new ArrayList<>();
 
         for (FieldError fieldError : bindingResult.getFieldErrors()) {
             String msgUser = messageSource.getMessage(fieldError, LocaleContextHolder.getLocale());
             String msgDev = fieldError.toString();
-            erros.add(new Error(msgUser, msgDev));
+            errors.add(new Error(msgUser, msgDev));
         }
 
-        return erros;
+        return errors;
     }
 
     public static class Error {
