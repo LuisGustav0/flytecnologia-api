@@ -2,8 +2,13 @@ package com.flytecnologia.core.util;
 
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 @Component
 public class FlyString {
@@ -15,6 +20,10 @@ public class FlyString {
         return FlyString.formatDate(date, "dd/MM/yyyy");
     }
 
+    public static String formatDateIntervalPtBr(LocalDate date1, LocalDate date2) {
+        return FlyString.formatDatePtBr(date1) + " - " + FlyString.formatDatePtBr(date2);
+    }
+
     public static String formatDate(LocalDate date, String pattern) {
         if(date == null)
             return null;
@@ -23,4 +32,23 @@ public class FlyString {
         return date.format(formatters);
     }
 
+    public static String formatDecimal(BigDecimal value) {
+        return formatDecimal(value, 2);
+    }
+
+    public static String formatDecimal(BigDecimal value, int digits) {
+        if(value == null)
+            value = BigDecimal.ZERO;
+
+        NumberFormat nf = NumberFormat.getInstance();
+        nf.setMinimumFractionDigits(digits);
+
+        return nf.format(value);
+    }
+
+    public static void main(String args[] ) {
+        System.out.println(formatDecimal(new BigDecimal("12121212")));
+        System.out.println(formatDecimal(new BigDecimal("5454123.12")));
+        System.out.println(formatDecimal(new BigDecimal("12774843.148482"),4));
+    }
 }
