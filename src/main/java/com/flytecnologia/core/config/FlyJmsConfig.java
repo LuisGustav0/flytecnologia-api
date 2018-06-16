@@ -18,8 +18,6 @@ import java.util.Arrays;
 @Configuration
 @EnableJms
 public class FlyJmsConfig {
-    @Value("${spring.activemq.trusted-url}")
-    private String trustedUrl;
 
     @Bean
     public ActiveMQConnectionFactory activeMQConnectionFactory() {
@@ -27,11 +25,6 @@ public class FlyJmsConfig {
 
         String urls = "org.apache.activemq.test,org.apache.camel.test,com.flytecnologia.core,org.apache.camel.test";
 
-        if (trustedUrl != null && trustedUrl.trim().length() > 0) {
-            urls += "," + trustedUrl;
-        }
-
-        factory.setTrustedPackages(Arrays.asList(urls.split(",")));
         return factory;
     }
 
