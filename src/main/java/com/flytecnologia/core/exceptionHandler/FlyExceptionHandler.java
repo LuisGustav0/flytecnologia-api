@@ -129,7 +129,7 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = {ConstraintViolationException.class})
-    protected ResponseEntity<Object> handleNotAuthenticated(RuntimeException ex, WebRequest request) {
+    protected ResponseEntity<Object> handleConstraintViolationException(RuntimeException ex, WebRequest request) {
         String fieldError = ((ConstraintViolationException) ex.getCause()).getConstraintName();
 
         List<Error> errors = getListOfErros(fieldError, ex);
