@@ -46,7 +46,7 @@ public class FlyAutorizationServerConfig extends AuthorizationServerConfigurerAd
         clients.inMemory()
                 .withClient("angular")
                 .secret(new BCryptPasswordEncoder().encode(secretKeyAngular))
-                .scopes("read", "write", "mobile")
+                .scopes("read", "write")
                 .authorizedGrantTypes("password", "refresh_token")
                 .accessTokenValiditySeconds(60 * 60) //duration's token
                 .refreshTokenValiditySeconds(3600 * 24) //1 day
@@ -56,7 +56,7 @@ public class FlyAutorizationServerConfig extends AuthorizationServerConfigurerAd
                 .scopes("read", "mobile")
                 .authorizedGrantTypes("password", "refresh_token")
                 .accessTokenValiditySeconds(60 * 60 * 24 * 365) //duration's token 365 dias
-                .refreshTokenValiditySeconds(3600 * 24) //1 day
+                .refreshTokenValiditySeconds(60 * 60 * 24 * 365) //duration's token 365 dias
         ;
     }
 
