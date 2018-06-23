@@ -64,7 +64,7 @@ public class FlyReportUtil {
 
             JasperReport jasperReport = (JasperReport) JRLoader.loadObject(input);
 
-            byte[] bt = null;
+            byte[] bt;
 
             if (data != null && data.size() > 0) {
                 bt = JasperRunManager.runReportToPdf(jasperReport, parameters,

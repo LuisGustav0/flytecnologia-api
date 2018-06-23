@@ -55,7 +55,7 @@ public class FlyAutorizationServerConfig extends AuthorizationServerConfigurerAd
                 .secret(new BCryptPasswordEncoder().encode(secretKeyMobile))
                 .scopes("read", "mobile")
                 .authorizedGrantTypes("password", "refresh_token")
-                .accessTokenValiditySeconds(60 * 60 * 24 * 120) //duration's token 120 dias
+                .accessTokenValiditySeconds(60 * 60 * 24 * 365) //duration's token 365 dias
                 .refreshTokenValiditySeconds(3600 * 24) //1 day
         ;
     }
