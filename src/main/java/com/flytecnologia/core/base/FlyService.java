@@ -138,7 +138,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         boolean isIgnoreAfterSave = entity.isIgnoreAfterSave();
 
         /*Para fazer update todos os versions dos objetos aninhados tem q estar setados*/
-        BeanUtils.copyProperties(entity, entitySaved, "id", "gruposPermissaoUsuario");
+        BeanUtils.copyProperties(entity, entitySaved, "id");
 
         Map<String, Object> parameters = entity.getParameters();
 

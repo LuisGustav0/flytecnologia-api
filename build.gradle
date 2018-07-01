@@ -35,7 +35,6 @@ dependencies {
     compile("org.springframework.boot:spring-boot-configuration-processor:2.0.0.RELEASE")
     compile("org.springframework.boot:spring-boot-starter-thymeleaf:2.0.0.RELEASE")
     compile("org.springframework.boot:spring-boot-starter-activemq:2.0.0.RELEASE")
-
     compile("org.springframework.security:spring-security-jwt:1.0.9.RELEASE")
     compile('org.springframework.security.oauth:spring-security-oauth2:2.2.1.RELEASE')
 

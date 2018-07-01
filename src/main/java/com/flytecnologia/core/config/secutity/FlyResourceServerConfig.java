@@ -38,10 +38,6 @@ public class FlyResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Autowired
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-       /* auth.inMemoryAuthentication()
-                .withUser("admin")
-                .password("gesafra1010").roles("TOTAL");*/
-
         auth.userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder());
     }

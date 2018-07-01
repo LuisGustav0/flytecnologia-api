@@ -1,6 +1,6 @@
 package com.flytecnologia.core.exceptionHandler;
 
-import com.flytecnologia.core.base.FlyRepositoryImpl;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.flytecnologia.core.config.property.FlyAppProperty;
 import com.flytecnologia.core.exception.BusinessException;
 import com.flytecnologia.core.exception.InvalidDataException;
@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
+
 @Component
 @ControllerAdvice
 public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
@@ -51,8 +53,33 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
                                                                   HttpHeaders headers, HttpStatus status,
                                                                   WebRequest request) {
+        ex.printStackTrace();
+
+        if (ex.getCause() instanceof InvalidFormatException) {
+            return invalidFormatExceptionHandler((InvalidFormatException) ex.getCause(), headers, request);
+        }
+
         List<Error> errors = getListOfErros("message.invalid", ex);
         return handleExceptionInternal(ex, errors, headers, HttpStatus.BAD_REQUEST, request);
+    }
+
+    @ExceptionHandler(InvalidFormatException.class)
+    public ResponseEntity<Object> invalidFormatExceptionHandler(InvalidFormatException e,
+                                                                HttpHeaders headers, WebRequest request) {
+        List<Error> errors = createListOfErros(invalidFormatExceptiontoErrors(e), e.getMessage());
+        return handleExceptionInternal(e, errors, headers, HttpStatus.BAD_REQUEST, request);
+    }
+
+    private List<ErrorInvalidFormatDTO> invalidFormatExceptiontoErrors(InvalidFormatException e) {
+        return e.getPath()
+                .stream()
+                .map(x -> ErrorInvalidFormatDTO.builder()
+                        .withField(x.getFieldName())
+                        .withBean(x.getFrom().getClass().getSimpleName())
+                        .withMessage("field format error")
+                        .withRejectedValue(e.getValue().toString())
+                        .build())
+                .collect(toList());
     }
 
     @Override
@@ -121,7 +148,7 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
                                                           WebRequest request) {
         List<Error> errors = getListOfErros(ex.getMessage(), null);
 
-        if(flyAppProperty.getApp().isDebug()) {
+        if (flyAppProperty.getApp().isDebug()) {
             logger.error(ex.getMessage());
         }
 
@@ -129,7 +156,7 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = {ConstraintViolationException.class})
-    protected ResponseEntity<Object> handleConstraintViolationException(RuntimeException ex, WebRequest request) {
+    public ResponseEntity<Object> handleConstraintViolationException(RuntimeException ex, WebRequest request) {
         String fieldError = ((ConstraintViolationException) ex.getCause()).getConstraintName();
 
         List<Error> errors = getListOfErros(fieldError, ex);
@@ -149,6 +176,29 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
             return field;
         }
 
+    }
+
+    private List<Error> createListOfErros(List<ErrorInvalidFormatDTO> errorsDto, String errorMessage) {
+        List<Error> errors = new ArrayList<>();
+
+        for (ErrorInvalidFormatDTO error : errorsDto) {
+            String errorStr = error.getBean();
+            errorStr = errorStr.substring(0, 1).toLowerCase() + errorStr.substring(1);
+            errorStr += "." + error.getField();
+
+            String field = messageSource.getMessage(errorStr, new Object[]{error.getRejectedValue()}, LocaleContextHolder.getLocale());
+            String errorFormat = messageSource.getMessage("resource.invalidFieldValueFormat", new Object[]{}, LocaleContextHolder.getLocale());
+
+            if (!errorFormat.contains(" ")) {
+                errorFormat = "Field '%s' with invalid format. Value: '%s'";
+            }
+
+            errorFormat = String.format(errorFormat, field, error.getRejectedValue());
+
+            errors.add(new Error(errorFormat, errorMessage));
+        }
+
+        return errors;
     }
 
     private List<Error> createListOfErros(BindingResult bindingResult) {

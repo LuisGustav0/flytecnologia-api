@@ -36,6 +36,7 @@ public abstract class FlyController<T extends FlyEntity, F extends FlyFilter> {
         response.setHeader("Location", uri.toASCIIString());
     }
 
+    //@ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     @PreAuthorize("hasAuthority(getAuthorityCreate()) and #oauth2.hasScope('write')")
     public ResponseEntity<T> create(@RequestBody @Valid T entity,
