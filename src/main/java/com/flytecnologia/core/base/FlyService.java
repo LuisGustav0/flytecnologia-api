@@ -10,14 +10,17 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.Basic;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -326,5 +329,12 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
 
     public T getReference(Long id) {
         return getRepository().getReference(id);
+    }
+
+    public String convertToBase64(byte[] data){
+       if(data == null)
+           return null;
+
+        return new String(Base64.getEncoder().encode(data));
     }
 }
