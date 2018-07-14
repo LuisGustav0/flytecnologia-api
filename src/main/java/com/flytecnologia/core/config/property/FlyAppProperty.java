@@ -7,6 +7,7 @@ public class FlyAppProperty {
 
     private final Security security = new Security();
     private final App app = new App();
+    private final Email email = new Email();
 
     public Security getSecurity() {
         return security;
@@ -14,6 +15,10 @@ public class FlyAppProperty {
 
     public App getApp() {
         return app;
+    }
+
+    public Email getEmail() {
+        return email;
     }
 
     public static class Security {
@@ -64,6 +69,18 @@ public class FlyAppProperty {
 
         public void setValidatePermissions(boolean validatePermissions) {
             this.validatePermissions = validatePermissions;
+        }
+    }
+
+    public static class Email {
+        private String emailEncaminhamento;
+
+        public String getEmailEncaminhamento() {
+            return emailEncaminhamento;
+        }
+
+        public void setEmailEncaminhamento(String emailEncaminhamento) {
+            this.emailEncaminhamento = emailEncaminhamento;
         }
     }
 }
