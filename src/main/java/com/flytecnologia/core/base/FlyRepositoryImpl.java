@@ -64,15 +64,6 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
                                                 StringBuilder hqlFrom,
                                                 StringBuilder hqlWhere,
                                                 StringBuilder hqlOrderBy,
-                                                Map<String, Object> filters,
-                                                F filter) {
-        return getMapOfResults(pageable, hql, hqlFrom, hqlWhere, hqlOrderBy, filters, filter, null);
-    }
-
-    protected FlyPageableResult getMapOfResults(Pageable pageable, StringBuilder hql,
-                                                StringBuilder hqlFrom,
-                                                StringBuilder hqlWhere,
-                                                StringBuilder hqlOrderBy,
                                                 Map<String, Object> parameters,
                                                 F filter, String distinctPropertyCount) {
         if (hqlWhere == null)
