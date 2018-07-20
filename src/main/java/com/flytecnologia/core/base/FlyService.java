@@ -247,26 +247,6 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
     protected void beforeSearchAutoComplete(F filter) {
     }
 
-    public Map<String, Object> defaultValues() {
-        Map<String, Object> mapOfValues = new HashMap<>();
-        addDefaultValues(mapOfValues);
-        return mapOfValues;
-    }
-
-    public void addDefaultValues(Map<String, Object> mapOfValues) {
-
-    }
-
-    public Map<String, Object> defaultValuesSearch() {
-        Map<String, Object> mapOfValues = new HashMap<>();
-        addDefaultValuesSearch(mapOfValues);
-        return mapOfValues;
-    }
-
-    public void addDefaultValuesSearch(Map<String, Object> mapOfValues) {
-
-    }
-
     public FlyPageableResult search(F filter, Pageable pageable) {
         return getRepository().search(filter, pageable);
     }

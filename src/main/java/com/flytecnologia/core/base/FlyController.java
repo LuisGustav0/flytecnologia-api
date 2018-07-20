@@ -96,16 +96,6 @@ public abstract class FlyController<T extends FlyEntity, F extends FlyFilter> {
         return LocalDate.now();
     }
 
-    @GetMapping(value = "/default-values")
-    public Map<String, Object> defaultValues() {
-        return getService().defaultValues();
-    }
-
-    @GetMapping(value = "/default-values-search")
-    public Map<String, Object> defaultValuesSearch() {
-        return getService().defaultValuesSearch();
-    }
-
     @GetMapping(value = "/autocomplete/list")
     @PreAuthorize("#oauth2.hasScope('read')")
     public ResponseEntity<List> getItemsAutocomplete(F filter) {
