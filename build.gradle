@@ -22,7 +22,11 @@ uploadArchives {
 }
 
 repositories {
+    maven {
+        url 'https://oss.sonatype.org/content/repositories/snapshots' // SNAPSHOT repository (if needed)
+    }
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
