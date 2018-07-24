@@ -53,6 +53,7 @@ public class FlyResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .antMatchers("/login").permitAll()
                 .antMatchers("/login/reset-password").permitAll()
                 .antMatchers("/login/send-new-password").permitAll()
+                .antMatchers("/login/information").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()

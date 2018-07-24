@@ -6,5 +6,6 @@ public interface FlyUser {
     String getLogin();
     String getPassword();
     String getTenant();
+    void setTenant(String tenant);
     String getEmail();
 }

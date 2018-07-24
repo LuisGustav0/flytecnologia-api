@@ -1,5 +1,6 @@
 package com.flytecnologia.core.user;
 
+import com.flytecnologia.core.hibernate.multitenancy.FlyMultiTenantConstants;
 import com.flytecnologia.core.token.FlyTokenUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -23,18 +25,22 @@ public class FlyUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
+
         String loginInvalid = userService.getMessageInvalidLogin();
 
         Optional<FlyUser> user = userService.findByLoginOrEmail(login);
 
         FlyUser flyUser = user.orElseThrow(() -> new UsernameNotFoundException(loginInvalid));
 
+        Map<String, Object> additionalTokenInformation = userService.getAdditionalTokenInformation(flyUser, login, flyUser.getId());
+
         return new FlyUserDetails(flyUser,
-                getPermissoes(login, flyUser.getTenant(), loginInvalid),
-                userService.getAdditionalTokenInformation(flyUser.getId()));
+                getAuthorities(login, flyUser.getTenant(), loginInvalid),
+                additionalTokenInformation
+        );
     }
 
-    private Collection<? extends GrantedAuthority> getPermissoes(String loginOrEmail, String tenant, String msgInvalidLogin)
+    private Collection<? extends GrantedAuthority> getAuthorities(String loginOrEmail, String tenant, String msgInvalidLogin)
             throws UsernameNotFoundException {
         Set<SimpleGrantedAuthority> authorities = new HashSet<>();
 
@@ -52,8 +58,13 @@ public class FlyUserDetailsService implements UserDetailsService {
     public static Long getCurrentUserId() {
         return FlyTokenUserDetails.getCurrentUserId();
     }
+
     public static String getCurrentSchemaName() {
         return FlyTokenUserDetails.getCurrentSchemaName();
+    }
+
+    public static String getCurrentTenantName() {
+        return FlyMultiTenantConstants.DEFAULT_TENANT_SUFFIX + FlyTokenUserDetails.getCurrentSchemaName();
     }
 
     public static String getCurrentLogin() {
