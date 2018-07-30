@@ -19,7 +19,6 @@ public class FlyDatabaseMigration {
         this.flyway = flyway;
         this.flyUserService = flyUserService;
         this.flyway.setDataSource(dataSource);
-        this.flyway.setLocations("db/migration/common", "db/migration/specific");
     }
 
     @PostConstruct
@@ -36,13 +35,13 @@ public class FlyDatabaseMigration {
         if (schemas != null && schemas.size() > 0) {
             schemas.forEach(this::migrateSpecificSchema);
         }
-
     }
 
     /**
      * Used when creating a new schema for a new client
      */
     public void migrateSpecificSchema(String schema) {
+        flyway.setLocations("db/migration/common", "db/migration/specific", "db/migration/" + schema);
         flyway.setSchemas(schema);
         flyway.migrate();
     }
