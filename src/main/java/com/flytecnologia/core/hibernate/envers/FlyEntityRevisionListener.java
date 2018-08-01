@@ -1,5 +1,6 @@
 package com.flytecnologia.core.hibernate.envers;
 
+import com.flytecnologia.core.hibernate.multitenancy.FlyTenantThreadLocal;
 import com.flytecnologia.core.ip.FlyIp;
 import com.flytecnologia.core.token.FlyTokenUserDetails;
 import com.flytecnologia.core.util.FlySpring;
@@ -23,6 +24,11 @@ public class FlyEntityRevisionListener implements RevisionListener {
     }
 
     private Long getUser() {
+        Long userId = FlyTenantThreadLocal.getUserId();
+
+        if (userId != null)
+            return userId;
+
         //Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         //return ((FlyUserDetails) auth.getPrincipal()).getUser().getId();
         return FlyTokenUserDetails.getCurrentUserId();
