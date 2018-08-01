@@ -19,7 +19,7 @@ public class FlyEntityRevisionListener implements RevisionListener {
 
         FlyRevisionsEntity revEntity = (FlyRevisionsEntity) revisionEntity;
         revEntity.setUser(getUser());
-        revEntity.setIp(flyIp != null ? flyIp.getClientIp() : "");
+        //revEntity.setIp(flyIp != null ? flyIp.getClientIp() : "");
         revEntity.fixTimezone();
     }
 
