@@ -1,6 +1,5 @@
 package com.flytecnologia.core.search;
 
-import com.lowagie.text.pdf.PdfName;
 
 public interface FlyFilter {
     String getAcFieldDescription();
@@ -27,9 +26,9 @@ public interface FlyFilter {
 
     void setAcFilterDisabledRecords(Boolean acFilterDisabledRecords);
 
-    Boolean getInactive();
+    boolean getInactive();
 
-    void setInactive(Boolean inactive);
+    void setInactive(boolean inactive);
 
     Long getId();
 

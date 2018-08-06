@@ -325,4 +325,10 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
     public Long getUserId() {
         return FlyUserDetailsService.getCurrentUserId();
     }
+
+    protected void addInactiveFilter(F filter, StringBuilder hqlWhere, String entityName) {
+        if (!filter.isIgnoreInactiveFilter()) {
+            hqlWhere.append("   and ").append(entityName).append(".inactive is ").append(filter.getInactive()).append("\n");
+        }
+    }
 }
