@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
@@ -36,6 +37,14 @@ public class FlyString {
 
         DateTimeFormatter formatters = DateTimeFormatter.ofPattern(pattern);
         return time.format(formatters);
+    }
+
+    public static String formatDateTime(LocalDateTime dateTime, String pattern) {
+        if(dateTime == null)
+            return null;
+
+        DateTimeFormatter formatters = DateTimeFormatter.ofPattern(pattern);
+        return dateTime.format(formatters);
     }
 
     public static String formatDecimal(BigDecimal value) {
