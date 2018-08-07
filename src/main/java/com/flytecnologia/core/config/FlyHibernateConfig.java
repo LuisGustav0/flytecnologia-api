@@ -35,6 +35,8 @@ public class FlyHibernateConfig {
         //resolve problem of lazy inicialization :)
         Hibernate5Module module = new Hibernate5Module();
         //get only id of lazy objects
+        module.disable(Hibernate5Module.Feature.USE_TRANSIENT_ANNOTATION);
+
         module.configure(Hibernate5Module.Feature.SERIALIZE_IDENTIFIER_FOR_LAZY_NOT_LOADED_OBJECTS, true);
         return module;
     }
