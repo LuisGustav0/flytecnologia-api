@@ -15,6 +15,10 @@ public interface FlyValidationBase {
             return ((Collection) value).isEmpty();
         }
 
+        if (value instanceof Number) {
+            return ((Number) value).longValue() == 0;
+        }
+
         return StringUtils.isEmpty(value) || "undefined".equals(value) || "null".equals(value);
     }
 
@@ -54,7 +58,7 @@ public interface FlyValidationBase {
         if (firstDate == null || lastDate == null)
             return;
 
-        if(!lastDate.isEqual(firstDate)) {
+        if (!lastDate.isEqual(firstDate)) {
             if (lastDate.isBefore(firstDate))
                 throw new BusinessException(message);
         }
