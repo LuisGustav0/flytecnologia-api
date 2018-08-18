@@ -88,13 +88,13 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         if (parameters != null)
             parameters.forEach(query::setParameter);
 
-        if (pageable != null && pageable.getPageNumber() != 99999999)
+        if (pageable != null && !filter.isShowAllRecordsOnSearch())
             addPaginationInfo(query, pageable);
 
         List<?> list = query.getResultList();
 
         return new FlyPageableResult(list,
-                pageable != null && pageable.getPageNumber() != 99999999 ? pageable.getPageNumber() : 0,
+                pageable != null && !filter.isShowAllRecordsOnSearch() ? pageable.getPageNumber() : 0,
                 pageable != null ? pageable.getPageSize() : -1,
                 total,
                 list.size());

@@ -70,4 +70,9 @@ public interface FlyFilter {
     boolean isPreviousOrNextId();
 
     void setIsPreviousOrNextId(boolean value);
+
+    boolean isShowAllRecordsOnSearch();
+
+    void setShowAllRecordsOnSearch(boolean value);
+
 }

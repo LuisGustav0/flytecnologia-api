@@ -18,6 +18,7 @@ public abstract class FlyFilterImpl implements FlyFilter {
     private String reportName;
     private String pdfName;
     private boolean isPreviousOrNextId;
+    private boolean showAllRecordsOnSearch;
 
     public String getAcFieldDescription() {
         return acFieldDescription;
@@ -175,4 +176,15 @@ public abstract class FlyFilterImpl implements FlyFilter {
     public void setIsPreviousOrNextId(boolean value) {
         this.isPreviousOrNextId = value;
     }
+
+    @Override
+    public boolean isShowAllRecordsOnSearch() {
+        return this.showAllRecordsOnSearch;
+    }
+
+    @Override
+    public void setShowAllRecordsOnSearch(boolean value) {
+        this.showAllRecordsOnSearch = value;
+    }
+
 }
