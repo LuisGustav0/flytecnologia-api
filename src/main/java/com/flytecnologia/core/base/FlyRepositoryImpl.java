@@ -293,6 +293,8 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
             parameters.put("id", filter.getId());
         }
 
+        filter.setIsPreviousOrNextId(true);
+
         changeSearchWhere(hql, parameters, filter);
 
         if (!isEmpty(filter.getEntityDetailProperty())) {
@@ -330,5 +332,9 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         if (!filter.isIgnoreInactiveFilter()) {
             hqlWhere.append("   and ").append(entityName).append(".inactive is ").append(filter.getInactive()).append("\n");
         }
+    }
+
+    public void detach(FlyEntity entity) {
+        getEntityManager().detach(entity);
     }
 }

@@ -17,6 +17,7 @@ public abstract class FlyFilterImpl implements FlyFilter {
     private boolean ignoreInactiveFilter;
     private String reportName;
     private String pdfName;
+    private boolean isPreviousOrNextId;
 
     public String getAcFieldDescription() {
         return acFieldDescription;
@@ -163,5 +164,15 @@ public abstract class FlyFilterImpl implements FlyFilter {
     @Override
     public void setPdfName(String pdfName) {
         this.pdfName = pdfName;
+    }
+
+    @Override
+    public boolean isPreviousOrNextId() {
+        return this.isPreviousOrNextId;
+    }
+
+    @Override
+    public void setIsPreviousOrNextId(boolean value) {
+        this.isPreviousOrNextId = value;
     }
 }

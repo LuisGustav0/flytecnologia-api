@@ -66,4 +66,8 @@ public interface FlyFilter {
     String getPdfName();
 
     void setPdfName(String pdfName);
+
+    boolean isPreviousOrNextId();
+
+    void setIsPreviousOrNextId(boolean value);
 }
