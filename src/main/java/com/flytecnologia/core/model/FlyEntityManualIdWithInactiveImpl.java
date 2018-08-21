@@ -3,22 +3,20 @@ package com.flytecnologia.core.model;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @MappedSuperclass
-public abstract class FlyEntityWithInactive extends FlyEntity implements Serializable {
+public abstract class FlyEntityManualIdWithInactiveImpl extends FlyEntityManualIdImpl implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @NotNull
     @Column(name = "inactive", nullable = false)
-    private Boolean inactive;
+    private boolean inactive;
 
-    public Boolean getInactive() {
+    public boolean getInactive() {
         return inactive;
     }
 
-    public void setInactive(Boolean inactive) {
+    public void setInactive(boolean inactive) {
         this.inactive = inactive;
     }
 }

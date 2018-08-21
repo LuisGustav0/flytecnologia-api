@@ -1,8 +1,9 @@
 package com.flytecnologia.core.base;
 
 import com.flytecnologia.core.exception.BusinessException;
+import com.flytecnologia.core.model.FlyEntityImpl;
+import com.flytecnologia.core.model.FlyEntityWithInactiveImpl;
 import com.flytecnologia.core.model.FlyEntity;
-import com.flytecnologia.core.model.FlyEntityWithInactive;
 import com.flytecnologia.core.search.FlyFilter;
 import com.flytecnologia.core.search.FlyPageableResult;
 import com.flytecnologia.core.user.FlyUserDetailsService;
@@ -100,10 +101,10 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
     }
 
     private void addDefaultValuesBeforeCreate(T entity) {
-        if (entity instanceof FlyEntityWithInactive) {
-            if (((FlyEntityWithInactive) entity).getInactive() == null) {
-                ((FlyEntityWithInactive) entity).setInactive(false);
-            }
+        if (entity instanceof FlyEntityWithInactiveImpl) {
+           /* if (((FlyEntityWithInactiveImpl) entity).getInactive() == null) {
+                ((FlyEntityWithInactiveImpl) entity).setInactive(false);
+            }*/
         }
     }
 
@@ -315,7 +316,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         return new String(Base64.getEncoder().encode(data));
     }
 
-    public void detach(FlyEntity entity) {
+    public void detach(FlyEntityImpl entity) {
         getRepository().detach(entity);
     }
 }

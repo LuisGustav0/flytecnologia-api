@@ -1,7 +1,7 @@
 package com.flytecnologia.core.util;
 
 import com.flytecnologia.core.exception.BusinessException;
-import com.flytecnologia.core.model.FlyEntity;
+import com.flytecnologia.core.model.FlyEntityImpl;
 import org.apache.commons.io.IOUtils;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -60,7 +60,7 @@ public class FlyFile {
         return  imgImgDir + File.separator + id.toString() + File.separator + filename;
     }
 
-    public void saveImgToFile(String imgImgDir, FlyEntity entity, String fieldname) {
+    public void saveImgToFile(String imgImgDir, FlyEntityImpl entity, String fieldname) {
         Map<String, Object> parameters = entity.getParameters();
 
         if (parameters == null)

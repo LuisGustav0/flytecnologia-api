@@ -1,7 +1,8 @@
 package com.flytecnologia.core.base;
 
 import com.flytecnologia.core.model.FlyEntity;
-import com.flytecnologia.core.model.FlyEntityWithInactive;
+import com.flytecnologia.core.model.FlyEntityImpl;
+import com.flytecnologia.core.model.FlyEntityWithInactiveImpl;
 import com.flytecnologia.core.search.FlyFilter;
 import com.flytecnologia.core.search.FlyPageableResult;
 import com.flytecnologia.core.user.FlyUserDetailsService;
@@ -187,7 +188,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
         String fieldInactive = alias + ".inactive";
 
-        if (this.getEntityClass().getGenericSuperclass().equals(FlyEntityWithInactive.class)) {
+        if (this.getEntityClass().getGenericSuperclass().equals(FlyEntityWithInactiveImpl.class)) {
             hql.append(" and ").append(fieldInactive).append(" is false \n");
         }
 
@@ -334,7 +335,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         }
     }
 
-    public void detach(FlyEntity entity) {
+    public void detach(FlyEntityImpl entity) {
         getEntityManager().detach(entity);
     }
 }

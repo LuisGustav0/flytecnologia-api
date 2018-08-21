@@ -1,6 +1,7 @@
 package com.flytecnologia.core.base;
 
 import com.flytecnologia.core.model.FlyEntity;
+import com.flytecnologia.core.model.FlyEntityImpl;
 import com.flytecnologia.core.search.FlyFilter;
 import com.flytecnologia.core.search.FlyPageableResult;
 import org.springframework.core.io.ByteArrayResource;
