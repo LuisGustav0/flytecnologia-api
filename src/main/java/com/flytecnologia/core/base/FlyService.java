@@ -1,9 +1,8 @@
 package com.flytecnologia.core.base;
 
 import com.flytecnologia.core.exception.BusinessException;
-import com.flytecnologia.core.model.FlyEntityImpl;
-import com.flytecnologia.core.model.FlyEntityWithInactiveImpl;
 import com.flytecnologia.core.model.FlyEntity;
+import com.flytecnologia.core.model.FlyEntityImpl;
 import com.flytecnologia.core.search.FlyFilter;
 import com.flytecnologia.core.search.FlyPageableResult;
 import com.flytecnologia.core.user.FlyUserDetailsService;
@@ -32,13 +31,13 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         return getRepository().findById(id);
     }
 
-    protected void beforeSave(T entity, T oldEntity) {
+    protected void beforeSave(final T entity, final T oldEntity) {
     }
 
-    protected void afterSave(T entity, T oldEntity) {
+    protected void afterSave(final T entity, final T oldEntity) {
     }
 
-    protected void beforeDelete(T entity) {
+    protected void beforeDelete(final T entity) {
     }
 
     protected void afterDelete(Long id) {
@@ -85,8 +84,6 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
 
         Map<String, Object> parameters = entity.getParameters();
 
-        addDefaultValuesBeforeCreate(entity);
-
         entity = getRepository().save(entity);
 
         entity.setParameters(parameters);
@@ -98,14 +95,6 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         entity.setParameters(null);
 
         return entity;
-    }
-
-    private void addDefaultValuesBeforeCreate(T entity) {
-        if (entity instanceof FlyEntityWithInactiveImpl) {
-           /* if (((FlyEntityWithInactiveImpl) entity).getInactive() == null) {
-                ((FlyEntityWithInactiveImpl) entity).setInactive(false);
-            }*/
-        }
     }
 
     protected String getEntityName() {
