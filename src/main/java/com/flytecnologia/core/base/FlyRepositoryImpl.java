@@ -219,8 +219,18 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
         StringBuilder hql = new StringBuilder()
                 .append("select distinct new Map( \n ")
-                .append(alias).append(".").append(filter.getAcFieldValue()).append(" as ").append(filter.getAcFieldValue()).append(", \n ")
-                .append(alias).append(".").append(filter.getAcFieldDescription()).append(" as ").append(filter.getAcFieldDescription()).append(" \n ");
+                .append(alias).append(".").append(filter.getAcFieldValue())
+                .append(" as ").append(filter.getAcFieldValue());
+
+        if(!isEmpty(filter.getAcFieldDescription())) {
+            hql.append(", \n ")
+                    .append(alias)
+                    .append(".")
+                    .append(filter.getAcFieldDescription())
+                    .append(" as ")
+                    .append(filter.getAcFieldDescription())
+                    .append(" \n ");
+        }
 
         if (!"id".equals(filter.getAcFieldValue())) {
             hql.append(",").append(alias).append(".id \n ");
