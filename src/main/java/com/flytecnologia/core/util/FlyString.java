@@ -24,7 +24,7 @@ public class FlyString {
     }
 
     public static String formatDate(LocalDate date, String pattern) {
-        if(date == null)
+        if (date == null)
             return null;
 
         DateTimeFormatter formatters = DateTimeFormatter.ofPattern(pattern);
@@ -32,7 +32,7 @@ public class FlyString {
     }
 
     public static String formatTime(LocalTime time, String pattern) {
-        if(time == null)
+        if (time == null)
             return null;
 
         DateTimeFormatter formatters = DateTimeFormatter.ofPattern(pattern);
@@ -40,7 +40,7 @@ public class FlyString {
     }
 
     public static String formatDateTime(LocalDateTime dateTime, String pattern) {
-        if(dateTime == null)
+        if (dateTime == null)
             return null;
 
         DateTimeFormatter formatters = DateTimeFormatter.ofPattern(pattern);
@@ -52,18 +52,12 @@ public class FlyString {
     }
 
     public static String formatDecimal(BigDecimal value, int digits) {
-        if(value == null)
+        if (value == null)
             value = BigDecimal.ZERO;
 
         NumberFormat nf = NumberFormat.getInstance();
         nf.setMinimumFractionDigits(digits);
 
         return nf.format(value);
-    }
-
-    public static void main(String args[] ) {
-        System.out.println(formatDecimal(new BigDecimal("12121212")));
-        System.out.println(formatDecimal(new BigDecimal("5454123.12")));
-        System.out.println(formatDecimal(new BigDecimal("12774843.148482"),4));
     }
 }
