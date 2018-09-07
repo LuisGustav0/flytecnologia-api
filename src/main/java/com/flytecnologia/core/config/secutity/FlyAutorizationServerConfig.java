@@ -83,7 +83,7 @@ public class FlyAutorizationServerConfig extends AuthorizationServerConfigurerAd
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
         final JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
         converter.setSigningKey(secretKey);
-        //converter.setVerifierKey(secretKey);
+        converter.setVerifierKey(secretKey);
 
         return converter;
     }
