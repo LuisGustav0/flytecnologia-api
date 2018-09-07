@@ -156,20 +156,13 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
         StringBuilder hql = new StringBuilder()
                 .append("select distinct new Map( \n ")
-                .append(alias).append(".").append(filter.getAcFieldValue()).append(" as ").append(filter.getAcFieldValue()).append(", \n ")
-                .append(alias).append(".").append(filter.getAcFieldDescription()).append(" as ").append(filter.getAcFieldDescription()).append(" \n ");
+                .append(alias).append(".").append(filter.getAcFieldValue()).append(" as ").append(filter.getAcFieldValue()).append("\n ");
 
-        if (!"id".equals(filter.getAcFieldValue())) {
-            hql.append(",").append(alias).append(".id \n ");
-        }
+        addFieldDescriptionToListAutocomplete(filter, alias, hql);
 
-        if (!isEmpty(filter.getAcExtraFieldsAutocomplete())) {
-            String[] extraField = filter.getAcExtraFieldsAutocomplete().split(",");
+        addFieldIdToAutocomplete(filter, alias, hql);
 
-            for (String field : extraField) {
-                hql.append(",").append(alias).append(".").append(field).append(" as ").append(field).append(" \n ");
-            }
-        }
+        addExtraFieldsToAutocomplete(filter, alias, hql);
 
         Map<String, Object> parameters = new HashMap<>();
         StringBuilder hqlJoin = new StringBuilder();
@@ -180,11 +173,11 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
                 .append(entityName).append(" as ")
                 .append(alias).append(" \n")
                 .append(hqlJoin).append(" \n")
-                .append("where \n ")
-                .append("   (fly_to_ascii(lower(")
-                .append(alias).append(".").append(filter.getAcFieldDescription())
-                .append(")) like fly_to_ascii(:value) or \n ")
-                .append("   CONCAT(").append(alias).append(".").append(filter.getAcFieldValue()).append(", '') = :valueId) \n ");
+                .append("where (\n ");
+
+        addFieldDescriptionToWhereAutocomplete(filter, alias, hql);
+
+        hql.append(" OR CONCAT(").append(alias).append(".").append(filter.getAcFieldValue()).append(", '') = :valueId) \n ");
 
         String fieldInactive = alias + ".inactive";
 
@@ -207,6 +200,12 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         return Optional.ofNullable(query.getResultList());
     }
 
+    private void addFieldIdToAutocomplete(F filter, String alias, StringBuilder hql) {
+        if (!"id".equals(filter.getAcFieldValue())) {
+            hql.append(",").append(alias).append(".id \n ");
+        }
+    }
+
     public Optional<Map> getItemAutocomplete(F filter) {
         if (isEmpty(filter.getId()))
             return Optional.empty();
@@ -222,27 +221,11 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
                 .append(alias).append(".").append(filter.getAcFieldValue())
                 .append(" as ").append(filter.getAcFieldValue());
 
-        if(!isEmpty(filter.getAcFieldDescription())) {
-            hql.append(", \n ")
-                    .append(alias)
-                    .append(".")
-                    .append(filter.getAcFieldDescription())
-                    .append(" as ")
-                    .append(filter.getAcFieldDescription())
-                    .append(" \n ");
-        }
+        addFieldDescriptionToListAutocomplete(filter, alias, hql);
 
-        if (!"id".equals(filter.getAcFieldValue())) {
-            hql.append(",").append(alias).append(".id \n ");
-        }
+        addFieldIdToAutocomplete(filter, alias, hql);
 
-        if (!isEmpty(filter.getAcExtraFieldsAutocomplete())) {
-            String[] extraField = filter.getAcExtraFieldsAutocomplete().split(",");
-
-            for (String field : extraField) {
-                hql.append(",").append(alias).append(".").append(field).append(" as ").append(field).append(" \n ");
-            }
-        }
+        addExtraFieldsToAutocomplete(filter, alias, hql);
 
         Map<String, Object> parameters = new HashMap<>();
         StringBuilder hqlJoin = new StringBuilder();
@@ -272,6 +255,81 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
         return query.getResultList().stream().filter(Objects::nonNull).findFirst();
     }
+
+    private void addExtraFieldsToAutocomplete(F filter, String alias, StringBuilder hql) {
+        if (!isEmpty(filter.getAcExtraFieldsAutocomplete())) {
+            String[] extraField = filter.getAcExtraFieldsAutocomplete().split(",");
+
+            for (String field : extraField) {
+                hql.append(",");
+
+                if (!field.contains("."))
+                    hql.append(alias).append(".");
+
+                hql.append(field.trim()).append(" as ").append(field.trim()).append(" \n ");
+            }
+        }
+    }
+
+    private void addFieldDescriptionToListAutocomplete(F filter, String alias, StringBuilder hql) {
+        if (isEmpty(filter.getAcFieldsListAutocomplete())) {
+            hql.append(",").append(alias).append(".").append(filter.getAcFieldDescription()).append(" as ").append(filter.getAcFieldDescription()).append(" \n ");
+        } else {
+            String[] extraField = filter.getAcFieldsListAutocomplete().split(",");
+
+            hql.append(",CONCAT(");
+
+            int count = 0;
+
+            for (String field : extraField) {
+                if (!field.contains("."))
+                    hql.append(alias).append(".");
+
+                hql.append(field.trim());
+
+                if (count < extraField.length - 1) {
+                    hql.append(", ' - ', ");
+                }
+
+                count++;
+            }
+
+            hql.append(") as ").append(filter.getAcFieldDescription()).append(" \n ");
+        }
+    }
+
+    private void addFieldDescriptionToWhereAutocomplete(F filter, String alias, StringBuilder hql) {
+        if (isEmpty(filter.getAcFieldsListAutocomplete())) {
+            hql.append("   fly_to_ascii(lower(")
+                    .append(alias).append(".").append(filter.getAcFieldDescription())
+                    .append(")) like fly_to_ascii(:value) \n ");
+        } else {
+            String[] extraField = filter.getAcFieldsListAutocomplete().split(",");
+
+            int count = 0;
+
+            hql.append("(");
+
+            for (String field : extraField) {
+                if (count > 0) {
+                    hql.append(" OR ");
+                }
+
+                hql.append("   fly_to_ascii(lower(");
+
+                if (!field.contains("."))
+                    hql.append(alias).append(".");
+
+                hql.append(field.trim())
+                        .append(")) like fly_to_ascii(:value) \n ");
+
+                count++;
+            }
+
+            hql.append(")");
+        }
+    }
+
 
     public FlyPageableResult search(F filter, Pageable pageable) {
         return null;

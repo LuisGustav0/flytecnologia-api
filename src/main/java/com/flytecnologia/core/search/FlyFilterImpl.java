@@ -4,6 +4,7 @@ public abstract class FlyFilterImpl implements FlyFilter {
     private String acFieldDescription;
     private String acFieldValue;
     private String acExtraFieldsAutocomplete;
+    private String acFieldsListAutocomplete;
     private String acValue;
     private Integer acLimit;
     private Boolean acFilterDisabledRecords;
@@ -42,6 +43,14 @@ public abstract class FlyFilterImpl implements FlyFilter {
 
     public void setAcExtraFieldsAutocomplete(String acExtraFieldsAutocomplete) {
         this.acExtraFieldsAutocomplete = acExtraFieldsAutocomplete;
+    }
+
+    public String getAcFieldsListAutocomplete() {
+        return acFieldsListAutocomplete;
+    }
+
+    public void setAcFieldsListAutocomplete(String acFieldsListAutocomplete) {
+        this.acFieldsListAutocomplete = acFieldsListAutocomplete;
     }
 
     public String getAcValue() {

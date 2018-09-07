@@ -14,6 +14,10 @@ public interface FlyFilter {
 
     void setAcExtraFieldsAutocomplete(String acExtraFieldsAutocomplete);
 
+    String getAcFieldsListAutocomplete();
+
+    void setAcFieldsListAutocomplete(String acFieldsListAutocomplete);
+
     String getAcValue();
 
     void setAcValue(String acValue);
