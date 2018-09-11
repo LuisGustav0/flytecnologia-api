@@ -12,7 +12,7 @@ targetCompatibility = 1.8
 ext {
     springBootVersion = '2.0.4.RELEASE'
     springSecurityJwt = '1.0.9.RELEASE'
-    springSecurityOauth2 = '2.2.1.RELEASE'
+    springSecurityOauth2 = '2.3.3.RELEASE'
     springSecurityTest = '5.0.7.RELEASE'
     activemqBroker = '5.15.3'
     tomcatJdbc = '9.0.6'
