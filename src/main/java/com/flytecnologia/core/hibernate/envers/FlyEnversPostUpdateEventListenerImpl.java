@@ -1,6 +1,6 @@
 package com.flytecnologia.core.hibernate.envers;
 
-import com.flytecnologia.core.model.FlyEntityImpl;
+import com.flytecnologia.core.model.FlyEntity;
 import org.hibernate.envers.boot.internal.EnversService;
 import org.hibernate.envers.event.spi.EnversPostUpdateEventListenerImpl;
 import org.hibernate.event.spi.PostUpdateEvent;
@@ -16,8 +16,8 @@ public class FlyEnversPostUpdateEventListenerImpl extends
 
     @Override
     public void onPostUpdate(PostUpdateEvent event) {
-        if(event.getEntity() instanceof FlyEntityImpl) {
-            boolean doNotAudit = ((FlyEntityImpl) event.getEntity()).isDoNotAudit();
+        if (event.getEntity() instanceof FlyEntity) {
+            boolean doNotAudit = ((FlyEntity) event.getEntity()).isDoNotAudit();
 
             if (!doNotAudit) {
                 super.onPostUpdate(event);
