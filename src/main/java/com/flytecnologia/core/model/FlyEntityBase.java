@@ -69,10 +69,10 @@ public abstract class FlyEntityBase implements Serializable {
     }
 */
     public Map<String, Object> getParameters() {
-        if(parameters == null)
+        if (parameters == null)
             parameters = new HashMap<>();
 
-        return  parameters;
+        return parameters;
     }
 
     public void setParameters(Map<String, Object> parameters) {

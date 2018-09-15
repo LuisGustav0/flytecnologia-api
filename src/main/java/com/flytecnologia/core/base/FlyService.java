@@ -6,6 +6,7 @@ import com.flytecnologia.core.model.FlyEntityImpl;
 import com.flytecnologia.core.search.FlyFilter;
 import com.flytecnologia.core.search.FlyPageableResult;
 import com.flytecnologia.core.user.FlyUserDetailsService;
+import com.flytecnologia.core.util.FlyReflection;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -72,9 +73,21 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         return update(entity.getId(), entity);
     }
 
+    public void removeEmpityEntityFromEntitiy(T entity) {
+        FlyReflection.removeEmpityEntityFromEntitiy(entity, 1, 2);
+    }
+
+    public void setParentInTheChildrenList(T entity) {
+        FlyReflection.setParentInTheChildrenList(entity);
+    }
+
+
     @Transactional
     public T create(T entity) {
         notNull(entity, "flyserivice.invalidRecord");
+
+        removeEmpityEntityFromEntitiy(entity);
+        setParentInTheChildrenList(entity);
 
         if (!entity.isIgnoreBeforeSave()) {
             beforeSave(entity, null);
