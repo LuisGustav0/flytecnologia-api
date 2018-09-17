@@ -36,7 +36,7 @@ public class FlyReflection {
         return emptyNames.toArray(result);
     }
 
-    public static <T extends FlyEntity> void removeEmpityEntityFromEntitiy(T source, int level, int maxLevel) {
+    public static <T extends FlyEntity> void removeEmptyEntityFromEntity(T source, int level, int maxLevel) {
         BeanWrapper src = new BeanWrapperImpl(source);
         PropertyDescriptor[] pds = src.getPropertyDescriptors();
 
@@ -47,7 +47,7 @@ public class FlyReflection {
                 level++;
 
                 for (FlyEntity entity : (List<FlyEntity>) obj) {
-                    removeEmpityEntityFromEntitiy(entity, level, maxLevel);
+                    removeEmptyEntityFromEntity(entity, level, maxLevel);
                 }
             }
 

@@ -1,6 +1,7 @@
 package com.flytecnologia.core.base;
 
 import com.flytecnologia.core.exception.BusinessException;
+import com.flytecnologia.core.exception.InvalidDataException;
 import com.flytecnologia.core.model.FlyEntity;
 import com.flytecnologia.core.model.FlyEntityImpl;
 import com.flytecnologia.core.search.FlyFilter;
@@ -14,8 +15,11 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 
 import javax.persistence.Basic;
+import javax.validation.Validator;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -53,6 +57,9 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
     @Autowired
     private MessageSource messageSource;
 
+    //@Autowired
+    //private Validator validator;
+
     public FlyService() {
     }
 
@@ -73,8 +80,8 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         return update(entity.getId(), entity);
     }
 
-    public void removeEmpityEntityFromEntitiy(T entity) {
-        FlyReflection.removeEmpityEntityFromEntitiy(entity, 1, 2);
+    public void removeEmptyEntityFromEntity(T entity) {
+        FlyReflection.removeEmptyEntityFromEntity(entity, 1, 2);
     }
 
     public void setParentInTheChildrenList(T entity) {
@@ -84,9 +91,22 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
 
     @Transactional
     public T create(T entity) {
+
+        //BeanPropertyBindingResult errors = new BeanPropertyBindingResult(entity, getEntityClass().getName());
+
+        //SpringValidatorAdapter springvalidator = new SpringValidatorAdapter(validator);
+
+        //springvalidator.validate(entity, errors);
+
+        //FlyValidatorUtil.validate(entity);
+
+        //if (errors.hasErrors()) {
+        //    throw new InvalidDataException(errors.getAllErrors().toString(), errors);
+        //}
+
         notNull(entity, "flyserivice.invalidRecord");
 
-        removeEmpityEntityFromEntitiy(entity);
+        removeEmptyEntityFromEntity(entity);
         setParentInTheChildrenList(entity);
 
         if (!entity.isIgnoreBeforeSave()) {
