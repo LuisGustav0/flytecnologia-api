@@ -6,6 +6,7 @@ import com.flytecnologia.core.model.FlyEntity;
 import com.flytecnologia.core.model.FlyEntityImpl;
 import com.flytecnologia.core.search.FlyFilter;
 import com.flytecnologia.core.search.FlyPageableResult;
+import com.flytecnologia.core.spring.FlyValidatorUtil;
 import com.flytecnologia.core.user.FlyUserDetailsService;
 import com.flytecnologia.core.util.FlyReflection;
 import org.springframework.beans.BeanUtils;
@@ -57,9 +58,6 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
     @Autowired
     private MessageSource messageSource;
 
-    //@Autowired
-    //private Validator validator;
-
     public FlyService() {
     }
 
@@ -91,20 +89,9 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
 
     @Transactional
     public T create(T entity) {
-
-        //BeanPropertyBindingResult errors = new BeanPropertyBindingResult(entity, getEntityClass().getName());
-
-        //SpringValidatorAdapter springvalidator = new SpringValidatorAdapter(validator);
-
-        //springvalidator.validate(entity, errors);
-
-        //FlyValidatorUtil.validate(entity);
-
-        //if (errors.hasErrors()) {
-        //    throw new InvalidDataException(errors.getAllErrors().toString(), errors);
-        //}
-
         notNull(entity, "flyserivice.invalidRecord");
+
+        FlyValidatorUtil.validate(entity);
 
         removeEmptyEntityFromEntity(entity);
         setParentInTheChildrenList(entity);
@@ -139,6 +126,8 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         notNull(id, "flyserivice.idNotNull");
         notNull(entity, "flyserivice.invalidRecord");
         notNull(entity.getId(), "flyserivice.invalidRecord");
+
+        FlyValidatorUtil.validate(entity);
 
         Optional<T> entitySavedOptional = findById(id);
 

@@ -40,7 +40,7 @@ public abstract class FlyController<T extends FlyEntity, F extends FlyFilter> {
     //@ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     @PreAuthorize("hasAuthority(getAuthorityCreate()) and #oauth2.hasScope('write')")
-    public ResponseEntity<T> create(@RequestBody @Valid T entity,
+    public ResponseEntity<T> create(@RequestBody T entity,
                                     HttpServletResponse response) {
         entity = getService().create(entity);
 
@@ -88,7 +88,7 @@ public abstract class FlyController<T extends FlyEntity, F extends FlyFilter> {
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority(getAuthorityUpdate()) and #oauth2.hasScope('write')")
     public ResponseEntity<T> update(@PathVariable Long id,
-                                    @RequestBody @Valid T entity) {
+                                    @RequestBody T entity) {
         return ResponseEntity.ok(getService().update(id, entity));
     }
 

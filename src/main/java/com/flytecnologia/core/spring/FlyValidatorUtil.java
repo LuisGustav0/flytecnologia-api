@@ -12,7 +12,10 @@ public class FlyValidatorUtil {
     private static final SpringValidatorAdapter validator = new SpringValidatorAdapter(javaxValidator);
 
     public static void validate(Object entry) {
-        BeanPropertyBindingResult errors = new BeanPropertyBindingResult(entry, entry.getClass().getName());
+        String entityName = entry.getClass().getSimpleName();
+        entityName = entityName.substring(0,1).toLowerCase().concat(entityName.substring(1));
+
+        BeanPropertyBindingResult errors = new BeanPropertyBindingResult(entry, entityName);
 
         validator.validate(entry, errors);
 
