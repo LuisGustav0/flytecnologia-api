@@ -37,6 +37,9 @@ public class FlyReflection {
     }
 
     public static <T extends FlyEntity> void removeEmptyEntityFromEntity(T source, int level, int maxLevel) {
+        if(level == 0)
+            return;
+
         BeanWrapper src = new BeanWrapperImpl(source);
         PropertyDescriptor[] pds = src.getPropertyDescriptors();
 

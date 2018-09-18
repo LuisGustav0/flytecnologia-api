@@ -1,7 +1,6 @@
 package com.flytecnologia.core.base;
 
 import com.flytecnologia.core.exception.BusinessException;
-import com.flytecnologia.core.exception.InvalidDataException;
 import com.flytecnologia.core.model.FlyEntity;
 import com.flytecnologia.core.model.FlyEntityImpl;
 import com.flytecnologia.core.search.FlyFilter;
@@ -16,11 +15,8 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 
 import javax.persistence.Basic;
-import javax.validation.Validator;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -78,8 +74,16 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         return update(entity.getId(), entity);
     }
 
+    public int removeEmptyEntityFromEntityByLevel() {
+        return 0;
+    }
+
+    public int removeEmptyEntityFromEntityToLevel() {
+        return 2;
+    }
+
     public void removeEmptyEntityFromEntity(T entity) {
-        FlyReflection.removeEmptyEntityFromEntity(entity, 1, 2);
+        FlyReflection.removeEmptyEntityFromEntity(entity, removeEmptyEntityFromEntityByLevel(), removeEmptyEntityFromEntityToLevel());
     }
 
     public void setParentInTheChildrenList(T entity) {
