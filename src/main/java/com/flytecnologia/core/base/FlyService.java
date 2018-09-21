@@ -33,6 +33,9 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         return getRepository().findById(id);
     }
 
+    protected void beforeValidateSave(final T entity, final T oldEntity) {
+    }
+
     protected void beforeSave(final T entity, final T oldEntity) {
     }
 
@@ -95,6 +98,8 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
     public T create(T entity) {
         notNull(entity, "flyserivice.invalidRecord");
 
+        beforeValidateSave(entity, null);
+
         FlyValidatorUtil.validate(entity);
 
         removeEmptyEntityFromEntity(entity);
@@ -130,6 +135,8 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         notNull(id, "flyserivice.idNotNull");
         notNull(entity, "flyserivice.invalidRecord");
         notNull(entity.getId(), "flyserivice.invalidRecord");
+
+        beforeValidateSave(entity, null);
 
         FlyValidatorUtil.validate(entity);
 
