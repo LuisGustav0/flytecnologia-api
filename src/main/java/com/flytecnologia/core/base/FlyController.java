@@ -1,7 +1,6 @@
 package com.flytecnologia.core.base;
 
 import com.flytecnologia.core.model.FlyEntity;
-import com.flytecnologia.core.model.FlyEntityImpl;
 import com.flytecnologia.core.search.FlyFilter;
 import com.flytecnologia.core.search.FlyPageableResult;
 import org.springframework.core.io.ByteArrayResource;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
@@ -53,7 +51,9 @@ public abstract class FlyController<T extends FlyEntity, F extends FlyFilter> {
     @PreAuthorize("hasAuthority(getAuthorityRead()) and #oauth2.hasScope('read')")
     public ResponseEntity<T> findById(@PathVariable Long id) {
         Optional<T> entity = getService().findById(id);
-        return entity != null ? ResponseEntity.ok(entity.get()) : ResponseEntity.notFound().build();
+        T entityAux = entity.orElse(null);
+
+        return entityAux != null ? ResponseEntity.ok(entityAux) : ResponseEntity.notFound().build();
     }
 
     @GetMapping("/after")

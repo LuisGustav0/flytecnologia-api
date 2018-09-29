@@ -35,12 +35,8 @@ public class FlyAutorizationServerConfig extends AuthorizationServerConfigurerAd
     @Value("${security.oauth2.resource.jwt.key-value-mobile}")
     private String secretKeyMobile;
 
-
     @Autowired
     private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private JwtAccessTokenConverter jwtAccessTokenConverter;
 
     private UserDetailsService userDetailsService;
 
@@ -69,6 +65,9 @@ public class FlyAutorizationServerConfig extends AuthorizationServerConfigurerAd
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+
+        JwtAccessTokenConverter jwtAccessTokenConverter = jwtAccessTokenConverter();
+
         TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
         tokenEnhancerChain.setTokenEnhancers(
                 Arrays.asList(tokenEnhancer(), jwtAccessTokenConverter));
@@ -79,19 +78,13 @@ public class FlyAutorizationServerConfig extends AuthorizationServerConfigurerAd
                 .accessTokenConverter(jwtAccessTokenConverter)
                 .userDetailsService(userDetailsService)
                 .reuseRefreshTokens(false);
-
-       /* endpoints
-                .tokenStore(tokenStore())
-                .accessTokenConverter(jwtAccessTokenConverter)
-                .reuseRefreshTokens(false)
-                .authenticationManager(authenticationManager);*/
     }
 
     @Bean
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
         final JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
         converter.setSigningKey(secretKey);
-        converter.setVerifierKey(secretKey);
+        //converter.setVerifierKey(secretKey);
 
         return converter;
     }
@@ -99,7 +92,7 @@ public class FlyAutorizationServerConfig extends AuthorizationServerConfigurerAd
     /*local de armazenagem dos tokens*/
     @Bean
     public TokenStore tokenStore() {
-        return new FlyJwtTokenStore(jwtAccessTokenConverter);
+        return new FlyJwtTokenStore(jwtAccessTokenConverter());
     }
 
     @Bean
