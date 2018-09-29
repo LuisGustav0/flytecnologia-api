@@ -133,8 +133,22 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         return data;
     }
 
-    public T getReference(Long id) {
-        return getEntityManager().getReference(getEntityClass(), id);
+    public Optional<T> getReference(Long id) {
+        T entity = getEntityManager().getReference(getEntityClass(), id);
+
+        if (entity == null)
+            return Optional.empty();
+
+        return Optional.of(entity);
+    }
+
+    public Optional<T> find(Long id) {
+        T entity = getEntityManager().find(getEntityClass(), id);
+
+        if (entity == null)
+            return Optional.empty();
+
+        return Optional.of(entity);
     }
 
     protected void changeSearchWhere(StringBuilder hqlWhere, Map<String, Object> parameters, F filter) {
@@ -201,7 +215,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
     }
 
     private void addFieldIdToAutocomplete(F filter, String alias, StringBuilder hql) {
-        if (!"id".equals(filter.getAcFieldValue())) {
+        if (!"id" .equals(filter.getAcFieldValue())) {
             hql.append(",").append(alias).append(".id \n ");
         }
     }
@@ -405,5 +419,9 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
     public void detach(FlyEntityImpl entity) {
         getEntityManager().detach(entity);
+    }
+
+    public void flush(){
+        getEntityManager().flush();
     }
 }

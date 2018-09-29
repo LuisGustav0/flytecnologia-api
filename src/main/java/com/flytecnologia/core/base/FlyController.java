@@ -50,7 +50,7 @@ public abstract class FlyController<T extends FlyEntity, F extends FlyFilter> {
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority(getAuthorityRead()) and #oauth2.hasScope('read')")
     public ResponseEntity<T> findById(@PathVariable Long id) {
-        Optional<T> entity = getService().findById(id);
+        Optional<T> entity = getService().find(id);
         T entityAux = entity.orElse(null);
 
         return entityAux != null ? ResponseEntity.ok(entityAux) : ResponseEntity.notFound().build();

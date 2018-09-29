@@ -29,8 +29,8 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
 
     protected abstract FlyRepository<T, Long, F> getRepository();
 
-    public Optional<T> findById(Long id) {
-        return getRepository().findById(id);
+    public Optional<T> find(Long id) {
+        return getRepository().find(id);
     }
 
     protected void beforeValidateSave(final T entity, final T oldEntity) {
@@ -52,6 +52,10 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
     }
 
     protected void afterDeleteAll(List<T> entities) {
+    }
+
+    public void flush() {
+        getRepository().flush();
     }
 
     @Autowired
@@ -140,7 +144,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
 
         FlyValidatorUtil.validate(entity);
 
-        Optional<T> entitySavedOptional = findById(id);
+        Optional<T> entitySavedOptional = find(id);
 
         T entitySaved = entitySavedOptional.orElseThrow(() -> new EmptyResultDataAccessException("update " + getEntityName() + " -> " + id, 1));
 
@@ -213,7 +217,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
     public void delete(Long id, boolean isIgnoreBeforeDelete, boolean isIgnoreAfterDelete) {
         notNull(id, "flyserivice.idNotNull");
 
-        Optional<T> entityOptional = findById(id);
+        Optional<T> entityOptional = find(id);
 
         T entity = entityOptional.orElseThrow(() -> new EmptyResultDataAccessException("delete " + getEntityName() + " -> " + id, 1));
 
@@ -327,7 +331,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         return encode.substring(indexOf + 8);
     }
 
-    public T getReference(Long id) {
+    public Optional<T> getReference(Long id) {
         return getRepository().getReference(id);
     }
 

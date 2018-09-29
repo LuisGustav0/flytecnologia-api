@@ -9,6 +9,7 @@ import org.springframework.data.repository.NoRepositoryBean;
 import javax.persistence.EntityManager;
 import java.io.Serializable;
 import java.util.Map;
+import java.util.Optional;
 
 @NoRepositoryBean
 public interface FlyRepository<T extends FlyEntity, PK extends Serializable, F extends FlyFilter>
@@ -19,7 +20,10 @@ public interface FlyRepository<T extends FlyEntity, PK extends Serializable, F e
 
     String getEntityName();
 
-    T getReference(Long id);
+    Optional<T> getReference(Long id);
+    Optional<T> find(Long id);
+
+    void flush();
 
     Map<String, String> findImageById(Long id, String field);
 
