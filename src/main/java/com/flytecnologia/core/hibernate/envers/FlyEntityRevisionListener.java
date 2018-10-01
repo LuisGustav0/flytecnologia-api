@@ -24,14 +24,14 @@ public class FlyEntityRevisionListener implements RevisionListener {
     }
 
     private Long getUser() {
-        Long userId = FlyTenantThreadLocal.getUserId();
+        Long userId = FlyTokenUserDetails.getCurrentUserId();
 
         if (userId != null)
             return userId;
 
         //Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         //return ((FlyUserDetails) auth.getPrincipal()).getUser().getId();
-        return FlyTokenUserDetails.getCurrentUserId();
+        return FlyTenantThreadLocal.getUserId();
     }
 
 }

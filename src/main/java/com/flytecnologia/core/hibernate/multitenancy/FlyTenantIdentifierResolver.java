@@ -11,16 +11,16 @@ public class FlyTenantIdentifierResolver implements CurrentTenantIdentifierResol
 
     @Override
     public String resolveCurrentTenantIdentifier() {
-        String tenant = FlyTenantThreadLocal.getTenant();
-
-        if (tenant != null)
-            return tenant;
-
         String tenantId = FlyTokenUserDetails.getCurrentSchemaName();
 
         if (tenantId != null) {
             return FlyMultiTenantConstants.DEFAULT_TENANT_SUFFIX + tenantId;
         }
+
+        String tenant = FlyTenantThreadLocal.getTenant();
+
+        if (tenant != null)
+            return tenant;
 
         return FlyMultiTenantConstants.DEFAULT_TENANT_ID;
     }
