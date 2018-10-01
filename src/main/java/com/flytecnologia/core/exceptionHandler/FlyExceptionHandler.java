@@ -2,6 +2,7 @@ package com.flytecnologia.core.exceptionHandler;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.flytecnologia.core.config.property.FlyAppProperty;
+import com.flytecnologia.core.exception.BE;
 import com.flytecnologia.core.exception.BusinessException;
 import com.flytecnologia.core.exception.InvalidDataException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -143,7 +144,7 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
-    @ExceptionHandler(BusinessException.class)
+    @ExceptionHandler({BusinessException.class, BE.class})
     public ResponseEntity<Object> handleBusinessException(BusinessException ex,
                                                           WebRequest request) {
         List<Error> errors = getListOfErros(ex.getMessage(), null);
