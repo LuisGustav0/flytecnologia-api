@@ -5,9 +5,7 @@ import com.flytecnologia.core.search.FlyFilter;
 import com.flytecnologia.core.search.FlyPageableResult;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -116,25 +114,7 @@ public abstract class FlyController<T extends FlyEntity, F extends FlyFilter> {
     }
 
     protected ResponseEntity<ByteArrayResource> print(F filter) {
-
-        byte[] data = getService().getReport(filter);
-
-        String fileName = filter.getPdfName() != null ? filter.getPdfName() : "report.pdf";
-
-        ByteArrayResource resource = new ByteArrayResource(data);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + fileName);
-        headers.setCacheControl("no-cache, no-store, must-revalidate, post-check=0, pre-check=0");
-        headers.setPragma("no-cache");
-        headers.setExpires(0);
-        headers.setContentType(MediaType.parseMediaType("application/pdf"));
-
-        return ResponseEntity.ok()
-                .headers(headers)
-                .contentType(MediaType.APPLICATION_PDF)
-                .contentLength(data.length)
-                .body(resource);
+        return getService().print(filter);
     }
 
 }

@@ -15,8 +15,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.Basic;
@@ -351,7 +355,32 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         getRepository().detach(entity);
     }
 
-    protected <E> void parallelForEach(Collection<E> collection, Consumer<E> consumer){
+	protected ResponseEntity<ByteArrayResource> print(F filter) {
+        byte[] data = getReport(filter);
+
+        if(data == null)
+            throw new BusinessException("flyserivice.generateReportError");
+
+        String fileName = filter.getPdfName() != null ? filter.getPdfName() : "report.pdf";
+
+
+        ByteArrayResource resource = new ByteArrayResource(data);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + fileName);
+        headers.setCacheControl("no-cache, no-store, must-revalidate, post-check=0, pre-check=0");
+        headers.setPragma("no-cache");
+        headers.setExpires(0);
+        headers.setContentType(MediaType.parseMediaType("application/pdf"));
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_PDF)
+                .contentLength(data.length)
+                .body(resource);
+    }
+
+	protected <E> void parallelForEach(Collection<E> collection, Consumer<E> consumer){
 
         String tenantId = FlyTenantThreadLocal.getTenant();
         Long userId = FlyTenantThreadLocal.getUserId();
