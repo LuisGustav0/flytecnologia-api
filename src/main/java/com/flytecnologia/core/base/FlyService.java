@@ -1,11 +1,14 @@
 package com.flytecnologia.core.base;
 
 import com.flytecnologia.core.exception.BusinessException;
+import com.flytecnologia.core.hibernate.multitenancy.FlyMultiTenantConstants;
+import com.flytecnologia.core.hibernate.multitenancy.FlyTenantThreadLocal;
 import com.flytecnologia.core.model.FlyEntity;
 import com.flytecnologia.core.model.FlyEntityImpl;
 import com.flytecnologia.core.search.FlyFilter;
 import com.flytecnologia.core.search.FlyPageableResult;
 import com.flytecnologia.core.spring.FlyValidatorUtil;
+import com.flytecnologia.core.token.FlyTokenUserDetails;
 import com.flytecnologia.core.user.FlyUserDetailsService;
 import com.flytecnologia.core.util.FlyReflection;
 import org.springframework.beans.BeanUtils;
@@ -21,9 +24,11 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> implements FlyValidationBase {
 
@@ -344,5 +349,29 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
 
     public void detach(FlyEntityImpl entity) {
         getRepository().detach(entity);
+    }
+
+    protected <E> void parallelForEach(Collection<E> collection, Consumer<E> consumer){
+
+        String tenantId = FlyTenantThreadLocal.getTenant();
+        Long userId = FlyTenantThreadLocal.getUserId();
+
+        if(isEmpty(tenantId)){
+            tenantId = FlyMultiTenantConstants.DEFAULT_TENANT_SUFFIX + FlyTokenUserDetails.getCurrentSchemaName();
+        }
+
+        if(isEmpty(userId))
+            userId = FlyTokenUserDetails.getCurrentUserId();
+
+        String finalTenantId = tenantId;
+        Long finalUserId = userId;
+
+        collection.parallelStream().forEach(o -> {
+
+            FlyTenantThreadLocal.setTenant(finalTenantId);
+            FlyTenantThreadLocal.setUserId(finalUserId);
+
+            consumer.accept(o);
+        });
     }
 }
