@@ -133,7 +133,29 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         return data;
     }
 
+    public <T> Optional<T> getPropertyById(Long id, String property) {
+        if (isEmpty(property) || isEmpty(id)) {
+            return Optional.empty();
+        }
+
+        property = "p." + property;
+
+        String hql = "select " + property + " from " + getEntityName() + " p where p.id = 1";
+
+        return getEntityManager().createQuery(hql)
+                .setParameter("id", id)
+                .setMaxResults(1)
+                .getResultList()
+                .stream()
+                .filter(Objects::nonNull)
+                .findFirst();
+    }
+
+
     public Optional<T> getReference(Long id) {
+        if (isEmpty(id))
+            return Optional.empty();
+
         T entity = getEntityManager().getReference(getEntityClass(), id);
 
         if (entity == null)
@@ -143,6 +165,9 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
     }
 
     public Optional<T> find(Long id) {
+        if (isEmpty(id))
+            return Optional.empty();
+
         T entity = getEntityManager().find(getEntityClass(), id);
 
         if (entity == null)
@@ -215,7 +240,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
     }
 
     private void addFieldIdToAutocomplete(F filter, String alias, StringBuilder hql) {
-        if (!"id" .equals(filter.getAcFieldValue())) {
+        if (!"id".equals(filter.getAcFieldValue())) {
             hql.append(",").append(alias).append(".id \n ");
         }
     }
@@ -421,7 +446,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         getEntityManager().detach(entity);
     }
 
-    public void flush(){
+    public void flush() {
         getEntityManager().flush();
     }
 }
