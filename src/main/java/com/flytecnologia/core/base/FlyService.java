@@ -259,7 +259,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         return getRepository().existsById(id);
     }
 
-    public Optional<List> getItemsAutocomplete(F filter) {
+    public Optional<List<Map<String, Object>>> getItemsAutocomplete(F filter) {
         beforeSearchAutoComplete(filter);
 
         return getRepository().getItemsAutocomplete(filter);

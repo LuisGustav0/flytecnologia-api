@@ -178,7 +178,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
     }
 
-    public Optional<List> getItemsAutocomplete(F filter) {
+    public Optional<List<Map<String, Object>>> getItemsAutocomplete(F filter) {
         if (isEmpty(filter.getAcValue()))
             return Optional.empty();
 
@@ -440,11 +440,11 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         getEntityManager().flush();
     }
 
-    protected Optional<List> getListMap(StringBuilder hql, Map<String, Object> parameters) {
+    protected <L> Optional<List<Map<String, L>>>  getListMap(StringBuilder hql, Map<String, Object> parameters) {
         return getListMap(hql, parameters, 0);
     }
 
-    protected Optional<List> getListMap(StringBuilder hql, Map<String, Object> parameters, int limit) {
+    protected <L> Optional<List<Map<String, L>>> getListMap(StringBuilder hql, Map<String, Object> parameters, int limit) {
         TypedQuery<?> query = getEntityManager().createQuery(hql.toString(), Map.class);
 
         if(limit > 0)
@@ -452,6 +452,6 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
         parameters.forEach(query::setParameter);
 
-        return Optional.ofNullable(query.getResultList());
+        return Optional.ofNullable((List<Map<String, L>>)query.getResultList());
     }
 }
