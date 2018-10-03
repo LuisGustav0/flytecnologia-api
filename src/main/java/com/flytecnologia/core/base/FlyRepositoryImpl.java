@@ -226,12 +226,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
         changeSearchWhere(hql, parameters, filter);
 
-        TypedQuery<?> query = getEntityManager().createQuery(hql.toString(), Map.class);
-        query.setMaxResults(filter.getAcLimit());
-
-        parameters.forEach(query::setParameter);
-
-        return Optional.ofNullable(query.getResultList());
+        return getListMap(hql, parameters, filter.getAcLimit());
     }
 
     private void addFieldIdToAutocomplete(F filter, String alias, StringBuilder hql) {
@@ -443,5 +438,20 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
     public void flush() {
         getEntityManager().flush();
+    }
+
+    protected Optional<List> getListMap(StringBuilder hql, Map<String, Object> parameters) {
+        return getListMap(hql, parameters, 0);
+    }
+
+    protected Optional<List> getListMap(StringBuilder hql, Map<String, Object> parameters, int limit) {
+        TypedQuery<?> query = getEntityManager().createQuery(hql.toString(), Map.class);
+
+        if(limit > 0)
+            query.setMaxResults(limit);
+
+        parameters.forEach(query::setParameter);
+
+        return Optional.ofNullable(query.getResultList());
     }
 }
