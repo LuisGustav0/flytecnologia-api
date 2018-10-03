@@ -23,7 +23,7 @@ public interface FlyRepository<T extends FlyEntity, PK extends Serializable, F e
     Optional<T> getReference(Long id);
     Optional<T> find(Long id);
 
-    <E> Optional<E> getPropertyById(Long id, String property);
+    <E> Optional<E> getFieldById(Long id, String property);
 
     void flush();
 

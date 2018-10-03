@@ -24,7 +24,6 @@ import javax.persistence.Basic;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -323,27 +322,8 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         return getRepository().findImageById(id, field);
     }
 
-    public String removeBase64Information(String encode) {
-        if (isEmpty(encode))
-            return encode;
-
-        int indexOf = encode.indexOf(";base64,");
-
-        if (indexOf <= 0)
-            return encode;
-
-        return encode.substring(indexOf + 8);
-    }
-
     public Optional<T> getReference(Long id) {
         return getRepository().getReference(id);
-    }
-
-    public String convertToBase64(byte[] data) {
-        if (data == null)
-            return null;
-
-        return new String(Base64.getEncoder().encode(data));
     }
 
     public void detach(FlyEntityImpl entity) {
@@ -375,7 +355,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
                 .body(resource);
     }
 
-    public <E> Optional<E> getPropertyById(Long id, String property) {
-        return getRepository().getPropertyById(id, property);
+    protected <E> Optional<E> getFieldById(Long id, String property) {
+        return getRepository().getFieldById(id, property);
     }
 }

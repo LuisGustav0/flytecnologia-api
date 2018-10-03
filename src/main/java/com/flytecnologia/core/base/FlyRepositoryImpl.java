@@ -118,22 +118,17 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         return total;
     }
 
+    /*fly-input-image-upload*/
     public Map<String, String> findImageById(Long id, String field) {
-        if (isEmpty(id) || isEmpty(field))
-            return null;
-
-        String hqlCount = "select  " + field + " from " + getEntityName() + " entity where entity.id = :id ";
-
-        Query q = getEntityManager().createQuery(hqlCount, String.class);
-        q.setParameter("id", id);
+        Optional<String> value = getFieldById(id, field);
 
         Map<String, String> data = new HashMap<>();
-        data.put(field, (String) q.getResultList().get(0));
+        data.put(field, value.orElse(null));
 
         return data;
     }
 
-    public <T> Optional<T> getPropertyById(Long id, String property) {
+    public <T> Optional<T> getFieldById(Long id, String property) {
         if (isEmpty(property) || isEmpty(id)) {
             return Optional.empty();
         }
