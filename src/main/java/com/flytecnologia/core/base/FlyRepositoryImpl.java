@@ -135,7 +135,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
         property = "p." + property;
 
-        String hql = "select " + property + " from " + getEntityName() + " p where p.id = 1";
+        String hql = "select " + property + " from " + getEntityName() + " p where p.id = :id";
 
         return getEntityManager().createQuery(hql)
                 .setParameter("id", id)
