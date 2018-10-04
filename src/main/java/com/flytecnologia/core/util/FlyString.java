@@ -14,6 +14,13 @@ public class FlyString {
     public static String decapitalizeFirstLetter(String string) {
         return string == null || string.isEmpty() ? "" : Character.toLowerCase(string.charAt(0)) + string.substring(1);
     }
+    public static String formatDateTimePtBr() {
+        return formatDatePtBr() + " - " + formatTime();
+    }
+
+    public static String formatDatePtBr() {
+        return formatDatePtBr(LocalDate.now());
+    }
 
     public static String formatDatePtBr(LocalDate date) {
         return FlyString.formatDate(date, "dd/MM/yyyy");
@@ -29,6 +36,14 @@ public class FlyString {
 
         DateTimeFormatter formatters = DateTimeFormatter.ofPattern(pattern);
         return date.format(formatters);
+    }
+
+    public static String formatTime() {
+        return formatTime(LocalTime.now());
+    }
+
+    public static String formatTime(LocalTime time) {
+        return formatTime(time, "HH:mm");
     }
 
     public static String formatTime(LocalTime time, String pattern) {
