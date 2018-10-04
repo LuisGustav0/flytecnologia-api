@@ -31,14 +31,24 @@ public class FlyLoginController {
 
     @DeleteMapping("/revoke")
     public void revoke(HttpServletRequest req, HttpServletResponse resp) {
-        Cookie cookie = new Cookie("refreshToken", null);
+        String path = req.getContextPath() + "oauth/token";
+
+        _revoke("refreshToken1", path, resp);
+        _revoke("refreshToken2", path, resp);
+        _revoke("refreshToken3", path, resp);
+        _revoke("refreshToken4", path, resp);
+
+        resp.setStatus(HttpStatus.NO_CONTENT.value());
+    }
+
+    private void _revoke(String cookieName, String path, HttpServletResponse resp) {
+        Cookie cookie = new Cookie(cookieName, null);
         cookie.setHttpOnly(true);
         cookie.setSecure(flyAppProperty.getSecurity().isEnableHttps());
-        cookie.setPath(req.getContextPath() + "oauth/token");
+        cookie.setPath(path);
         cookie.setMaxAge(0);
 
         resp.addCookie(cookie);
-        resp.setStatus(HttpStatus.NO_CONTENT.value());
     }
 
     @PostMapping("/send-new-password")

@@ -61,10 +61,26 @@ public class FlyRefreshTokenPostProcessor implements ResponseBodyAdvice<OAuth2Ac
     }
 
     private void addRefreshTokenInCookie(String refreshToken, HttpServletRequest req, HttpServletResponse resp) {
-        Cookie cookie = new Cookie("refreshToken", refreshToken);
+        int blocSize = refreshToken.length() / 4;
+        String refreshToken1 = refreshToken.substring(0, blocSize);
+        String refreshToken2 = refreshToken.substring(blocSize, blocSize*2 );
+        String refreshToken3 = refreshToken.substring(blocSize*2, blocSize*3);
+        String refreshToken4 = refreshToken.substring(blocSize*3);
+
+        String path = req.getContextPath() + "/oauth/token";
+
+        addPartsRefreshTokenInCookie("refreshToken1", refreshToken1, resp, path);
+        addPartsRefreshTokenInCookie("refreshToken2", refreshToken2, resp, path);
+        addPartsRefreshTokenInCookie("refreshToken3", refreshToken3, resp, path);
+        addPartsRefreshTokenInCookie("refreshToken4", refreshToken4, resp, path);
+    }
+
+    private void addPartsRefreshTokenInCookie(String refreshTokenName, String refreshToken,
+                                              HttpServletResponse resp, String path) {
+        Cookie cookie = new Cookie(refreshTokenName, refreshToken);
         cookie.setHttpOnly(true);
         cookie.setSecure(flyAppProperty.getSecurity().isEnableHttps());
-        cookie.setPath(req.getContextPath() + "/oauth/token");
+        cookie.setPath(path);
         cookie.setMaxAge(259200); //expiration time
         resp.addCookie(cookie);
     }

@@ -41,12 +41,36 @@ public class FlyRefreshTokenCookiePreProcessorFilter implements Filter {
                 && "refresh_token".equals(req.getParameter("grant_type"))
                 && req.getCookies() != null) {
 
+            String refreshToken1 = "";
+            String refreshToken2 = "";
+            String refreshToken3 = "";
+            String refreshToken4 = "";
+
             for (Cookie cookie : req.getCookies()) {
-                if (cookie.getName().equals("refreshToken")) {
-                    String refreshToken = cookie.getValue();
-                    return new MyServletRequestWrapper(req, refreshToken);
+                switch (cookie.getName()) {
+                    case "refreshToken1":
+                        if (cookie.getValue() != null && cookie.getValue().length() > 0)
+                            refreshToken1 = cookie.getValue();
+                        break;
+                    case "refreshToken2":
+                        if (cookie.getValue() != null && cookie.getValue().length() > 0)
+                            refreshToken2 = cookie.getValue();
+                        break;
+                    case "refreshToken3":
+                        if (cookie.getValue() != null && cookie.getValue().length() > 0)
+                            refreshToken3 = cookie.getValue();
+                        break;
+                    case "refreshToken4":
+                        if (cookie.getValue() != null && cookie.getValue().length() > 0)
+                            refreshToken4 = cookie.getValue();
+                        break;
                 }
             }
+
+            String refreshToken = refreshToken1 + refreshToken2 + refreshToken3 + refreshToken4;
+
+            if (refreshToken1.length() > 0)
+                return new MyServletRequestWrapper(req, refreshToken);
         }
 
         return req;
