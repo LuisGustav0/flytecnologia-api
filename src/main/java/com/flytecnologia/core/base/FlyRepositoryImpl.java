@@ -414,6 +414,20 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         return query.getResultList().stream().filter(Objects::nonNull).findFirst();
     }
 
+    public Optional<Long> getRecordListCount(Long id, String listName) {
+        String entityName = getEntityName();
+
+        StringBuilder hql = new StringBuilder()
+                .append("select count(entities.id)  \nfrom  ").append(entityName).append(" super  \n")
+                .append("inner join super.").append(listName).append(" as entities \n")
+                .append("where super.id = :id\n");
+
+        TypedQuery<Long> query = getEntityManager().createQuery(hql.toString(), Long.class);
+        query.setParameter("id", id);
+
+        return query.getResultList().stream().filter(Objects::nonNull).findFirst();
+    }
+
     public Optional<Long> getPreviousId(F filter) {
         return getPreviousNextId(filter, "", "<", "desc");
     }

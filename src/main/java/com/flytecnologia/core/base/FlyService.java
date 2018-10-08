@@ -358,4 +358,8 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
     protected <E> Optional<E> getFieldById(Long id, String property) {
         return getRepository().getFieldById(id, property);
     }
+
+    protected Optional<Long> getRecordListCount(Long id, String listName) {
+        return getRepository().getRecordListCount(id, listName);
+    }
 }

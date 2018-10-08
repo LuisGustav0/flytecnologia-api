@@ -23,4 +23,6 @@ public interface FlyRepositorySearch<F extends FlyFilter> {
     Optional<List<Map<String, Object>>> getItemsAutocomplete(F filter);
 
     Optional<Map> getItemAutocomplete(F filter);
+
+    Optional<Long> getRecordListCount(Long id, String listName);
 }
