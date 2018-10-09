@@ -285,19 +285,23 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         return query.getResultList().stream().filter(Objects::nonNull).findFirst();
     }
 
-    private void addExtraFieldsToAutocomplete(F filter, String alias, StringBuilder hql) {
+    protected void addExtraFieldsToAutocomplete(F filter, String alias, StringBuilder hql) {
         if (!isEmpty(filter.getAcExtraFieldsAutocomplete())) {
             String[] extraField = filter.getAcExtraFieldsAutocomplete().split(",");
 
             for (String field : extraField) {
                 hql.append(",");
 
-                if (!field.contains("."))
-                    hql.append(alias).append(".");
-
-                hql.append(field.trim()).append(" as ").append(field.trim()).append(" \n ");
+                addExtraFieldsToAutocomplete(field, alias, hql);
             }
         }
+    }
+
+    protected void addExtraFieldsToAutocomplete(String field, String alias, StringBuilder hql) {
+        if (!field.contains("."))
+            hql.append(alias).append(".");
+
+        hql.append(field.trim()).append(" as ").append(field.trim()).append(" \n ");
     }
 
     private void addFieldDescriptionToListAutocomplete(F filter, String alias, StringBuilder hql) {
