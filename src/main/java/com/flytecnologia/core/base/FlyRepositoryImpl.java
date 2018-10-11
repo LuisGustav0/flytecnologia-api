@@ -6,6 +6,7 @@ import com.flytecnologia.core.model.FlyEntityWithInactiveImpl;
 import com.flytecnologia.core.search.FlyFilter;
 import com.flytecnologia.core.search.FlyPageableResult;
 import com.flytecnologia.core.user.FlyUserDetailsService;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
 
@@ -14,10 +15,12 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 @NoRepositoryBean
 public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter>
@@ -282,7 +285,55 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
         parameters.forEach(query::setParameter);
 
-        return query.getResultList().stream().filter(Objects::nonNull).findFirst();
+        Map<String, Object> map = query.getResultList().stream().filter(Objects::nonNull).findFirst().orElse(null);
+
+        if (map == null) {
+            return Optional.empty();
+        }
+
+        formatMapItemAutocomplete(alias, map);
+
+        return Optional.of(map);
+    }
+
+    private void formatMapItemAutocomplete(String alias, Map<String, Object> map) {
+        Set<String> keys = map.keySet();
+
+        Iterator<String> it = keys.iterator();
+
+        Map<String, Object> mapAux = new HashMap<>();
+
+        while (it.hasNext()) {
+            String key = it.next();
+
+            if (key.contains("$")) {
+                Object value = map.get(key);
+                //map.remove(key);
+
+                String[] children = key.split("\\$");
+
+                if (children[0].equals(alias)) {
+                    children = ArrayUtils.removeElement(children, children[0]);
+                }
+
+                for (int x = 0; x < children.length; x++) {
+                    String child = children[x];
+
+                    if (x < children.length - 1) {
+                        if (x == 0) {
+                            mapAux.put(child, new HashMap<>());
+                        } else {
+                            ((Map) mapAux.get(children[x - 1])).put(child, new HashMap<>());
+                        }
+                    } else {
+                        ((Map) mapAux.get(children[x - 1])).put(child, value);
+                    }
+                }
+
+            }
+        }
+
+        map.putAll(mapAux);
     }
 
     protected void addExtraFieldsToAutocomplete(F filter, String alias, StringBuilder hql) {
@@ -298,15 +349,25 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
     }
 
     protected void addExtraFieldsToAutocomplete(String field, String alias, StringBuilder hql) {
-        if (!field.contains("."))
-            hql.append(alias).append(".");
-
-        hql.append(field.trim()).append(" as ").append(field.trim()).append(" \n ");
+        if (!field.contains(".")) {
+            hql.append(alias)
+                    .append(".")
+                    .append(field.trim())
+                    .append(" as ").append(field.trim()).append(" \n ");
+        } else {
+            hql.append(field.trim()).append(" as ").append(field.trim().replace(".", "$")).append(" \n ");
+        }
     }
 
     private void addFieldDescriptionToListAutocomplete(F filter, String alias, StringBuilder hql) {
         if (isEmpty(filter.getAcFieldsListAutocomplete())) {
-            hql.append(",").append(alias).append(".").append(filter.getAcFieldDescription()).append(" as ").append(filter.getAcFieldDescription()).append(" \n ");
+            hql.append(",")
+                    .append(alias)
+                    .append(".")
+                    .append(filter.getAcFieldDescription().replace("__","."))
+                    .append(" as ")
+                    .append(filter.getAcFieldDescription())
+                    .append(" \n ");
         } else {
             String[] extraField = filter.getAcFieldsListAutocomplete().split(",");
 
@@ -458,18 +519,18 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         getEntityManager().flush();
     }
 
-    protected <L> Optional<List<Map<String, L>>>  getListMap(StringBuilder hql, Map<String, Object> parameters) {
+    protected <L> Optional<List<Map<String, L>>> getListMap(StringBuilder hql, Map<String, Object> parameters) {
         return getListMap(hql, parameters, 0);
     }
 
     protected <L> Optional<List<Map<String, L>>> getListMap(StringBuilder hql, Map<String, Object> parameters, int limit) {
         TypedQuery<?> query = getEntityManager().createQuery(hql.toString(), Map.class);
 
-        if(limit > 0)
+        if (limit > 0)
             query.setMaxResults(limit);
 
         parameters.forEach(query::setParameter);
 
-        return Optional.ofNullable((List<Map<String, L>>)query.getResultList());
+        return Optional.ofNullable((List<Map<String, L>>) query.getResultList());
     }
 }
