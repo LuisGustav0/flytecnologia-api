@@ -22,23 +22,19 @@ public class FlySpringUtils implements ApplicationContextAware {
     }
 
     public static ApplicationContext getApplicationContext() {
-        return applicationContext;
-    }
-
-    public static void setContext(ApplicationContext aApplicationContext) {
-        applicationContext = aApplicationContext;
+        return FlySpringUtils.applicationContext;
     }
 
     public static <T> T getBean(String aName) {
-        if (applicationContext != null) {
-            return (T) applicationContext.getBean(aName);
+        if (FlySpringUtils.applicationContext != null) {
+            return (T) FlySpringUtils.applicationContext.getBean(aName);
         }
         return null;
     }
 
     public static <T> T getBean(Class<T> aClass) {
-        if (applicationContext != null) {
-            return applicationContext.getBean(aClass);
+        if (FlySpringUtils.applicationContext != null) {
+            return FlySpringUtils.applicationContext.getBean(aClass);
         }
         return null;
     }
