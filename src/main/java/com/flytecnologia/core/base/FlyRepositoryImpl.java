@@ -569,7 +569,13 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
                     transaction.begin();
                 }
 
-                entityManager.merge(entities.get(i));
+                T entity = entities.get(i);
+
+                Map<String, Object> parameters = entity.getParameters();
+
+                entity = entityManager.merge(entities.get(i));
+
+                entity.setParameters(parameters);
             }
 
             transaction.commit();

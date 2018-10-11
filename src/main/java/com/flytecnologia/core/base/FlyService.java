@@ -369,4 +369,33 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
     public void batchSave(List<T> entities, int batchSize) {
         getRepository().batchSave(entities, batchSize);
     }
+
+    public void batchSaveComplete(List<T> entities) {
+        batchSaveComplete(entities, 250);
+    }
+
+    public void batchSaveComplete(List<T> entities, int batchSize) {
+        entities.forEach(entity -> {
+            beforeValidateSave(entity, null);
+
+            FlyValidatorUtil.validate(entity);
+
+            removeEmptyEntityFromEntity(entity);
+            setParentInTheChildrenList(entity);
+
+            if (!entity.isIgnoreBeforeSave()) {
+                beforeSave(entity, null);
+            }
+
+            boolean isIgnoreAfterSave = entity.isIgnoreAfterSave();
+
+            if (!isIgnoreAfterSave) {
+                afterSave(entity, null);
+            }
+
+            entity.setParameters(null);
+        });
+
+        getRepository().batchSave(entities, batchSize);
+    }
 }
