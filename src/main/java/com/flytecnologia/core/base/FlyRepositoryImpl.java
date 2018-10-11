@@ -1,7 +1,6 @@
 package com.flytecnologia.core.base;
 
 import com.flytecnologia.core.model.FlyEntity;
-import com.flytecnologia.core.model.FlyEntityImpl;
 import com.flytecnologia.core.model.FlyEntityWithInactiveImpl;
 import com.flytecnologia.core.search.FlyFilter;
 import com.flytecnologia.core.search.FlyPageableResult;
@@ -9,8 +8,12 @@ import com.flytecnologia.core.user.FlyUserDetailsService;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.lang.reflect.ParameterizedType;
@@ -30,13 +33,23 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
     private Class<T> entityClass;
 
     private EntityManager entityManager;
+    private EntityManagerFactory entityManagerFactory;
 
     public FlyRepositoryImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
+    public FlyRepositoryImpl(EntityManager entityManager, EntityManagerFactory entityManagerFactory) {
+        this.entityManager = entityManager;
+        this.entityManagerFactory = entityManagerFactory;
+    }
+
     public EntityManager getEntityManager() {
         return this.entityManager;
+    }
+
+    public EntityManagerFactory getEntityManagerFactory() {
+        return this.entityManagerFactory;
     }
 
     public String getEntityName() {
@@ -364,7 +377,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
             hql.append(",")
                     .append(alias)
                     .append(".")
-                    .append(filter.getAcFieldDescription().replace("__","."))
+                    .append(filter.getAcFieldDescription().replace("__", "."))
                     .append(" as ")
                     .append(filter.getAcFieldDescription())
                     .append(" \n ");
@@ -511,7 +524,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         }
     }
 
-    public void detach(FlyEntityImpl entity) {
+    public <G extends FlyEntity> void detach(G entity) {
         getEntityManager().detach(entity);
     }
 
@@ -532,5 +545,43 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         parameters.forEach(query::setParameter);
 
         return Optional.ofNullable((List<Map<String, L>>) query.getResultList());
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void batchSave(List<T> entities, int batchSize) {
+        int entityCount = entities.size();
+
+        EntityManager entityManager = null;
+        EntityTransaction transaction = null;
+
+        try {
+            entityManager = getEntityManagerFactory().createEntityManager();
+
+            transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            for (int i = 0; i < entityCount; ++i) {
+                if (i > 0 && i % batchSize == 0) {
+                    entityManager.flush();
+                    entityManager.clear();
+
+                    transaction.commit();
+                    transaction.begin();
+                }
+
+                entityManager.merge(entities.get(i));
+            }
+
+            transaction.commit();
+        } catch (RuntimeException e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
+            throw e;
+        } finally {
+            if (entityManager != null) {
+                entityManager.close();
+            }
+        }
     }
 }

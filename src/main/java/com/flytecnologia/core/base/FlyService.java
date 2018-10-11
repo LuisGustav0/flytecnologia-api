@@ -2,7 +2,6 @@ package com.flytecnologia.core.base;
 
 import com.flytecnologia.core.exception.BusinessException;
 import com.flytecnologia.core.model.FlyEntity;
-import com.flytecnologia.core.model.FlyEntityImpl;
 import com.flytecnologia.core.search.FlyFilter;
 import com.flytecnologia.core.search.FlyPageableResult;
 import com.flytecnologia.core.spring.FlyValidatorUtil;
@@ -326,7 +325,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         return getRepository().getReference(id);
     }
 
-    public void detach(FlyEntityImpl entity) {
+    public <G extends FlyEntity> void detach(G entity) {
         getRepository().detach(entity);
     }
 
@@ -361,5 +360,13 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
 
     protected Optional<Long> getRecordListCount(Long id, String listName) {
         return getRepository().getRecordListCount(id, listName);
+    }
+
+    public void batchSave(List<T> entities) {
+        batchSave(entities, 250);
+    }
+
+    public void batchSave(List<T> entities, int batchSize) {
+        getRepository().batchSave(entities, batchSize);
     }
 }
