@@ -532,6 +532,10 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         getEntityManager().flush();
     }
 
+    protected <L> Optional<List<Map<String, L>>> getListMap(StringBuilder hql) {
+        return getListMap(hql, null, 0);
+    }
+
     protected <L> Optional<List<Map<String, L>>> getListMap(StringBuilder hql, Map<String, Object> parameters) {
         return getListMap(hql, parameters, 0);
     }
@@ -542,7 +546,8 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         if (limit > 0)
             query.setMaxResults(limit);
 
-        parameters.forEach(query::setParameter);
+        if(parameters != null)
+            parameters.forEach(query::setParameter);
 
         return Optional.ofNullable((List<Map<String, L>>) query.getResultList());
     }
@@ -589,5 +594,19 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
                 entityManager.close();
             }
         }
+    }
+
+    public <T> Optional<T> getValue(StringBuilder hql, Long id) {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("id", id);
+
+        return getValue(hql, parameters);
+    }
+
+    public <T> Optional<T> getValue(StringBuilder hql, Map<String, Object> parameters) {
+        Query query = getEntityManager().createQuery(hql.toString());
+        parameters.forEach(query::setParameter);
+
+        return query.getResultList().stream().filter(Objects::nonNull).findFirst();
     }
 }
