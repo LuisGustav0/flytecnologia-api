@@ -14,7 +14,7 @@ public abstract class FlyFilterImpl implements FlyFilter {
     private Long id;
     private Long masterDetailId;
     private String entityDetailProperty;
-    private boolean inactive;
+    private Boolean inactive;
     private boolean ignoreInactiveFilter;
     private String reportName;
     private String pdfName;
@@ -109,12 +109,12 @@ public abstract class FlyFilterImpl implements FlyFilter {
     }
 
     @Override
-    public boolean getInactive() {
+    public Boolean getInactive() {
         return inactive;
     }
 
     @Override
-    public void setInactive(boolean inactive) {
+    public void setInactive(Boolean inactive) {
         this.inactive = inactive;
     }
 

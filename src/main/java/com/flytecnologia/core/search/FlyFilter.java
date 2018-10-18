@@ -30,9 +30,9 @@ public interface FlyFilter {
 
     void setAcFilterDisabledRecords(Boolean acFilterDisabledRecords);
 
-    boolean getInactive();
+    Boolean getInactive();
 
-    void setInactive(boolean inactive);
+    void setInactive(Boolean inactive);
 
     Long getId();
 

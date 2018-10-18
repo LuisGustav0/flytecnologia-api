@@ -520,7 +520,9 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
     protected void addInactiveFilter(F filter, StringBuilder hqlWhere, String entityName) {
         if (!filter.isIgnoreInactiveFilter()) {
-            hqlWhere.append("   and ").append(entityName).append(".inactive is ").append(filter.getInactive()).append("\n");
+            if (filter.getInactive() != null) {
+                hqlWhere.append("   and ").append(entityName).append(".inactive is ").append(filter.getInactive()).append("\n");
+            }
         }
     }
 
@@ -546,7 +548,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         if (limit > 0)
             query.setMaxResults(limit);
 
-        if(parameters != null)
+        if (parameters != null)
             parameters.forEach(query::setParameter);
 
         return Optional.ofNullable((List<Map<String, L>>) query.getResultList());
