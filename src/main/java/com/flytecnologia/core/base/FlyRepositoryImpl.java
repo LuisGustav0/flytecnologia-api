@@ -572,8 +572,8 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
                     entityManager.flush();
                     entityManager.clear();
 
-                    transaction.commit();
-                    transaction.begin();
+                    //transaction.commit();
+                    //transaction.begin();
                 }
 
                 T entity = entities.get(i);
