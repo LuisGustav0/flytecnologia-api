@@ -22,7 +22,6 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public abstract class FlyController<T extends FlyEntity, F extends FlyFilter> {
     protected abstract FlyService<T, F> getService();
@@ -33,7 +32,6 @@ public abstract class FlyController<T extends FlyEntity, F extends FlyFilter> {
         response.setHeader("Location", uri.toASCIIString());
     }
 
-    //@ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     @PreAuthorize("hasAuthority(getAuthorityCreate()) and #oauth2.hasScope('write')")
     public ResponseEntity<T> create(@RequestBody T entity,
@@ -48,24 +46,25 @@ public abstract class FlyController<T extends FlyEntity, F extends FlyFilter> {
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority(getAuthorityRead()) and #oauth2.hasScope('read')")
     public ResponseEntity<T> findById(@PathVariable Long id) {
-        Optional<T> entity = getService().find(id);
-        T entityAux = entity.orElse(null);
-
-        return entityAux != null ? ResponseEntity.ok(entityAux) : ResponseEntity.notFound().build();
+        return getService().find(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/after")
     @PreAuthorize("hasAuthority(getAuthorityRead()) and #oauth2.hasScope('read')")
     public ResponseEntity<Long> goToAfter(F filter) {
-        Optional<Long> id = getService().goToAfter(filter);
-        return id.isPresent() ? ResponseEntity.ok(id.get()) : ResponseEntity.notFound().build();
+        return getService().goToAfter(filter)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/before")
     @PreAuthorize("hasAuthority(getAuthorityRead()) and #oauth2.hasScope('read')")
     public ResponseEntity<Long> goToBefore(F filter) {
-        Optional<Long> id = getService().goToBefore(filter);
-        return id.isPresent() ? ResponseEntity.ok(id.get()) : ResponseEntity.notFound().build();
+        return getService().goToBefore(filter)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
