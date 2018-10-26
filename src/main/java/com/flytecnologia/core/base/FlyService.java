@@ -1,11 +1,12 @@
 package com.flytecnologia.core.base;
 
+import com.flytecnologia.core.base.plusService.FlyTenantInformation;
+import com.flytecnologia.core.base.plusService.FlyValidationBase;
 import com.flytecnologia.core.exception.BusinessException;
 import com.flytecnologia.core.model.FlyEntity;
 import com.flytecnologia.core.search.FlyFilter;
 import com.flytecnologia.core.search.FlyPageableResult;
 import com.flytecnologia.core.spring.FlyValidatorUtil;
-import com.flytecnologia.core.user.FlyUserDetailsService;
 import com.flytecnologia.core.util.FlyReflection;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> implements FlyValidationBase {
+public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> implements FlyValidationBase,
+        FlyTenantInformation {
 
     protected abstract FlyRepository<T, Long, F> getRepository();
 
@@ -313,10 +315,6 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         return getRepository().getNextId(filter);
     }
 
-    public Long getUserId() {
-        return FlyUserDetailsService.getCurrentUserId();
-    }
-
     public Map<String, String> findImageById(Long id, String field) {
         return getRepository().findImageById(id, field);
     }
@@ -397,5 +395,9 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         });
 
         getRepository().batchSave(entities, batchSize);
+    }
+
+    public void setTenantInCurrentConnection(String tenantIdentifier) {
+        getRepository().setTenantInCurrentConnection(tenantIdentifier);
     }
 }

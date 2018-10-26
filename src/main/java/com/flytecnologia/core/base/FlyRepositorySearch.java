@@ -25,4 +25,6 @@ public interface FlyRepositorySearch<F extends FlyFilter> {
     Optional<Map> getItemAutocomplete(F filter);
 
     Optional<Long> getRecordListCount(Long id, String listName);
+
+    void setTenantInCurrentConnection(String tenantIdentifier);
 }

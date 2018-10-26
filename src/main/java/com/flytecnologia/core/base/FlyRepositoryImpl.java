@@ -1,10 +1,13 @@
 package com.flytecnologia.core.base;
 
+import com.flytecnologia.core.base.plusService.FlyTenantInformation;
+import com.flytecnologia.core.base.plusService.FlyValidationBase;
+import com.flytecnologia.core.hibernate.multitenancy.FlyMultiTenantConstants;
+import com.flytecnologia.core.hibernate.multitenancy.FlyTenantThreadLocal;
 import com.flytecnologia.core.model.FlyEntity;
 import com.flytecnologia.core.model.FlyEntityWithInactiveImpl;
 import com.flytecnologia.core.search.FlyFilter;
 import com.flytecnologia.core.search.FlyPageableResult;
-import com.flytecnologia.core.user.FlyUserDetailsService;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
@@ -27,7 +30,7 @@ import java.util.Set;
 
 @NoRepositoryBean
 public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter>
-        implements FlyValidationBase {
+        implements FlyValidationBase, FlyTenantInformation {
     //private static final Logger logger = LogManager.getLogger(FlyRepositoryImpl.class);
 
     private Class<T> entityClass;
@@ -514,10 +517,6 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         return getPreviousNextId(filter, "", ">", "asc");
     }
 
-    public Long getUserId() {
-        return FlyUserDetailsService.getCurrentUserId();
-    }
-
     protected void addInactiveFilter(F filter, StringBuilder hqlWhere, String entityName) {
         if (!filter.isIgnoreInactiveFilter()) {
             if (filter.getInactive() != null) {
@@ -610,5 +609,21 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         parameters.forEach(query::setParameter);
 
         return query.getResultList().stream().filter(Objects::nonNull).findFirst();
+    }
+
+    @Transactional
+    public void setTenantInCurrentConnection(String tenantIdentifier) {
+        if (FlyTenantThreadLocal.getTenant() != null)
+            FlyTenantThreadLocal.setTenant(tenantIdentifier);
+
+        if (tenantIdentifier != null) {
+            tenantIdentifier = "SET search_path TO  " + tenantIdentifier;
+        } else {
+            tenantIdentifier = "SET search_path TO  " + FlyMultiTenantConstants.DEFAULT_TENANT_ID;
+        }
+
+        flush();
+        getEntityManager().createNativeQuery(tenantIdentifier).executeUpdate();
+        flush();
     }
 }
