@@ -1,6 +1,5 @@
 package com.flytecnologia.core.user;
 
-import com.flytecnologia.core.hibernate.multitenancy.FlyMultiTenantConstants;
 import com.flytecnologia.core.token.FlyTokenUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -53,18 +52,6 @@ public class FlyUserDetailsService implements UserDetailsService {
         permissions.forEach(p -> authorities.add(new SimpleGrantedAuthority(p.getPermissionName().toUpperCase())));
 
         return authorities;
-    }
-
-    public static Long getCurrentUserId() {
-        return FlyTokenUserDetails.getCurrentUserId();
-    }
-
-    public static String getCurrentSchemaName() {
-        return FlyTokenUserDetails.getCurrentSchemaName();
-    }
-
-    public static String getCurrentTenantName() {
-        return FlyMultiTenantConstants.DEFAULT_TENANT_SUFFIX + FlyTokenUserDetails.getCurrentSchemaName();
     }
 
     public static String getCurrentLogin() {

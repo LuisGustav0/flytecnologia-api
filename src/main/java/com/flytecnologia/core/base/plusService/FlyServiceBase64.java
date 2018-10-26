@@ -1,7 +1,5 @@
 package com.flytecnologia.core.base.plusService;
 
-import com.flytecnologia.core.base.FlyValidationBase;
-
 import java.util.Base64;
 
 public interface FlyServiceBase64 extends FlyValidationBase {
