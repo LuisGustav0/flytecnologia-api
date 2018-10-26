@@ -32,6 +32,7 @@ public abstract class FlyEntityBase implements Serializable {
     @JsonIgnore
     private boolean isIgnoreAfterSave;
 
+    @JsonIgnore
     public boolean isDoNotAudit() {
         return doNotAudit;
     }
@@ -40,6 +41,7 @@ public abstract class FlyEntityBase implements Serializable {
         this.doNotAudit = doNotAudit;
     }
 
+    @JsonIgnore
     public boolean isIgnoreBeforeSave() {
         return isIgnoreBeforeSave;
     }
@@ -48,6 +50,7 @@ public abstract class FlyEntityBase implements Serializable {
         isIgnoreBeforeSave = ignoreBeforeSave;
     }
 
+    @JsonIgnore
     public boolean isIgnoreAfterSave() {
         return isIgnoreAfterSave;
     }
