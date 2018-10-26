@@ -76,16 +76,6 @@ public class FlyRefreshTokenCookiePreProcessorFilter implements Filter {
         return req;
     }
 
-   /* private String getTenantId(HttpServletRequest req) {
-        String tenant = FlyTokenUserDetails.getCurrentSchemaName();//req.getHeader(FlyMultiTenantConstants.REQUEST_HEADER_ID);
-
-        if (tenant != null) {
-            return tenant;
-        }
-
-        return FlyMultiTenantConstants.DEFAULT_TENANT_ID;
-    }*/
-
     @Override
     public void init(FilterConfig filterConfig) {
 
