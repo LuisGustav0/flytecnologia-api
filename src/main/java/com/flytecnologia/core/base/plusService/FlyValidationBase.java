@@ -1,4 +1,4 @@
-package com.flytecnologia.core.base;
+package com.flytecnologia.core.base.plusService;
 
 import com.flytecnologia.core.exception.BusinessException;
 import org.springframework.util.StringUtils;
