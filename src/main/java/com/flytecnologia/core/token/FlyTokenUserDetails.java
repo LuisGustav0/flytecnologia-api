@@ -47,6 +47,12 @@ public class FlyTokenUserDetails {
         return (String) tenant.orElse(FlyMultiTenantConstants.DEFAULT_TENANT_ID);
     }
 
+    public static String getCurrentSchemaNameOrElseNull() {
+        Optional<Object> tenant = getAuthenticationInformation(FlyMultiTenantConstants.REQUEST_HEADER_ID);
+
+        return (String) tenant.orElse(null);
+    }
+
     public static String getCurrentUsername() {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         Authentication authentication = securityContext.getAuthentication();
