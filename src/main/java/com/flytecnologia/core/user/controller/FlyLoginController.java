@@ -1,7 +1,6 @@
 package com.flytecnologia.core.user.controller;
 
 import com.flytecnologia.core.config.property.FlyAppProperty;
-import com.flytecnologia.core.hibernate.multitenancy.FlyMultiTenantConstants;
 import com.flytecnologia.core.hibernate.multitenancy.FlyTenantThreadLocal;
 import com.flytecnologia.core.user.FlyUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,8 +43,7 @@ public class FlyLoginController {
     }
 
     private void _revoke(String cookieName, String path, HttpServletResponse resp) {
-        FlyTenantThreadLocal.setTenant(FlyMultiTenantConstants.DEFAULT_TENANT_ID);
-        FlyTenantThreadLocal.setUserId(null);
+        FlyTenantThreadLocal.clear();
 
         Cookie cookie = new Cookie(cookieName, null);
         cookie.setHttpOnly(true);

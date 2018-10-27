@@ -7,6 +7,10 @@ public class FlyTenantThreadLocal {
 
     private static final ThreadLocal<Map<String, Object>> tenantThreadLocal = new ThreadLocal<>();
 
+    public static void clear() {
+        tenantThreadLocal.set(new HashMap<>());
+    }
+
     public static String getTenant() {
         if(tenantThreadLocal.get() == null){
             return null;
