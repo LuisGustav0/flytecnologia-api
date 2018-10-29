@@ -40,11 +40,11 @@ public class FlyLoginController {
         _revoke("refreshToken4", path, resp);
 
         resp.setStatus(HttpStatus.NO_CONTENT.value());
+
+        FlyTenantThreadLocal.remove();
     }
 
     private void _revoke(String cookieName, String path, HttpServletResponse resp) {
-        FlyTenantThreadLocal.clear();
-
         Cookie cookie = new Cookie(cookieName, null);
         cookie.setHttpOnly(true);
         cookie.setSecure(flyAppProperty.getSecurity().isEnableHttps());

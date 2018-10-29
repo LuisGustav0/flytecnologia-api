@@ -7,12 +7,12 @@ public class FlyTenantThreadLocal {
 
     private static final ThreadLocal<Map<String, Object>> tenantThreadLocal = new ThreadLocal<>();
 
-    public static void clear() {
-        tenantThreadLocal.set(new HashMap<>());
+    public static void remove() {
+        tenantThreadLocal.remove();
     }
 
     public static String getTenant() {
-        if(tenantThreadLocal.get() == null){
+        if (tenantThreadLocal.get() == null) {
             return null;
         }
 
@@ -20,7 +20,7 @@ public class FlyTenantThreadLocal {
     }
 
     public static void setTenant(String tenantCode) {
-        if(tenantThreadLocal.get() == null){
+        if (tenantThreadLocal.get() == null) {
             tenantThreadLocal.set(new HashMap<>());
         }
 
@@ -28,7 +28,7 @@ public class FlyTenantThreadLocal {
     }
 
     public static Long getUserId() {
-        if(tenantThreadLocal.get() == null){
+        if (tenantThreadLocal.get() == null) {
             return null;
         }
 
@@ -36,7 +36,7 @@ public class FlyTenantThreadLocal {
     }
 
     public static void setUserId(Long userId) {
-        if(tenantThreadLocal.get() == null){
+        if (tenantThreadLocal.get() == null) {
             tenantThreadLocal.set(new HashMap<>());
         }
 
