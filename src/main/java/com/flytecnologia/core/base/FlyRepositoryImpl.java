@@ -411,7 +411,9 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
     private void addFieldDescriptionToWhereAutocomplete(F filter, String alias, StringBuilder hql) {
         if (isEmpty(filter.getAcFieldsListAutocomplete())) {
             hql.append("   fly_to_ascii(lower(")
-                    .append(alias).append(".").append(filter.getAcFieldDescription())
+                    .append(alias)
+                    .append(".")
+                    .append(filter.getAcFieldDescription().replace("__", "."))
                     .append(")) like fly_to_ascii(:value) \n ");
         } else {
             String[] extraField = filter.getAcFieldsListAutocomplete().split(",");
