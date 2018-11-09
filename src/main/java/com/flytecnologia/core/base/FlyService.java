@@ -168,22 +168,35 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
 
         boolean isIgnoreAfterSave = entity.isIgnoreAfterSave();
 
+        T oldEntity = cloneEntity(entitySaved);
+
         /*Para fazer update todos os versions dos objetos aninhados tem q estar setados*/
         BeanUtils.copyProperties(entity, entitySaved, "id");
 
         Map<String, Object> parameters = entity.getParameters();
 
-        T _entitySaved = getRepository().save(entitySaved);
+        entitySaved = getRepository().save(entitySaved);
 
-        _entitySaved.setParameters(parameters);
+        entitySaved.setParameters(parameters);
 
         if (!isIgnoreAfterSave) {
-            afterSave(_entitySaved, entity);
+            afterSave(entitySaved, oldEntity);
         }
 
-        _entitySaved.setParameters(null);
+        entitySaved.setParameters(null);
 
-        return _entitySaved;
+        return entitySaved;
+    }
+
+    private T cloneEntity(T entitySaved) {
+        T oldEntity = null;
+        try {
+            oldEntity = getEntityClass().newInstance();
+            BeanUtils.copyProperties(entitySaved, oldEntity);
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return oldEntity;
     }
 
     private void invokeBaseLazyAtributesToUpdate(T entitySaved) {
