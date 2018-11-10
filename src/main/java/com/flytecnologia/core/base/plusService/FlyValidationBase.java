@@ -59,7 +59,7 @@ public interface FlyValidationBase {
             return;
 
         if (!lastDate.isEqual(firstDate)) {
-            if (lastDate.isBefore(firstDate))
+            if (!firstDate.isBefore(lastDate))
                 throw new BusinessException(message);
         }
     }
@@ -68,7 +68,7 @@ public interface FlyValidationBase {
         if (firstDate == null || lastDate == null)
             return;
 
-        if (lastDate.isBefore(firstDate))
+        if (!firstDate.isBefore(lastDate))
             throw new BusinessException(message);
     }
 
