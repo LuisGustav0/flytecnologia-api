@@ -106,7 +106,9 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
     public T create(T entity) {
         notNull(entity, "flyserivice.invalidRecord");
 
-        beforeValidateSave(entity, null);
+        if (!entity.isIgnoreBeforeSave()) {
+            beforeValidateSave(entity, null);
+        }
 
         FlyValidatorUtil.validate(entity);
 
@@ -144,7 +146,9 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         notNull(entity, "flyserivice.invalidRecord");
         notNull(entity.getId(), "flyserivice.invalidRecord");
 
-        beforeValidateSave(entity, null);
+        if (!entity.isIgnoreBeforeSave()) {
+            beforeValidateSave(entity, null);
+        }
 
         FlyValidatorUtil.validate(entity);
 
