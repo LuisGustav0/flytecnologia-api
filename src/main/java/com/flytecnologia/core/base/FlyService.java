@@ -18,6 +18,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.Basic;
@@ -416,5 +420,15 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
 
     public void setTenantInCurrentConnection(String tenantIdentifier) {
         getRepository().setTenantInCurrentConnection(tenantIdentifier);
+    }
+
+    public boolean hasPermission(String role) {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        Authentication authentication = securityContext.getAuthentication();
+        if (authentication != null) {
+            return authentication.getAuthorities().stream()
+                    .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(role));
+        }
+        return false;
     }
 }
