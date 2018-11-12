@@ -21,13 +21,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.Basic;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -422,12 +422,19 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         getRepository().setTenantInCurrentConnection(tenantIdentifier);
     }
 
-    public boolean hasPermission(String role) {
+    public boolean hasAnyPermission(String... roles) {
+        if (roles == null || roles.length == 0) {
+            return false;
+        }
+
         SecurityContext securityContext = SecurityContextHolder.getContext();
         Authentication authentication = securityContext.getAuthentication();
+
         if (authentication != null) {
+            List<String> rolesList = Arrays.asList(roles);
+
             return authentication.getAuthorities().stream()
-                    .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(role));
+                    .anyMatch(grantedAuthority -> rolesList.contains(grantedAuthority.getAuthority()));
         }
         return false;
     }
