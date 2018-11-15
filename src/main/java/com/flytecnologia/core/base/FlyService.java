@@ -69,6 +69,9 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
     @Autowired
     private MessageSource messageSource;
 
+    @Autowired
+    private FlySwitchTenantService flySwitchTenantService;
+
     public FlyService() {
     }
 
@@ -437,5 +440,21 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
                     .anyMatch(grantedAuthority -> rolesList.contains(grantedAuthority.getAuthority()));
         }
         return false;
+    }
+
+    public FlySwitchTenantService getFlySwitchTenantService() {
+        return flySwitchTenantService;
+    }
+
+    protected void unbindSession(String tenant) {
+        flySwitchTenantService.unbindSession();
+
+        setTenantInCurrentConnection(tenant);
+    }
+
+    protected void bindSession(String tenant) {
+        flySwitchTenantService.bindSession();
+
+        setTenantInCurrentConnection(tenant);
     }
 }

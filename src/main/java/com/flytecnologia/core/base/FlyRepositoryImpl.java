@@ -528,7 +528,8 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
     }
 
     public <G extends FlyEntity> void detach(G entity) {
-        getEntityManager().detach(entity);
+        if (entity != null)
+            getEntityManager().detach(entity);
     }
 
     public void flush() {
@@ -615,8 +616,9 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
     @Transactional
     public void setTenantInCurrentConnection(String tenantIdentifier) {
-        if (FlyTenantThreadLocal.getTenant() != null)
-            FlyTenantThreadLocal.setTenant(tenantIdentifier);
+        //flush();
+
+        FlyTenantThreadLocal.setTenant(tenantIdentifier);
 
         if (tenantIdentifier != null) {
             tenantIdentifier = "SET search_path TO  " + tenantIdentifier;
@@ -624,8 +626,8 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
             tenantIdentifier = "SET search_path TO  " + FlyMultiTenantConstants.DEFAULT_TENANT_ID;
         }
 
-        flush();
         getEntityManager().createNativeQuery(tenantIdentifier).executeUpdate();
+
         flush();
     }
 }
