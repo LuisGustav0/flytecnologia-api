@@ -1,6 +1,7 @@
 package com.flytecnologia.core.base;
 
 import com.flytecnologia.core.base.plusService.FlyTenantInformation;
+import com.flytecnologia.core.base.plusService.FlyTimeSpentService;
 import com.flytecnologia.core.base.plusService.FlyValidationBase;
 import com.flytecnologia.core.exception.BusinessException;
 import com.flytecnologia.core.model.FlyEntity;
@@ -37,7 +38,7 @@ import java.util.Optional;
 import java.util.TimeZone;
 
 public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> implements FlyValidationBase,
-        FlyTenantInformation {
+        FlyTenantInformation, FlyTimeSpentService {
 
     protected abstract FlyRepository<T, Long, F> getRepository();
 
@@ -460,16 +461,5 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         flySwitchTenantService.bindSession();
 
         setTenantInCurrentConnection(tenant);
-    }
-
-    protected void showTheTimeSpent(long start, String message) {
-        long end = System.currentTimeMillis();
-
-        Date date = new Date(end - start);
-        DateFormat formatter = new SimpleDateFormat("HH:mm:ss.SSS");
-        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-        String dateFormatted = formatter.format(date);
-
-        System.out.println(message + dateFormatted);
     }
 }
