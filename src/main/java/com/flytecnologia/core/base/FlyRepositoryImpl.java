@@ -630,4 +630,13 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
         flush();
     }
+
+    public boolean isInactive(Long id) {
+        if (isEmpty(id))
+            return false;
+
+        Optional<Boolean> inative = getFieldById(id, "inactive");
+
+        return inative.orElse(false);
+    }
 }

@@ -28,14 +28,10 @@ import javax.persistence.Basic;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.TimeZone;
 
 public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> implements FlyValidationBase,
         FlyTenantInformation, FlyTimeSpentService {
@@ -383,6 +379,10 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
 
     protected <E> Optional<E> getFieldById(Long id, String property) {
         return getRepository().getFieldById(id, property);
+    }
+
+    public boolean isInactive(Long id) {
+        return getRepository().isInactive(id);
     }
 
     protected Optional<Long> getRecordListCount(Long id, String listName) {

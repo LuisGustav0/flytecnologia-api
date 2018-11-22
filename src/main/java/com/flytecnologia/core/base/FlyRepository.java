@@ -33,4 +33,6 @@ public interface FlyRepository<T extends FlyEntity, PK extends Serializable, F e
     <G extends FlyEntity> void detach(G entity);
 
     void batchSave(List<T> entities, int batchSize);
+
+    boolean isInactive(Long id);
 }
