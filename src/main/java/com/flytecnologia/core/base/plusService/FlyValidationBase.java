@@ -1,6 +1,7 @@
 package com.flytecnologia.core.base.plusService;
 
 import com.flytecnologia.core.exception.BusinessException;
+import com.flytecnologia.core.model.FlyEntity;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
@@ -17,6 +18,14 @@ public interface FlyValidationBase {
 
         if (value instanceof Number) {
             return ((Number) value).longValue() == 0;
+        }
+
+        if (value.getClass().isArray()) {
+            return ((Object[]) value).length == 0;
+        }
+
+        if (value instanceof FlyEntity) {
+            return ((FlyEntity) value).getId() == null;
         }
 
         return StringUtils.isEmpty(value) || "undefined".equals(value) || "null".equals(value);
