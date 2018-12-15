@@ -27,6 +27,20 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Res
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class FlyResourceServerConfig extends ResourceServerConfigurerAdapter {
 
+    private static final String[] AUTH_WHITELIST_SWAGGER = {
+            "/swagger-resources/**",
+            "/swagger-ui.html",
+            "/v2/api-docs",
+            "/webjars/**"
+    };
+
+    private static final String[] AUTH_WHITELIST_LOGIN = {
+            "/login",
+            "/login/reset-password",
+            "/login/send-new-password",
+            "/login/information"
+    };
+
     @Autowired
     private FlyAppProperty flyAppProperty;
 
@@ -50,10 +64,8 @@ public class FlyResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/login").permitAll()
-                .antMatchers("/login/reset-password").permitAll()
-                .antMatchers("/login/send-new-password").permitAll()
-                .antMatchers("/login/information").permitAll()
+                .antMatchers(AUTH_WHITELIST_LOGIN).permitAll()
+                .antMatchers(AUTH_WHITELIST_SWAGGER).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
