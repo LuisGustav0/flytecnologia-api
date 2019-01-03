@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class ErrorInvalidFormatDTO {
+public class FlyErrorInvalidFormat {
 
     @JsonProperty
     private String field;
@@ -20,7 +20,7 @@ public class ErrorInvalidFormatDTO {
     private String message;
 
     @JsonCreator
-    private ErrorInvalidFormatDTO() {
+    private FlyErrorInvalidFormat() {
     }
 
     public static Builder builder() {
@@ -28,30 +28,30 @@ public class ErrorInvalidFormatDTO {
     }
 
     public static class Builder {
-        private ErrorInvalidFormatDTO errorDTO = new ErrorInvalidFormatDTO();
+        private FlyErrorInvalidFormat error = new FlyErrorInvalidFormat();
 
-        public Builder withBean(String bean) {
-            errorDTO.bean = bean;
+        Builder withBean(String bean) {
+            error.bean = bean;
             return this;
         }
 
-        public Builder withField(String field) {
-            errorDTO.field = field;
+        Builder withField(String field) {
+            error.field = field;
             return this;
         }
 
-        public Builder withRejectedValue(String rejectedValue) {
-            errorDTO.rejectedValue = rejectedValue;
+        Builder withRejectedValue(String rejectedValue) {
+            error.rejectedValue = rejectedValue;
             return this;
         }
 
-        public Builder withMessage(String message) {
-            errorDTO.message = message;
+        Builder withMessage(String message) {
+            error.message = message;
             return this;
         }
 
-        public ErrorInvalidFormatDTO build() {
-            return errorDTO;
+        public FlyErrorInvalidFormat build() {
+            return error;
         }
     }
 

@@ -46,9 +46,7 @@ public class FlyMailSender {
                         message.setObject(attachmentFilename,  IOUtils.toByteArray(inputStreamSource.getInputStream()));
 
                         attachmentFilenames.add(attachmentFilename);
-                    } catch (JMSException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
+                    } catch  (JMSException | IOException e) {
                         e.printStackTrace();
                     }
                 });
@@ -72,17 +70,17 @@ public class FlyMailSender {
 
         if (flyMessage.getTo() != null) {
             helper.setTo(flyMessage.getTo()
-                    .toArray(new String[flyMessage.getTo().size()]));
+                    .toArray(new String[0]));
         }
 
         if (flyMessage.getCc() != null) {
             helper.setCc(flyMessage.getCc()
-                    .toArray(new String[flyMessage.getCc().size()]));
+                    .toArray(new String[0]));
         }
 
         if (flyMessage.getBcc() != null) {
             helper.setBcc(flyMessage.getBcc()
-                    .toArray(new String[flyMessage.getBcc().size()]));
+                    .toArray(new String[0]));
         }
 
         if (flyMessage.getMapInputStream() != null) {

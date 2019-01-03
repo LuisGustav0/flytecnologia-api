@@ -11,6 +11,9 @@ import com.flytecnologia.core.search.FlyPageableResult;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +23,7 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.lang.reflect.ParameterizedType;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -31,7 +35,6 @@ import java.util.Set;
 @NoRepositoryBean
 public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter>
         implements FlyValidationBase, FlyTenantInformation {
-    //private static final Logger logger = LogManager.getLogger(FlyRepositoryImpl.class);
 
     private Class<T> entityClass;
 
@@ -615,10 +618,14 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
     }
 
     @Transactional
-    public void setTenantInCurrentConnection(String tenantIdentifier) {
+    public void setTenantInCurrentConnection(String tenantIdentifier, Long userId) {
         //flush();
 
         FlyTenantThreadLocal.setTenant(tenantIdentifier);
+
+        if(userId != null) {
+            FlyTenantThreadLocal.setUserId(userId);
+        }
 
         if (tenantIdentifier != null) {
             tenantIdentifier = "SET search_path TO  " + tenantIdentifier;
@@ -638,5 +645,22 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         Optional<Boolean> inative = getFieldById(id, "inactive");
 
         return inative.orElse(false);
+    }
+
+    public boolean hasAnyPermission(String... roles) {
+        if (roles == null || roles.length == 0) {
+            return false;
+        }
+
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        Authentication authentication = securityContext.getAuthentication();
+
+        if (authentication != null) {
+            List<String> rolesList = Arrays.asList(roles);
+
+            return authentication.getAuthorities().stream()
+                    .anyMatch(grantedAuthority -> rolesList.contains(grantedAuthority.getAuthority()));
+        }
+        return false;
     }
 }

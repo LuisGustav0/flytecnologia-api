@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 public interface FlyTimeSpentService {
-    default void showTheTimeSpent(long start, String message) {
+    default String getMessageTimeSpent(long start, String message) {
         long end = System.currentTimeMillis();
 
         Date date = new Date(end - start);
@@ -14,6 +14,6 @@ public interface FlyTimeSpentService {
         formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
         String dateFormatted = formatter.format(date);
 
-        System.out.println(message + dateFormatted);
+        return message + dateFormatted;
     }
 }

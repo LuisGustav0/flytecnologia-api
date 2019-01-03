@@ -24,6 +24,7 @@ ext {
     jasperreports = '6.7.0'
     jacksonDatatypeHibernate5 = '2.9.5'
     logbackClassic = '1.2.3'
+    lombokVersion = '1.18.4'
 }
 
 jar {
@@ -42,6 +43,8 @@ repositories {
 }
 
 dependencies {
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: lombokVersion
+
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-tomcat', version: springBootVersion
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: springBootVersion
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: springBootVersion

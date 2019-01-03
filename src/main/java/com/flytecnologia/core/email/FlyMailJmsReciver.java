@@ -21,13 +21,6 @@ public class FlyMailJmsReciver {
         this.flyMailSender = flyMailSender;
     }
 
-    private String from;
-    private List<String> to;
-    private List<String> bcc;
-    private String subject;
-    private String text;
-    private Map<String, InputStreamSource> mapInputStream;
-
     @JmsListener(destination = "mailbox", containerFactory = "flyJmsFactory")
     public void receiveMessage(Message message) {
         try {

@@ -35,4 +35,6 @@ public interface FlyRepository<T extends FlyEntity, PK extends Serializable, F e
     void batchSave(List<T> entities, int batchSize);
 
     boolean isInactive(Long id);
+
+    boolean hasAnyPermission(String... roles);
 }

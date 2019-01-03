@@ -1,7 +1,11 @@
 package com.flytecnologia.core.exception;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.validation.BindingResult;
 
+@Getter
+@Setter
 public class InvalidDataException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
@@ -10,13 +14,5 @@ public class InvalidDataException extends RuntimeException {
     public InvalidDataException(String msg, BindingResult bindingResult) {
         super(msg);
         setBindingResult(bindingResult);
-    }
-
-    public BindingResult getBindingResult() {
-        return bindingResult;
-    }
-
-    public void setBindingResult(BindingResult bindingResult) {
-        this.bindingResult = bindingResult;
     }
 }

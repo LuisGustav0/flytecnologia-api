@@ -19,16 +19,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.Basic;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -109,11 +105,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         FlyReflection.setParentInTheChildrenList(entity);
     }
 
-
-    @Transactional
-    public T create(T entity) {
-        notNull(entity, "flyserivice.invalidRecord");
-
+    private void validateBeforeSave(T entity) {
         if (!entity.isIgnoreBeforeSave()) {
             beforeValidateSave(entity, null);
         }
@@ -126,6 +118,13 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         if (!entity.isIgnoreBeforeSave()) {
             beforeSave(entity, null);
         }
+    }
+
+    @Transactional
+    public T create(T entity) {
+        notNull(entity, "flyserivice.invalidRecord");
+
+        validateBeforeSave(entity);
 
         boolean isIgnoreAfterSave = entity.isIgnoreAfterSave();
 
@@ -403,16 +402,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
 
     public void batchSaveComplete(List<T> entities, int batchSize) {
         entities.forEach(entity -> {
-            beforeValidateSave(entity, null);
-
-            FlyValidatorUtil.validate(entity);
-
-            removeEmptyEntityFromEntity(entity);
-            setParentInTheChildrenList(entity);
-
-            if (!entity.isIgnoreBeforeSave()) {
-                beforeSave(entity, null);
-            }
+            validateBeforeSave(entity);
 
             boolean isIgnoreAfterSave = entity.isIgnoreAfterSave();
 
@@ -426,40 +416,35 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         getRepository().batchSave(entities, batchSize);
     }
 
-    public void setTenantInCurrentConnection(String tenantIdentifier) {
-        getRepository().setTenantInCurrentConnection(tenantIdentifier);
+    public void setTenantInCurrentConnection(String tenantIdentifier, Long userUd) {
+        getRepository().setTenantInCurrentConnection(tenantIdentifier, userUd);
     }
 
     public boolean hasAnyPermission(String... roles) {
-        if (roles == null || roles.length == 0) {
-            return false;
-        }
-
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        Authentication authentication = securityContext.getAuthentication();
-
-        if (authentication != null) {
-            List<String> rolesList = Arrays.asList(roles);
-
-            return authentication.getAuthorities().stream()
-                    .anyMatch(grantedAuthority -> rolesList.contains(grantedAuthority.getAuthority()));
-        }
-        return false;
+        return getRepository().hasAnyPermission(roles);
     }
 
     public FlySwitchTenantService getFlySwitchTenantService() {
         return flySwitchTenantService;
     }
 
-    protected void unbindSession(String tenant) {
-        flySwitchTenantService.unbindSession();
-
-        setTenantInCurrentConnection(tenant);
+    public void unbindSession(String tenant) {
+        unbindSession(tenant, null);
     }
 
-    protected void bindSession(String tenant) {
+    public void unbindSession(String tenant, Long userId) {
+        flySwitchTenantService.unbindSession();
+
+        setTenantInCurrentConnection(tenant, userId);
+    }
+
+    public void bindSession(String tenant) {
+        bindSession(tenant, null);
+    }
+
+    public void bindSession(String tenant, Long userId) {
         flySwitchTenantService.bindSession();
 
-        setTenantInCurrentConnection(tenant);
+        setTenantInCurrentConnection(tenant, userId);
     }
 }
