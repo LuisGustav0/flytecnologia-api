@@ -44,6 +44,8 @@ repositories {
 
 dependencies {
     compileOnly group: 'org.projectlombok', name: 'lombok', version: lombokVersion
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: lombokVersion
+
 
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-tomcat', version: springBootVersion
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: springBootVersion
@@ -116,6 +118,7 @@ configurations {
         exclude module: 'jcl-over-slf4j'
     }
 }
+
 
 
 jacoco {
