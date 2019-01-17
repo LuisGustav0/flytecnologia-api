@@ -2,6 +2,7 @@ package com.flytecnologia.core.base.plusService;
 
 import com.flytecnologia.core.exception.BusinessException;
 import com.flytecnologia.core.model.FlyEntity;
+import org.hibernate.collection.internal.PersistentBag;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
@@ -11,6 +12,10 @@ public interface FlyValidationBase {
     default boolean isEmpty(Object value) {
         if (value == null)
             return true;
+
+        if(value instanceof PersistentBag) {
+            return ((PersistentBag)value).isEmpty();
+        }
 
         if (value instanceof Collection) {
             return ((Collection) value).isEmpty();

@@ -31,7 +31,8 @@ public class FlyResourceServerConfig extends ResourceServerConfigurerAdapter {
             "/swagger-resources/**",
             "/swagger-ui.html",
             "/v2/api-docs",
-            "/webjars/**"
+            "/webjars/**",
+            "/actuator/health"
     };
 
     private static final String[] AUTH_WHITELIST_LOGIN = {
