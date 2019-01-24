@@ -37,7 +37,7 @@ public class FlyReflection {
     }
 
     public static <T extends FlyEntity> void removeEmptyEntityFromEntity(T source, int level, int maxLevel) {
-        if(level == 0)
+        if (level == 0)
             return;
 
         BeanWrapper src = new BeanWrapperImpl(source);
@@ -63,25 +63,27 @@ public class FlyReflection {
     }
 
     public static <T extends FlyEntity> void setParentInTheChildrenList(T source) {
-        setParentInTheChildrenList(source, true, source);
+        setParentInTheChildrenList(source, source, true);
     }
 
-    private static <T extends FlyEntity> void setParentInTheChildrenList(T source, boolean isFirstLevel, T parent) {
+    private static <T extends FlyEntity> void setParentInTheChildrenList(T source, T parent, boolean isFirstLevel) {
         BeanWrapper src = new BeanWrapperImpl(source);
         PropertyDescriptor[] pds = src.getPropertyDescriptors();
 
         String sourceName = parent.getClass().getSimpleName();
 
         for (PropertyDescriptor pd : pds) {
-            Object obj = src.getPropertyValue(pd.getName());
+            String propertyName = pd.getName();
+
+            Object obj = src.getPropertyValue(propertyName);
 
             if (obj instanceof List && isListOfFlyEntity((List) obj)) {
                 for (FlyEntity entity : (List<FlyEntity>) obj) {
-                    setParentInTheChildrenList(entity, false, parent);
+                    setParentInTheChildrenList(entity, source, false);
                 }
             }
 
-            if(obj != null) {
+            if (isFirstLevel) {
                 continue;
             }
 
