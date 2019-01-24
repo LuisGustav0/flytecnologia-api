@@ -41,6 +41,7 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
     private static final String NO_MESSSAGE_AVAILABLE = "No message available";
     private MessageSource messageSource;
     private FlyAppProperty flyAppProperty;
+    private FieldError fieldError;
 
     public FlyExceptionHandler(MessageSource messageSource,
                                FlyAppProperty flyAppProperty) {
@@ -59,7 +60,6 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
         }
 
         final ApiError apiError = toApiError("message.invalid", ex);
-
 
         return ResponseEntity.badRequest().body(FlyErrorResponse.of(apiError));
     }
@@ -167,11 +167,7 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private ApiError toApiError(String fieldError, Exception ex, Object... args) {
-        String message;
-
-        message = getMessage(fieldError, args);
-
-        return new ApiError(fieldError, message, getDevMessage(ex));
+        return new ApiError(fieldError, getMessage(fieldError, args), getDevMessage(ex));
     }
 
     private List<ApiError> toApiErrors(List<FlyErrorInvalidFormat> errorsDto,
@@ -207,15 +203,20 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
         return apiErrors;
     }
 
-    private String getMessage(FieldError fieldError, Object... args) {
-        if (fieldError == null)
-            return null;
-
-        return getMessage(fieldError.toString(), args);
+    private String getMessage(FieldError fieldError) {
+        try {
+            return messageSource.getMessage(fieldError, LocaleContextHolder.getLocale());
+        } catch (Exception ex) {
+            return NO_MESSSAGE_AVAILABLE;
+        }
     }
 
     private String getMessage(String field, Object... args) {
-        return getMessage(field, NO_MESSSAGE_AVAILABLE, args);
+        try {
+            return messageSource.getMessage(field, args, LocaleContextHolder.getLocale());
+        } catch (Exception ex) {
+            return NO_MESSSAGE_AVAILABLE;
+        }
     }
 
     private String getMessage(String field, String defaultMessage, Object... args) {
@@ -243,7 +244,7 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
             return null;
         }
 
-        return getMessage(fieldError, args);
+        return fieldError.toString();
     }
 
     private ResponseEntity<FlyErrorResponse> getBodyBadRequest(List<ApiError> apiErrors) {
