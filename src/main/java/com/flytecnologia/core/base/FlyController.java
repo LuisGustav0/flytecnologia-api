@@ -3,7 +3,6 @@ package com.flytecnologia.core.base;
 import com.flytecnologia.core.model.FlyEntity;
 import com.flytecnologia.core.search.FlyFilter;
 import com.flytecnologia.core.search.FlyPageableResult;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -111,9 +110,4 @@ public abstract class FlyController<T extends FlyEntity, F extends FlyFilter> {
     public FlyPageableResult search(F filter, Pageable pageable) {
         return getService().search(filter, pageable);
     }
-
-    protected ResponseEntity<ByteArrayResource> print(F filter) {
-        return getService().print(filter);
-    }
-
 }

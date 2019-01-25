@@ -1,5 +1,6 @@
 package com.flytecnologia.core.base;
 
+import com.flytecnologia.core.base.plusService.FlyPrintService;
 import com.flytecnologia.core.base.plusService.FlyTenantInformation;
 import com.flytecnologia.core.base.plusService.FlyTimeSpentService;
 import com.flytecnologia.core.base.plusService.FlyValidationBase;
@@ -13,12 +14,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.Basic;
@@ -30,7 +27,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> implements FlyValidationBase,
-        FlyTenantInformation, FlyTimeSpentService {
+        FlyTenantInformation, FlyTimeSpentService, FlyPrintService<F> {
 
     protected abstract FlyRepository<T, Long, F> getRepository();
 
@@ -319,10 +316,6 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         return getNextId(filter);
     }
 
-    public byte[] getReport(F filter) {
-        return null;
-    }
-
     public Optional<Long> getFirstId(F filter) {
         return getRepository().getFirstId(filter);
     }
@@ -349,31 +342,6 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
 
     public <G extends FlyEntity> void detach(G entity) {
         getRepository().detach(entity);
-    }
-
-    protected ResponseEntity<ByteArrayResource> print(F filter) {
-        byte[] data = getReport(filter);
-
-        if (data == null)
-            throw new BusinessException("flyserivice.generateReportError");
-
-        String fileName = filter.getPdfName() != null ? filter.getPdfName() : "report.pdf";
-
-
-        ByteArrayResource resource = new ByteArrayResource(data);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + fileName);
-        headers.setCacheControl("no-cache, no-store, must-revalidate, post-check=0, pre-check=0");
-        headers.setPragma("no-cache");
-        headers.setExpires(0);
-        headers.setContentType(MediaType.parseMediaType("application/pdf"));
-
-        return ResponseEntity.ok()
-                .headers(headers)
-                .contentType(MediaType.APPLICATION_PDF)
-                .contentLength(data.length)
-                .body(resource);
     }
 
     protected <E> Optional<E> getFieldById(Long id, String property) {
