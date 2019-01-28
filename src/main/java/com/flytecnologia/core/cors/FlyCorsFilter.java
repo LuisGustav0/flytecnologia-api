@@ -27,9 +27,8 @@ public class FlyCorsFilter implements Filter {
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
             throws IOException, ServletException {
 
-        HttpServletRequest request = (HttpServletRequest) req;
-        HttpServletResponse response = (HttpServletResponse) resp;
-
+        final HttpServletRequest request = (HttpServletRequest) req;
+        final HttpServletResponse response = (HttpServletResponse) resp;
         String allowOrigin = flyAppProperty.getSecurity().getAllowOrigin();
 
         if(allowOrigin == null || allowOrigin.trim().length() == 0 || "any".equals(allowOrigin)) {

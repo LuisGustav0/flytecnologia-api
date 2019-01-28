@@ -24,7 +24,7 @@ public class FlyMailJmsReciver {
     @JmsListener(destination = "mailbox", containerFactory = "flyJmsFactory")
     public void receiveMessage(Message message) {
         try {
-            MapMessage mapMessage = (MapMessage) message;
+            final MapMessage mapMessage = (MapMessage) message;
 
             FlyMailMessage flyMailMessage = new FlyMailMessage();
             flyMailMessage.setTo((List<String>) mapMessage.getObject("to"));
@@ -34,9 +34,9 @@ public class FlyMailJmsReciver {
             flyMailMessage.setText(mapMessage.getString("text"));
             flyMailMessage.setSubject(mapMessage.getString("subject"));
 
-            List<String> attachmentFilenames = (List<String>) mapMessage.getObject("attachmentFilenames");
+            final List<String> attachmentFilenames = (List<String>) mapMessage.getObject("attachmentFilenames");
 
-            Map<String, InputStreamSource> mapInputStream = new HashMap<>();
+            final Map<String, InputStreamSource> mapInputStream = new HashMap<>();
 
             if (attachmentFilenames != null) {
                 for (String attachmentFilename : attachmentFilenames) {

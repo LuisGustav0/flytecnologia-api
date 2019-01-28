@@ -24,11 +24,10 @@ public class FlyFile {
     public void saveImgToFile(String imgImgDir, Long idRecord, String field, String photo) {
         photo = photo.split(",")[1];
 
-        byte[] decodedImg = Base64.getDecoder().decode(photo);
-        String dir = imgImgDir + File.separator + idRecord.toString();
-        String fileName = field + ".jpg";
-
-        File folder = new File(dir);
+        final byte[] decodedImg = Base64.getDecoder().decode(photo);
+        final String dir = imgImgDir + File.separator + idRecord.toString();
+        final String fileName = field + ".jpg";
+        final File folder = new File(dir);
 
         if (!folder.exists()) {
             boolean created = folder.mkdirs();
@@ -47,9 +46,8 @@ public class FlyFile {
     }
 
     public void deleteFile(String imgImgDir, Long id, String filename) {
-        String dir = getPathFoto(imgImgDir, id, filename);
-
-        File folder = new File(dir);
+        final String dir = getPathFoto(imgImgDir, id, filename);
+        final File folder = new File(dir);
 
         if (folder.exists()) {
             folder.delete();
@@ -61,7 +59,7 @@ public class FlyFile {
     }
 
     public void saveImgToFile(String imgImgDir, FlyEntityImpl entity, String fieldname) {
-        Map<String, Object> parameters = entity.getParameters();
+        final Map<String, Object> parameters = entity.getParameters();
 
         if (parameters == null)
             return;
@@ -73,8 +71,8 @@ public class FlyFile {
 
     public void getImageAsByteArray(String imgImgDir, Long id, String filename, HttpServletResponse response) {
         try {
-            Path file = Paths.get(imgImgDir + File.separator + id).resolve(filename);
-            InputStream in = new FileInputStream(file.toFile());
+            final Path file = Paths.get(imgImgDir + File.separator + id).resolve(filename);
+            final InputStream in = new FileInputStream(file.toFile());
             response.setContentType(MediaType.IMAGE_JPEG_VALUE);
             IOUtils.copy(in, response.getOutputStream());
         } catch (Exception e) {

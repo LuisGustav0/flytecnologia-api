@@ -35,7 +35,7 @@ public class FlyHasAuthorityMethodSecurityExpressionRoot
         if (flyAppProperty.getApp().isDebug() && !flyAppProperty.getApp().isValidatePermissions())
             return ROLE_MASTER;
 
-        FlyRoles flyRoles = target.getClass().getAnnotation(FlyRoles.class);
+        final FlyRoles flyRoles = target.getClass().getAnnotation(FlyRoles.class);
 
         if (flyRoles != null) {
             if (!StringUtils.isEmpty(flyRoles.defaultName()))
@@ -58,7 +58,7 @@ public class FlyHasAuthorityMethodSecurityExpressionRoot
         if (flyAppProperty.getApp().isDebug() && !flyAppProperty.getApp().isValidatePermissions())
             return ROLE_MASTER;
 
-        FlyRoles flyRoles = target.getClass().getAnnotation(FlyRoles.class);
+        final FlyRoles flyRoles = target.getClass().getAnnotation(FlyRoles.class);
 
         if (flyRoles != null) {
             if (!StringUtils.isEmpty(flyRoles.defaultName()))
@@ -74,7 +74,7 @@ public class FlyHasAuthorityMethodSecurityExpressionRoot
         if (flyAppProperty.getApp().isDebug() && !flyAppProperty.getApp().isValidatePermissions())
             return ROLE_MASTER;
 
-        FlyRoles flyRoles = target.getClass().getAnnotation(FlyRoles.class);
+        final FlyRoles flyRoles = target.getClass().getAnnotation(FlyRoles.class);
 
         if (flyRoles != null) {
             if (!StringUtils.isEmpty(flyRoles.defaultName()))
@@ -89,7 +89,7 @@ public class FlyHasAuthorityMethodSecurityExpressionRoot
         if (flyAppProperty.getApp().isDebug() && !flyAppProperty.getApp().isValidatePermissions())
             return ROLE_MASTER;
 
-        FlyRoles flyRoles = target.getClass().getAnnotation(FlyRoles.class);
+        final FlyRoles flyRoles = target.getClass().getAnnotation(FlyRoles.class);
 
         if (flyRoles != null) {
             if (!StringUtils.isEmpty(flyRoles.defaultName()))

@@ -65,7 +65,7 @@ public class FlyRevisionsEntity implements Serializable {
     private static final ZoneId ZONE_ID_UTC = ZoneId.of("UTC");
 
     public void fixTimezone() {
-        LocalDateTime localDateTime = LocalDateTime.ofInstant(date.toInstant(), ZONE_ID_UTC);
+        final LocalDateTime localDateTime = LocalDateTime.ofInstant(date.toInstant(), ZONE_ID_UTC);
         date = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
 

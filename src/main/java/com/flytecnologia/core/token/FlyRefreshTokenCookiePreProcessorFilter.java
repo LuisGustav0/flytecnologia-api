@@ -27,9 +27,7 @@ public class FlyRefreshTokenCookiePreProcessorFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
-        HttpServletRequest req = (HttpServletRequest) request;
-
-        req = addRequestInformation(req);
+        final HttpServletRequest req = addRequestInformation((HttpServletRequest) request);
 
         //req.setAttribute(FlyMultiTenantConstants.REQUEST_HEADER_ID, getTenantId(req));
 
@@ -101,7 +99,7 @@ public class FlyRefreshTokenCookiePreProcessorFilter implements Filter {
 
         @Override
         public Map<String, String[]> getParameterMap() {
-            ParameterMap<String, String[]> map = new ParameterMap<>(getRequest().getParameterMap());
+            final ParameterMap<String, String[]> map = new ParameterMap<>(getRequest().getParameterMap());
             map.put("refresh_token", new String[]{refreshToken});
             map.setLocked(true);
             return map;

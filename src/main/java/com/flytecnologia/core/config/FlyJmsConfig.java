@@ -23,7 +23,7 @@ public class FlyJmsConfig {
 
     @Bean
     public ActiveMQConnectionFactory activeMqConnectionFactory() {
-        ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory();
+        final ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory();
         connectionFactory.setBrokerURL(BROKER_URL);
 
         return connectionFactory;
@@ -32,7 +32,7 @@ public class FlyJmsConfig {
     @Bean
     public JmsListenerContainerFactory<?> flyJmsFactory(ConnectionFactory connectionFactory,
                                                         DefaultJmsListenerContainerFactoryConfigurer configurer) {
-        DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
+        final DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
         // This provides all boot's default to this factory, including the message converter
         factory.setTransactionManager(jmsTransactionManager());
         factory.setCacheLevelName("CACHE_CONNECTION"); //<-- the line fixed the problem
@@ -50,7 +50,7 @@ public class FlyJmsConfig {
     @Bean(name = "jmsTransactionManager")
     @DependsOn(value = {"activeMqConnectionFactory"})
     public PlatformTransactionManager jmsTransactionManager() {
-        JmsTransactionManager transactionManager = new JmsTransactionManager();
+        final JmsTransactionManager transactionManager = new JmsTransactionManager();
         transactionManager.setConnectionFactory(activeMqConnectionFactory());
         return transactionManager;
     }

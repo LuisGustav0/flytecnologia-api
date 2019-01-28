@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 public class FlyGeneratePassword {
 
     public static void main(String[] args) {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         System.out.println(encoder.encode("admin"));
     }
 }

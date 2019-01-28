@@ -20,7 +20,7 @@ public class FlyMailConfig {
 
     @Bean
     public JavaMailSender mailSender() {
-        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        final JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 
         mailSender.setHost(env.getProperty("spring.mail.host"));
         mailSender.setPort(env.getProperty("spring.mail.port", Integer.class));
@@ -28,7 +28,7 @@ public class FlyMailConfig {
         mailSender.setPassword(env.getProperty("spring.mail.password"));
         mailSender.setProtocol(env.getProperty("spring.mail.protocol"));
 
-        Properties props = mailSender.getJavaMailProperties();
+        final Properties props = mailSender.getJavaMailProperties();
         props.put("mail.smtp.auth", true);
         props.put("mail.smtp.starttls.enable", true);
         props.put("mail.smtp.connectiontimeout", 10000);

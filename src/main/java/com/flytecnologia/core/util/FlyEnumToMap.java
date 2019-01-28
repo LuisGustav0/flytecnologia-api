@@ -15,13 +15,13 @@ import java.util.Map;
 public class FlyEnumToMap {
 
     public static List<Map<String, Object>> parse(Class<? extends Enum> enumClass) {
-        EnumSet enumMap = EnumSet.allOf(enumClass);
-        List<Map<String, Object>> data = new ArrayList<>();
-        Object[] enums = enumMap.toArray();
-        List<String> props = getPropertiesDescriptor(PropertyUtils.getPropertyDescriptors(enumClass));
+        final EnumSet enumMap = EnumSet.allOf(enumClass);
+        final List<Map<String, Object>> data = new ArrayList<>();
+        final Object[] enums = enumMap.toArray();
+        final List<String> props = getPropertiesDescriptor(PropertyUtils.getPropertyDescriptors(enumClass));
 
         for(Object item : enums) {
-            Map<String, Object> itemMap = new HashMap<>();
+            final Map<String, Object> itemMap = new HashMap<>();
             itemMap.put("property", item.toString());
 
             for(String prop : props) {
@@ -42,7 +42,8 @@ public class FlyEnumToMap {
     }
 
     private static List<String> getPropertiesDescriptor(PropertyDescriptor[] descriptors) {
-        List<String> listaDeNomes = new ArrayList<String>();
+        final List<String> listaDeNomes = new ArrayList<>();
+
         for (PropertyDescriptor descriptor : descriptors) {
             if (!descriptor.getName().equals("class")) {
                 listaDeNomes.add(descriptor.getName());

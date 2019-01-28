@@ -8,12 +8,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 @Component
 public class FlyString {
     public static String decapitalizeFirstLetter(String string) {
         return string == null || string.isEmpty() ? "" : Character.toLowerCase(string.charAt(0)) + string.substring(1);
     }
+
     public static String formatDateTimePtBr() {
         return formatDatePtBr() + " - " + formatTime();
     }
@@ -64,6 +66,12 @@ public class FlyString {
 
     public static String formatDecimal(BigDecimal value) {
         return formatDecimal(value, 2);
+    }
+
+    public static String formatDecimalPtBr(BigDecimal value) {
+        NumberFormat numberFormat =
+                NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+        return numberFormat.format(value);
     }
 
     public static String formatDecimal(BigDecimal value, int digits) {

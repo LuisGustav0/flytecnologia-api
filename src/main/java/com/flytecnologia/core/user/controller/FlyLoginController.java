@@ -32,7 +32,7 @@ public class FlyLoginController {
 
     @DeleteMapping("/revoke")
     public void revoke(HttpServletRequest req, HttpServletResponse resp) {
-        String path = req.getContextPath() + "oauth/token";
+        final String path = req.getContextPath() + "oauth/token";
 
         _revoke("refreshToken1", path, resp);
         _revoke("refreshToken2", path, resp);
@@ -45,7 +45,7 @@ public class FlyLoginController {
     }
 
     private void _revoke(String cookieName, String path, HttpServletResponse resp) {
-        Cookie cookie = new Cookie(cookieName, null);
+        final Cookie cookie = new Cookie(cookieName, null);
         cookie.setHttpOnly(true);
         cookie.setSecure(flyAppProperty.getSecurity().isEnableHttps());
         cookie.setPath(path);

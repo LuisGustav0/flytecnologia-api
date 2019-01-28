@@ -26,7 +26,7 @@ public abstract class FlyController<T extends FlyEntity, F extends FlyFilter> {
     protected abstract FlyService<T, F> getService();
 
     protected void addHeaderLocationForCreation(HttpServletResponse response, Long id) {
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}")
+        final URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}")
                 .buildAndExpand(id).toUri();
         response.setHeader("Location", uri.toASCIIString());
     }

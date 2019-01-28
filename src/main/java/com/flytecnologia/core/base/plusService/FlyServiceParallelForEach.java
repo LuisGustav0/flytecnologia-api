@@ -7,8 +7,8 @@ import java.util.function.Consumer;
 
 public interface FlyServiceParallelForEach extends FlyValidationBase, FlyTenantInformation {
     default <E> void parallelForEach(Collection<E> collection, Consumer<E> consumer) {
-        String finalTenantId = getTenant();
-        Long finalUserId = getUserId();
+        final String finalTenantId = getTenant();
+        final Long finalUserId = getUserId();
 
         collection.parallelStream().forEach(o -> {
 

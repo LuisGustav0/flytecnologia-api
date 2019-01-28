@@ -123,9 +123,9 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
 
         validateBeforeSave(entity);
 
-        boolean isIgnoreAfterSave = entity.isIgnoreAfterSave();
+        final boolean isIgnoreAfterSave = entity.isIgnoreAfterSave();
 
-        Map<String, Object> parameters = entity.getParameters();
+        final Map<String, Object> parameters = entity.getParameters();
 
         entity = getRepository().save(entity);
 
@@ -156,7 +156,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
 
         FlyValidatorUtil.validate(entity);
 
-        Optional<T> entitySavedOptional = find(id);
+        final Optional<T> entitySavedOptional = find(id);
 
         T entitySaved = entitySavedOptional.orElseThrow(() -> new EmptyResultDataAccessException("update " + getEntityName() + " -> " + id, 1));
 
@@ -176,12 +176,12 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
 
         boolean isIgnoreAfterSave = entity.isIgnoreAfterSave();
 
-        T oldEntity = cloneEntity(entitySaved);
+        final T oldEntity = cloneEntity(entitySaved);
 
         /*Para fazer update todos os versions dos objetos aninhados tem q estar setados*/
         BeanUtils.copyProperties(entity, entitySaved, "id");
 
-        Map<String, Object> parameters = entity.getParameters();
+        final Map<String, Object> parameters = entity.getParameters();
 
         entitySaved = getRepository().save(entitySaved);
 
@@ -208,7 +208,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
     }
 
     private void invokeBaseLazyAtributesToUpdate(T entitySaved) {
-        Field[] fields = getEntityClass().getDeclaredFields();
+        final Field[] fields = getEntityClass().getDeclaredFields();
 
         for (Field field : fields) {
             Annotation[] annotations = field.getDeclaredAnnotations();
@@ -242,7 +242,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
     public void delete(Long id, boolean isIgnoreBeforeDelete, boolean isIgnoreAfterDelete) {
         notNull(id, "flyserivice.idNotNull");
 
-        Optional<T> entityOptional = find(id);
+        final Optional<T> entityOptional = find(id);
 
         T entity = entityOptional.orElseThrow(() -> new EmptyResultDataAccessException("delete " + getEntityName() + " -> " + id, 1));
 
@@ -372,7 +372,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         entities.forEach(entity -> {
             validateBeforeSave(entity);
 
-            boolean isIgnoreAfterSave = entity.isIgnoreAfterSave();
+            final boolean isIgnoreAfterSave = entity.isIgnoreAfterSave();
 
             if (!isIgnoreAfterSave) {
                 afterSave(entity, null);

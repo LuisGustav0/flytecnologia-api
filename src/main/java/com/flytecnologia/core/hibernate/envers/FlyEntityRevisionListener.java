@@ -15,16 +15,16 @@ public class FlyEntityRevisionListener implements RevisionListener {
 
     @Override
     public void newRevision(Object revisionEntity) {
-        FlyIp flyIp = (FlyIp) FlySpringUtils.getBean("flyIp");
+        final FlyIp flyIp = (FlyIp) FlySpringUtils.getBean("flyIp");
+        final FlyRevisionsEntity revEntity = (FlyRevisionsEntity) revisionEntity;
 
-        FlyRevisionsEntity revEntity = (FlyRevisionsEntity) revisionEntity;
         revEntity.setUser(getUser());
         //revEntity.setIp(flyIp != null ? flyIp.getClientIp() : "");
         revEntity.fixTimezone();
     }
 
     private Long getUser() {
-        Long userId = FlyTenantThreadLocal.getUserId();
+        final Long userId = FlyTenantThreadLocal.getUserId();
 
         if (userId != null)
             return userId;

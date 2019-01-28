@@ -7,12 +7,12 @@ import java.util.TimeZone;
 
 public interface FlyTimeSpentService {
     default String getMessageTimeSpent(long start, String message) {
-        long end = System.currentTimeMillis();
+        final long end = System.currentTimeMillis();
 
-        Date date = new Date(end - start);
-        DateFormat formatter = new SimpleDateFormat("HH:mm:ss.SSS");
+        final Date date = new Date(end - start);
+        final DateFormat formatter = new SimpleDateFormat("HH:mm:ss.SSS");
         formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-        String dateFormatted = formatter.format(date);
+        final String dateFormatted = formatter.format(date);
 
         return message + dateFormatted;
     }

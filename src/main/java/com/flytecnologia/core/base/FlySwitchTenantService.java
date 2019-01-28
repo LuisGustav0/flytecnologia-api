@@ -18,13 +18,13 @@ public class FlySwitchTenantService {
 
     public void bindSession() {
         if (!TransactionSynchronizationManager.hasResource(entityManagerFactory)) {
-            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            final EntityManager entityManager = entityManagerFactory.createEntityManager();
             TransactionSynchronizationManager.bindResource(entityManagerFactory, new EntityManagerHolder(entityManager));
         }
     }
 
     public void unbindSession() {
-        EntityManagerHolder emHolder = (EntityManagerHolder) TransactionSynchronizationManager
+        final EntityManagerHolder emHolder = (EntityManagerHolder) TransactionSynchronizationManager
                 .unbindResource(entityManagerFactory);
         EntityManagerFactoryUtils.closeEntityManager(emHolder.getEntityManager());
     }

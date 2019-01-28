@@ -33,7 +33,7 @@ public class FlyHibernateConfig {
     @Bean
     public Module datatypeHibernateModule() {
         //resolve problem of lazy inicialization :)
-        Hibernate5Module module = new Hibernate5Module();
+        final Hibernate5Module module = new Hibernate5Module();
         //get only id of lazy objects
         module.disable(Hibernate5Module.Feature.USE_TRANSIENT_ANNOTATION);
 
@@ -66,13 +66,13 @@ public class FlyHibernateConfig {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource,
                                                                        MultiTenantConnectionProvider multiTenantConnectionProvider,
                                                                        CurrentTenantIdentifierResolver currentTenantIdentifierResolver) {
-        Properties properties = new Properties();
+        final Properties properties = new Properties();
         properties.putAll(jpaProperties.getProperties());
         properties.put(Environment.MULTI_TENANT, MultiTenancyStrategy.SCHEMA);
         properties.put(Environment.MULTI_TENANT_CONNECTION_PROVIDER, multiTenantConnectionProvider);
         properties.put(Environment.MULTI_TENANT_IDENTIFIER_RESOLVER, currentTenantIdentifierResolver);
 
-        LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
+        final LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource);
         em.setPackagesToScan("com.flytecnologia", "br.com");
         em.setJpaVendorAdapter(jpaVendorAdapter());
@@ -99,7 +99,7 @@ public class FlyHibernateConfig {
     @Bean
     @Primary
     public PlatformTransactionManager transactionManager(EntityManagerFactory emf) {
-        JpaTransactionManager transactionManager = new JpaTransactionManager();
+        final JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(emf);
 
         return transactionManager;

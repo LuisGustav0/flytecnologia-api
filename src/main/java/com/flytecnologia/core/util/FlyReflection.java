@@ -21,17 +21,18 @@ public class FlyReflection {
 
     public static String[] getNullPropertyNames(Object source) {
         final BeanWrapper src = new BeanWrapperImpl(source);
-        PropertyDescriptor[] pds = src.getPropertyDescriptors();
+        final PropertyDescriptor[] pds = src.getPropertyDescriptors();
 
-        Set<String> emptyNames = new HashSet<>();
+        final Set<String> emptyNames = new HashSet<>();
 
         for (PropertyDescriptor pd : pds) {
-            Object srcValue = src.getPropertyValue(pd.getName());
+            final Object srcValue = src.getPropertyValue(pd.getName());
+
             if (srcValue == null)
                 emptyNames.add(pd.getName());
         }
 
-        String[] result = new String[emptyNames.size()];
+        final String[] result = new String[emptyNames.size()];
 
         return emptyNames.toArray(result);
     }
@@ -40,8 +41,8 @@ public class FlyReflection {
         if (level == 0)
             return;
 
-        BeanWrapper src = new BeanWrapperImpl(source);
-        PropertyDescriptor[] pds = src.getPropertyDescriptors();
+        final BeanWrapper src = new BeanWrapperImpl(source);
+        final PropertyDescriptor[] pds = src.getPropertyDescriptors();
 
         for (PropertyDescriptor pd : pds) {
             Object obj = src.getPropertyValue(pd.getName());
@@ -67,10 +68,9 @@ public class FlyReflection {
     }
 
     private static <T extends FlyEntity> void setParentInTheChildrenList(T source, T parent, boolean isFirstLevel) {
-        BeanWrapper src = new BeanWrapperImpl(source);
-        PropertyDescriptor[] pds = src.getPropertyDescriptors();
-
-        String sourceName = parent.getClass().getSimpleName();
+        final BeanWrapper src = new BeanWrapperImpl(source);
+        final PropertyDescriptor[] pds = src.getPropertyDescriptors();
+        final String sourceName = parent.getClass().getSimpleName();
 
         for (PropertyDescriptor pd : pds) {
             String propertyName = pd.getName();
@@ -108,9 +108,9 @@ public class FlyReflection {
     }
 
     public static List<String> getMethodNames(Class<?> clazz) {
-        Method[] methods = clazz.getDeclaredMethods();
+        final Method[] methods = clazz.getDeclaredMethods();
+        final List<String> methodNames = new ArrayList<>();
 
-        List<String> methodNames = new ArrayList<>();
         for (Method method : methods) {
             methodNames.add(method.getName());
         }

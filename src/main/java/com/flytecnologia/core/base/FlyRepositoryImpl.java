@@ -75,9 +75,9 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
     }
 
     private void addPaginationInfo(TypedQuery<?> query, Pageable pageable) {
-        int actualPage = pageable.getPageNumber();
-        int qtdRecordsPerPage = pageable.getPageSize();
-        int firtRecordOfPage = actualPage * qtdRecordsPerPage;
+        final int actualPage = pageable.getPageNumber();
+        final int qtdRecordsPerPage = pageable.getPageSize();
+        final int firtRecordOfPage = actualPage * qtdRecordsPerPage;
 
         query.setFirstResult(firtRecordOfPage);
         query.setMaxResults(qtdRecordsPerPage);
@@ -100,13 +100,13 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
         hqlFrom.append("\n").append(hqlJoin).append("\n").append(hqlWhere);
 
-        Long total = getTotalRecords(hqlFrom, parameters, distinctPropertyCount);
+        final Long total = getTotalRecords(hqlFrom, parameters, distinctPropertyCount);
 
         hqlFrom.append(" ").append(hqlOrderBy);
 
         hql.append(hqlFrom);
 
-        TypedQuery<?> query = getEntityManager().createQuery(hql.toString(), getEntityClass());
+        final TypedQuery<?> query = getEntityManager().createQuery(hql.toString(), getEntityClass());
 
         if (parameters != null)
             parameters.forEach(query::setParameter);
@@ -126,13 +126,13 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
     private Long getTotalRecords(StringBuilder hqlFrom, Map<String, Object> filters, String distinctPropertyCount) {
         distinctPropertyCount = distinctPropertyCount != null ? " distinct " + distinctPropertyCount : "*";
 
-        String hqlCount = "select count(" + distinctPropertyCount + ") as qtd " + hqlFrom.toString();
-        Query q = getEntityManager().createQuery(hqlCount, Long.class);
+        final String hqlCount = "select count(" + distinctPropertyCount + ") as qtd " + hqlFrom.toString();
+        final Query q = getEntityManager().createQuery(hqlCount, Long.class);
 
         if (filters != null)
             filters.forEach(q::setParameter);
 
-        Long total = (Long) q.getResultList().get(0);
+        final Long total = (Long) q.getResultList().get(0);
 
         if (total == null)
             return 0L;
@@ -142,9 +142,9 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
     /*fly-input-image-upload*/
     public Map<String, String> findImageById(Long id, String field) {
-        Optional<String> value = getFieldById(id, field);
+        final Optional<String> value = getFieldById(id, field);
 
-        Map<String, String> data = new HashMap<>();
+        final Map<String, String> data = new HashMap<>();
         data.put(field, value.orElse(null));
 
         return data;
@@ -157,7 +157,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
         property = "p." + property;
 
-        String hql = "select " + property + " from " + getEntityName() + " p where p.id = :id";
+        final String hql = "select " + property + " from " + getEntityName() + " p where p.id = :id";
 
         return getEntityManager().createQuery(hql)
                 .setParameter("id", id)
@@ -173,7 +173,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         if (isEmpty(id))
             return Optional.empty();
 
-        T entity = getEntityManager().getReference(getEntityClass(), id);
+        final T entity = getEntityManager().getReference(getEntityClass(), id);
 
         if (entity == null)
             return Optional.empty();
@@ -185,7 +185,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         if (isEmpty(id))
             return Optional.empty();
 
-        T entity = getEntityManager().find(getEntityClass(), id);
+        final T entity = getEntityManager().find(getEntityClass(), id);
 
         if (entity == null)
             return Optional.empty();
@@ -207,10 +207,10 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         notNull(filter.getAcFieldValue(), "fieldValue is required");
         notNull(filter.getAcFieldDescription(), "fieldDescription is required");
 
-        String entityName = getEntityName();
-        String alias = entityName.substring(0, 1).toLowerCase() + entityName.substring(1);
+        final String entityName = getEntityName();
+        final String alias = entityName.substring(0, 1).toLowerCase() + entityName.substring(1);
 
-        StringBuilder hql = new StringBuilder()
+        final StringBuilder hql = new StringBuilder()
                 .append("select distinct new Map( \n ")
                 .append(alias).append(".").append(filter.getAcFieldValue()).append(" as ").append(filter.getAcFieldValue()).append("\n ");
 
@@ -220,8 +220,8 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
         addExtraFieldsToAutocomplete(filter, alias, hql);
 
-        Map<String, Object> parameters = new HashMap<>();
-        StringBuilder hqlJoin = new StringBuilder();
+        final Map<String, Object> parameters = new HashMap<>();
+        final StringBuilder hqlJoin = new StringBuilder();
         changeSearchJoin(hqlJoin, parameters, filter);
 
         hql
@@ -235,7 +235,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
         hql.append(" OR CONCAT(").append(alias).append(".").append(filter.getAcFieldValue()).append(", '') = :valueId) \n ");
 
-        String fieldInactive = alias + ".inactive";
+        final String fieldInactive = alias + ".inactive";
 
         if (this.getEntityClass().getGenericSuperclass().equals(FlyEntityWithInactiveImpl.class)) {
             hql.append(" and ").append(fieldInactive).append(" is false \n");
@@ -264,10 +264,10 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         notNull(filter.getAcFieldValue(), "fieldValue is required");
         notNull(filter.getAcFieldDescription(), "fieldDescription is required");
 
-        String entityName = getEntityName();
-        String alias = entityName.substring(0, 1).toLowerCase() + entityName.substring(1);
+        final String entityName = getEntityName();
+        final String alias = entityName.substring(0, 1).toLowerCase() + entityName.substring(1);
 
-        StringBuilder hql = new StringBuilder()
+        final StringBuilder hql = new StringBuilder()
                 .append("select distinct new Map( \n ")
                 .append(alias).append(".").append(filter.getAcFieldValue())
                 .append(" as ").append(filter.getAcFieldValue());
@@ -278,8 +278,8 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
         addExtraFieldsToAutocomplete(filter, alias, hql);
 
-        Map<String, Object> parameters = new HashMap<>();
-        StringBuilder hqlJoin = new StringBuilder();
+        final Map<String, Object> parameters = new HashMap<>();
+        final StringBuilder hqlJoin = new StringBuilder();
         changeSearchJoin(hqlJoin, parameters, filter);
 
         hql
@@ -299,12 +299,12 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
         changeSearchWhere(hql, parameters, filter);
 
-        TypedQuery<Map> query = getEntityManager().createQuery(hql.toString(), Map.class);
+        final TypedQuery<Map> query = getEntityManager().createQuery(hql.toString(), Map.class);
         query.setMaxResults(1);
 
         parameters.forEach(query::setParameter);
 
-        Map<String, Object> map = query.getResultList().stream().filter(Objects::nonNull).findFirst().orElse(null);
+        final Map<String, Object> map = query.getResultList().stream().filter(Objects::nonNull).findFirst().orElse(null);
 
         if (map == null) {
             return Optional.empty();
@@ -316,11 +316,11 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
     }
 
     private void formatMapItemAutocomplete(String alias, Map<String, Object> map) {
-        Set<String> keys = map.keySet();
+        final Set<String> keys = map.keySet();
 
-        Iterator<String> it = keys.iterator();
+        final Iterator<String> it = keys.iterator();
 
-        Map<String, Object> mapAux = new HashMap<>();
+        final Map<String, Object> mapAux = new HashMap<>();
 
         while (it.hasNext()) {
             String key = it.next();
@@ -459,11 +459,11 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
     }
 
     private Optional<Long> getPreviousNextId(F filter, String maxMin, String signal, String orderByType) {
-        String entityName = getEntityName();
-        String alias = entityName.substring(0, 1).toLowerCase() + entityName.substring(1);
+        final String entityName = getEntityName();
+        final String alias = entityName.substring(0, 1).toLowerCase() + entityName.substring(1);
 
-        Map<String, Object> parameters = new HashMap<>();
-        StringBuilder hqlJoin = new StringBuilder();
+        final Map<String, Object> parameters = new HashMap<>();
+        final StringBuilder hqlJoin = new StringBuilder();
         changeSearchJoin(hqlJoin, parameters, filter);
 
         StringBuilder hql = new StringBuilder()
@@ -501,14 +501,14 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
     }
 
     public Optional<Long> getRecordListCount(Long id, String listName) {
-        String entityName = getEntityName();
+        final String entityName = getEntityName();
 
         StringBuilder hql = new StringBuilder()
                 .append("select count(entities.id)  \nfrom  ").append(entityName).append(" super  \n")
                 .append("inner join super.").append(listName).append(" as entities \n")
                 .append("where super.id = :id\n");
 
-        TypedQuery<Long> query = getEntityManager().createQuery(hql.toString(), Long.class);
+        final TypedQuery<Long> query = getEntityManager().createQuery(hql.toString(), Long.class);
         query.setParameter("id", id);
 
         return query.getResultList().stream().filter(Objects::nonNull).findFirst();
@@ -548,7 +548,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
     }
 
     protected <L> Optional<List<Map<String, L>>> getListMap(StringBuilder hql, Map<String, Object> parameters, int limit) {
-        TypedQuery<?> query = getEntityManager().createQuery(hql.toString(), Map.class);
+        final TypedQuery<?> query = getEntityManager().createQuery(hql.toString(), Map.class);
 
         if (limit > 0)
             query.setMaxResults(limit);
@@ -561,7 +561,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void batchSave(List<T> entities, int batchSize) {
-        int entityCount = entities.size();
+        final int entityCount = entities.size();
 
         EntityManager entityManager = null;
         EntityTransaction transaction = null;
@@ -604,14 +604,14 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
     }
 
     public <T> Optional<T> getValue(StringBuilder hql, Long id) {
-        Map<String, Object> parameters = new HashMap<>();
+        final Map<String, Object> parameters = new HashMap<>();
         parameters.put("id", id);
 
         return getValue(hql, parameters);
     }
 
     public <T> Optional<T> getValue(StringBuilder hql, Map<String, Object> parameters) {
-        Query query = getEntityManager().createQuery(hql.toString());
+        final Query query = getEntityManager().createQuery(hql.toString());
         parameters.forEach(query::setParameter);
 
         return query.getResultList().stream().filter(Objects::nonNull).findFirst();

@@ -14,16 +14,16 @@ public interface FlyPrintService<F extends FlyFilter> {
     }
 
     default ResponseEntity<ByteArrayResource> print(F filter) {
-        byte[] data = getReport(filter);
+        final byte[] data = getReport(filter);
 
         if (data == null)
             throw new BusinessException("flyserivice.generateReportError");
 
-        String fileName = filter.getPdfName() != null ? filter.getPdfName() : "report.pdf";
+        final String fileName = filter.getPdfName() != null ? filter.getPdfName() : "report.pdf";
 
-        ByteArrayResource resource = new ByteArrayResource(data);
+        final ByteArrayResource resource = new ByteArrayResource(data);
 
-        HttpHeaders headers = new HttpHeaders();
+        final HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + fileName);
         headers.setCacheControl("no-cache, no-store, must-revalidate, post-check=0, pre-check=0");
         headers.setPragma("no-cache");

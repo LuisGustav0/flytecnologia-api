@@ -27,12 +27,15 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Res
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class FlyResourceServerConfig extends ResourceServerConfigurerAdapter {
 
+    private static final String[] AUTH_WHITELIST_OTHERS = {
+            "/actuator/health"
+    };
+
     private static final String[] AUTH_WHITELIST_SWAGGER = {
             "/swagger-resources/**",
             "/swagger-ui.html",
             "/v2/api-docs",
             "/webjars/**",
-            "/actuator/health"
     };
 
     private static final String[] AUTH_WHITELIST_LOGIN = {
@@ -65,6 +68,7 @@ public class FlyResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
+                .antMatchers(AUTH_WHITELIST_OTHERS).permitAll()
                 .antMatchers(AUTH_WHITELIST_LOGIN).permitAll()
                 .antMatchers(AUTH_WHITELIST_SWAGGER).permitAll()
                 .anyRequest().authenticated()

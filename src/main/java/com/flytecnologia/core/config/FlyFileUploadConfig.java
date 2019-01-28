@@ -19,7 +19,7 @@ public class FlyFileUploadConfig {
     @Bean
     @Order(0)
     public MultipartFilter multipartFilter() {
-        MultipartFilter multipartFilter = new MultipartFilter();
+        final MultipartFilter multipartFilter = new MultipartFilter();
         multipartFilter.setMultipartResolverBeanName("multipartReso‌​lver");
         return multipartFilter;
     }

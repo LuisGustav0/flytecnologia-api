@@ -58,11 +58,11 @@ public class FlyReportUtil {
                               boolean throwsExceptions) {
 
         try {
-            Resource resource = new ClassPathResource(filePath + File.separator + fileName);
+            final Resource resource = new ClassPathResource(filePath + File.separator + fileName);
 
-            InputStream input = resource.getInputStream();
+            final InputStream input = resource.getInputStream();
 
-            JasperReport jasperReport = (JasperReport) JRLoader.loadObject(input);
+            final JasperReport jasperReport = (JasperReport) JRLoader.loadObject(input);
 
             byte[] bt;
 

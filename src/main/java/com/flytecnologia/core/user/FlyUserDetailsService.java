@@ -25,13 +25,13 @@ public class FlyUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
 
-        String loginInvalid = userService.getMessageInvalidLogin();
+        final String loginInvalid = userService.getMessageInvalidLogin();
 
-        Optional<FlyUser> user = userService.findByLoginOrEmail(login);
+        final Optional<FlyUser> user = userService.findByLoginOrEmail(login);
 
-        FlyUser flyUser = user.orElseThrow(() -> new UsernameNotFoundException(loginInvalid));
+        final FlyUser flyUser = user.orElseThrow(() -> new UsernameNotFoundException(loginInvalid));
 
-        Map<String, Object> additionalTokenInformation = userService.getAdditionalTokenInformation(flyUser, login, flyUser.getId());
+        final Map<String, Object> additionalTokenInformation = userService.getAdditionalTokenInformation(flyUser, login, flyUser.getId());
 
         return new FlyUserDetails(flyUser,
                 getAuthorities(login, flyUser.getTenant(), loginInvalid),
@@ -41,9 +41,9 @@ public class FlyUserDetailsService implements UserDetailsService {
 
     private Collection<? extends GrantedAuthority> getAuthorities(String loginOrEmail, String tenant, String msgInvalidLogin)
             throws UsernameNotFoundException {
-        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
+        final Set<SimpleGrantedAuthority> authorities = new HashSet<>();
 
-        List<FlyUserPermission> permissions = userService.getPermissions(loginOrEmail, tenant);
+        final List<FlyUserPermission> permissions = userService.getPermissions(loginOrEmail, tenant);
 
         if (permissions == null || permissions.isEmpty()) {
             throw new UsernameNotFoundException(msgInvalidLogin);

@@ -45,10 +45,10 @@ public class FlyRefreshTokenPostProcessor implements ResponseBodyAdvice<OAuth2Ac
                                              Class<? extends HttpMessageConverter<?>> selectedConverterType,
                                              ServerHttpRequest request, ServerHttpResponse response) {
 
-        HttpServletRequest req = ((ServletServerHttpRequest) request).getServletRequest();
-        HttpServletResponse resp = ((ServletServerHttpResponse) response).getServletResponse();
-        DefaultOAuth2AccessToken token = (DefaultOAuth2AccessToken) body;
-        String refreshToken = body.getRefreshToken().getValue();
+        final HttpServletRequest req = ((ServletServerHttpRequest) request).getServletRequest();
+        final HttpServletResponse resp = ((ServletServerHttpResponse) response).getServletResponse();
+        final DefaultOAuth2AccessToken token = (DefaultOAuth2AccessToken) body;
+        final String refreshToken = body.getRefreshToken().getValue();
 
         addRefreshTokenInCookie(refreshToken, req, resp);
         deleteRefreshTokenFromBody(token);
@@ -61,13 +61,13 @@ public class FlyRefreshTokenPostProcessor implements ResponseBodyAdvice<OAuth2Ac
     }
 
     private void addRefreshTokenInCookie(String refreshToken, HttpServletRequest req, HttpServletResponse resp) {
-        int blocSize = refreshToken.length() / 4;
-        String refreshToken1 = refreshToken.substring(0, blocSize);
-        String refreshToken2 = refreshToken.substring(blocSize, blocSize*2 );
-        String refreshToken3 = refreshToken.substring(blocSize*2, blocSize*3);
-        String refreshToken4 = refreshToken.substring(blocSize*3);
+        final int blocSize = refreshToken.length() / 4;
+        final String refreshToken1 = refreshToken.substring(0, blocSize);
+        final String refreshToken2 = refreshToken.substring(blocSize, blocSize*2 );
+        final String refreshToken3 = refreshToken.substring(blocSize*2, blocSize*3);
+        final String refreshToken4 = refreshToken.substring(blocSize*3);
 
-        String path = req.getContextPath() + "/oauth/token";
+        final String path = req.getContextPath() + "/oauth/token";
 
         addPartsRefreshTokenInCookie("refreshToken1", refreshToken1, resp, path);
         addPartsRefreshTokenInCookie("refreshToken2", refreshToken2, resp, path);
@@ -77,7 +77,7 @@ public class FlyRefreshTokenPostProcessor implements ResponseBodyAdvice<OAuth2Ac
 
     private void addPartsRefreshTokenInCookie(String refreshTokenName, String refreshToken,
                                               HttpServletResponse resp, String path) {
-        Cookie cookie = new Cookie(refreshTokenName, refreshToken);
+        final Cookie cookie = new Cookie(refreshTokenName, refreshToken);
         cookie.setHttpOnly(true);
         cookie.setSecure(flyAppProperty.getSecurity().isEnableHttps());
         cookie.setPath(path);

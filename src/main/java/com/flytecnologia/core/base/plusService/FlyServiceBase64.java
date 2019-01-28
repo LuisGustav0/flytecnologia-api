@@ -7,7 +7,7 @@ public interface FlyServiceBase64 extends FlyValidationBase {
         if (isEmpty(encode))
             return encode;
 
-        int indexOf = encode.indexOf(";base64,");
+        final int indexOf = encode.indexOf(";base64,");
 
         if (indexOf <= 0)
             return encode;

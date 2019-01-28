@@ -28,8 +28,8 @@ public class FlyMailSender {
     }
 
     public void send(FlyMailMessage flyMessage) {
-        MessageCreator messageCreator = session -> {
-            MapMessage message = session.createMapMessage();
+        final MessageCreator messageCreator = session -> {
+            final MapMessage message = session.createMapMessage();
 
             message.setString("from", flyMessage.getFrom());
             message.setObject("to", flyMessage.getTo());
@@ -38,7 +38,7 @@ public class FlyMailSender {
             message.setString("subject", flyMessage.getSubject());
             message.setString("text", flyMessage.getText());
 
-            List<String> attachmentFilenames = new ArrayList<>() ;
+            final List<String> attachmentFilenames = new ArrayList<>() ;
 
             if(flyMessage.getMapInputStream() != null) {
                 flyMessage.getMapInputStream().forEach((attachmentFilename, inputStreamSource) -> {
@@ -61,8 +61,8 @@ public class FlyMailSender {
     }
 
     protected void sendSyncrono(FlyMailMessage flyMessage) throws MessagingException {
-        MimeMessage message = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+        final MimeMessage message = javaMailSender.createMimeMessage();
+        final MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
         helper.setSubject(flyMessage.getSubject());
         helper.setText(flyMessage.getText());

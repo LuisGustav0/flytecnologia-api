@@ -18,7 +18,7 @@ public class FlyTokenUserDetails {
     }
 
     public static Optional<Map> getAuthenticationDecodedDetails() {
-        Optional<Authentication> authentication = getAuthentication();
+        final Optional<Authentication> authentication = getAuthentication();
 
         return authentication.map(a -> {
             if (!(a.getDetails() instanceof OAuth2AuthenticationDetails))
@@ -30,32 +30,32 @@ public class FlyTokenUserDetails {
     }
 
     public static Optional<Object> getAuthenticationInformation(String key) {
-        Optional<Map> auten = getAuthenticationDecodedDetails();
+        final Optional<Map> auten = getAuthenticationDecodedDetails();
 
         return auten.map(map -> map.get(key));
     }
 
     public static Long getCurrentUserId() {
-        Optional<Object> userId = getAuthenticationInformation("userId");
+        final Optional<Object> userId = getAuthenticationInformation("userId");
 
         return userId.map(o -> ((Integer) o).longValue()).orElse(null);
     }
 
     public static String getCurrentSchemaName() {
-        Optional<Object> tenant = getAuthenticationInformation(FlyMultiTenantConstants.REQUEST_HEADER_ID);
+        final Optional<Object> tenant = getAuthenticationInformation(FlyMultiTenantConstants.REQUEST_HEADER_ID);
 
         return (String) tenant.orElse(FlyMultiTenantConstants.DEFAULT_TENANT_ID);
     }
 
     public static String getCurrentSchemaNameOrElseNull() {
-        Optional<Object> tenant = getAuthenticationInformation(FlyMultiTenantConstants.REQUEST_HEADER_ID);
+        final Optional<Object> tenant = getAuthenticationInformation(FlyMultiTenantConstants.REQUEST_HEADER_ID);
 
         return (String) tenant.orElse(null);
     }
 
     public static String getCurrentUsername() {
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        Authentication authentication = securityContext.getAuthentication();
+        final SecurityContext securityContext = SecurityContextHolder.getContext();
+        final Authentication authentication = securityContext.getAuthentication();
 
 
         if (authentication != null) {
@@ -66,7 +66,7 @@ public class FlyTokenUserDetails {
                 return ((UserDetails) authentication.getPrincipal()).getUsername();
         }
 
-        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        final RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
 
         return (String) requestAttributes.getAttribute(
                 "username",
