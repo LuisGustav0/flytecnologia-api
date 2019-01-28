@@ -36,8 +36,7 @@ public class FlyString {
         if (date == null)
             return null;
 
-        DateTimeFormatter formatters = DateTimeFormatter.ofPattern(pattern);
-        return date.format(formatters);
+        return date.format(DateTimeFormatter.ofPattern(pattern));
     }
 
     public static String formatTime() {
@@ -69,9 +68,7 @@ public class FlyString {
     }
 
     public static String formatDecimalPtBr(BigDecimal value) {
-        NumberFormat numberFormat =
-                NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
-        return numberFormat.format(value);
+        return NumberFormat.getCurrencyInstance(new Locale("pt", "BR")).format(value);
     }
 
     public static String formatDecimal(BigDecimal value, int digits) {
