@@ -16,20 +16,12 @@ public class FlyErrorResponse {
     private final int statusCode;
     private final List<ApiError> errors;
 
-    static FlyErrorResponse of(HttpStatus status, List<ApiError> errors) {
-        return new FlyErrorResponse(status.value(), errors);
-    }
-
     static FlyErrorResponse of(List<ApiError> errors) {
         return new FlyErrorResponse(HttpStatus.BAD_REQUEST.value(), errors);
     }
 
     static FlyErrorResponse of(ApiError error) {
-        return of(HttpStatus.BAD_REQUEST, Collections.singletonList(error));
-    }
-
-    static FlyErrorResponse of(HttpStatus status, ApiError error) {
-        return of(status, Collections.singletonList(error));
+        return of(Collections.singletonList(error));
     }
 
     @JsonAutoDetect(fieldVisibility = ANY)

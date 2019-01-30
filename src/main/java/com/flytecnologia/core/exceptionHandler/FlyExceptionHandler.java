@@ -159,9 +159,9 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {ConstraintViolationException.class})
     public ResponseEntity<FlyErrorResponse> handleConstraintViolationException(RuntimeException ex) {
-        String fieldError = ((ConstraintViolationException) ex.getCause()).getConstraintName();
+        final String fieldError = ((ConstraintViolationException) ex.getCause()).getConstraintName();
 
-        ApiError apiError = toApiError(fieldError, ex);
+        final ApiError apiError = toApiError(fieldError, ex);
 
         return getBodyBadRequest(apiError);
     }
@@ -172,14 +172,14 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
 
     private List<ApiError> toApiErrors(List<FlyErrorInvalidFormat> errorsDto,
                                        String errorMessage) {
-        List<ApiError> apiErrors = new ArrayList<>();
+        final List<ApiError> apiErrors = new ArrayList<>();
 
         for (FlyErrorInvalidFormat error : errorsDto) {
             String errorStr = error.getBean();
             errorStr = errorStr.substring(0, 1).toLowerCase() + errorStr.substring(1);
             errorStr += "." + error.getField();
 
-            String message = getMessage(errorStr, error.getRejectedValue());
+            final String message = getMessage(errorStr, error.getRejectedValue());
 
             String messageInvalidField = getMessage("resource.invalidFieldValueFormat", "Field '%s' with invalid format. Value: '%s'");
 
@@ -192,10 +192,10 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private List<ApiError> toApiErrors(BindingResult bindingResult) {
-        List<ApiError> apiErrors = new ArrayList<>();
+        final List<ApiError> apiErrors = new ArrayList<>();
 
         for (FieldError fieldError : bindingResult.getFieldErrors()) {
-            String message = getMessage(fieldError);
+            final String message = getMessage(fieldError);
 
             apiErrors.add(new ApiError(fieldError.getField(), message, getDevMessage(fieldError)));
         }

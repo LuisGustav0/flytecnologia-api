@@ -11,6 +11,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
@@ -77,6 +78,9 @@ public class FlyReportUtil {
             input.close();
 
             return bt;
+        } catch (FileNotFoundException fne) {
+            fne.printStackTrace();
+            throw new BusinessException("flyserivice.reportNotFound");
         } catch (Exception ex) {
             if (throwsExceptions) {
                 ex.printStackTrace();
