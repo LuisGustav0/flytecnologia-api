@@ -35,6 +35,10 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         return getRepository().find(id);
     }
 
+    public Optional<T> find(Long id, String tenant) {
+        return getRepository().find(id, tenant);
+    }
+
     protected void beforeValidateSave(final T entity, final T oldEntity) {
     }
 
@@ -414,5 +418,9 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         flySwitchTenantService.bindSession();
 
         setTenantInCurrentConnection(tenant, userId);
+    }
+
+    public Optional<List<T>> findAll(String tenant, String columnReference, Object value) {
+        return getRepository().findAll(tenant, columnReference, value);
     }
 }

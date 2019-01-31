@@ -9,6 +9,8 @@ import com.flytecnologia.core.model.FlyEntityWithInactiveImpl;
 import com.flytecnologia.core.search.FlyFilter;
 import com.flytecnologia.core.search.FlyPageableResult;
 import org.apache.commons.lang3.ArrayUtils;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.security.core.Authentication;
@@ -623,7 +625,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
         FlyTenantThreadLocal.setTenant(tenantIdentifier);
 
-        if(userId != null) {
+        if (userId != null) {
             FlyTenantThreadLocal.setUserId(userId);
         }
 
@@ -642,7 +644,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         if (isEmpty(id))
             return false;
 
-        Optional<Boolean> inative = getFieldById(id, "inactive");
+        final Optional<Boolean> inative = getFieldById(id, "inactive");
 
         return inative.orElse(false);
     }
@@ -652,8 +654,8 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
             return false;
         }
 
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        Authentication authentication = securityContext.getAuthentication();
+        final SecurityContext securityContext = SecurityContextHolder.getContext();
+        final Authentication authentication = securityContext.getAuthentication();
 
         if (authentication != null) {
             List<String> rolesList = Arrays.asList(roles);
@@ -662,5 +664,80 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
                     .anyMatch(grantedAuthority -> rolesList.contains(grantedAuthority.getAuthority()));
         }
         return false;
+    }
+
+    public Optional<T> find(Long id, String tenant) {
+        if (isEmpty(tenant) || isEmpty(id))
+            return Optional.empty();
+
+        final String entityName = getEntityName();
+
+        final StringBuilder hql = new StringBuilder()
+                .append("select \n ")
+                .append("   r \n")
+                .append("from ").append(entityName)
+                .append(" r\n")
+                .append("where \n ")
+                .append("   r.id = :id");
+
+        final SessionFactory sessionFactory = getEntityManager().unwrap(Session.class).getSessionFactory();
+
+        final Session session = sessionFactory
+                .withOptions()
+                .tenantIdentifier(tenant)
+                .openSession();
+
+        try {
+            final Optional<T> result = session.createQuery(hql.toString(), getEntityClass())
+                    .setParameter("id", id)
+                    .setMaxResults(1)
+                    .getResultList().stream().filter(Objects::nonNull).findFirst();
+
+            session.close();
+
+            return result;
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    public Optional<List<T>> findAll(String tenant, String columnReference, Object value) {
+        if (isEmpty(tenant) || isEmpty(columnReference) || isEmpty(value))
+            return Optional.empty();
+
+        final String entityName = getEntityName();
+
+        final StringBuilder hql = new StringBuilder()
+                .append("select \n ")
+                .append("   r \n")
+                .append("from ").append(entityName)
+                .append(" r\n")
+                .append("where \n ").append(columnReference)
+                .append(" = :value");
+
+        final SessionFactory sessionFactory = getEntityManager().unwrap(Session.class).getSessionFactory();
+
+        final Session session = sessionFactory
+                .withOptions()
+                .tenantIdentifier(tenant)
+                .openSession();
+
+        try {
+            final TypedQuery<?> query = session.createQuery(hql.toString(), getEntityClass())
+                    .setParameter("value", value);
+
+            final List<?> provider = query.getResultList();
+
+            session.close();
+
+            if (isEmpty(provider))
+                return Optional.empty();
+
+            return Optional.ofNullable((List<T>) provider);
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }

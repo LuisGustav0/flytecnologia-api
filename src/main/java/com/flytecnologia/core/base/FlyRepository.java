@@ -24,6 +24,10 @@ public interface FlyRepository<T extends FlyEntity, PK extends Serializable, F e
 
     Optional<T> find(Long id);
 
+    Optional<T> find(Long id, String tenant);
+
+    Optional<List<T>> findAll(String tenant, String columnReference, Object value);
+
     <E> Optional<E> getFieldById(Long id, String property);
 
     void flush();
