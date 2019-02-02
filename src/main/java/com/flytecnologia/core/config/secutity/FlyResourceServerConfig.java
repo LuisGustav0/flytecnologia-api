@@ -41,8 +41,7 @@ public class FlyResourceServerConfig extends ResourceServerConfigurerAdapter {
     private static final String[] AUTH_WHITELIST_LOGIN = {
             "/login",
             "/login/reset-password",
-            "/login/send-new-password",
-            "/login/information"
+            "/login/send-new-password"
     };
 
     @Autowired

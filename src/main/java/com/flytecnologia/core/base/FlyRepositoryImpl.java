@@ -703,8 +703,11 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
     }
 
     public Optional<List<T>> findAll(String tenant, String columnReference, Object value) {
-        if (isEmpty(tenant) || isEmpty(columnReference) || isEmpty(value))
+        if (isEmpty(columnReference) || isEmpty(value))
             return Optional.empty();
+
+        if(isEmpty(tenant))
+            tenant = getTenant();
 
         final String entityName = getEntityName();
 
