@@ -166,13 +166,8 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
 
         invokeBaseLazyAtributesToUpdate(entitySaved);
 
-        if (!id.equals(entity.getId())) {
-            throw new BusinessException("flyserivice.differentId");
-        }
-
-        /*if (entity.getVersion() != null && !entity.getVersion().equals(entitySaved.getVersion())) {
-            throw new BusinessException("flyserivice.differentVersion");
-        }*/
+        validateDifferentId(id, entity);
+        //validateDifferentVersion(entity, entitySaved);
 
         if (!entity.isIgnoreBeforeSave()) {
             beforeSave(entity, entitySaved);
@@ -199,6 +194,18 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
 
         return entitySaved;
     }
+
+    private void validateDifferentId(Long id, T entity) {
+        if (!id.equals(entity.getId())) {
+            throw new BusinessException("flyserivice.differentId");
+        }
+    }
+
+   /* private void validateDifferentVersion(T entity, T entitySaved) {
+        if (entity.getVersion() != null && !entity.getVersion().equals(entitySaved.getVersion())) {
+            throw new BusinessException("flyserivice.differentVersion");
+        }
+    }*/
 
     private T cloneEntity(T entitySaved) {
         T oldEntity = null;

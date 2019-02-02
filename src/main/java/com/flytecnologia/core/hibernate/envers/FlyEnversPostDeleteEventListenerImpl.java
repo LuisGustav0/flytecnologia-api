@@ -17,7 +17,7 @@ public class FlyEnversPostDeleteEventListenerImpl extends
     @Override
     public void onPostDelete(PostDeleteEvent event) {
         if (event.getEntity() instanceof FlyEntity) {
-            boolean doNotAudit = ((FlyEntity) event.getEntity()).isDoNotAudit();
+            boolean doNotAudit = ((FlyEntity) event.getEntity()).isIgnoreAudit();
 
             if (!doNotAudit) {
                 super.onPostDelete(event);

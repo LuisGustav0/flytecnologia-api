@@ -16,10 +16,10 @@ public class FlyEnversPostInsertEventListenerImpl extends
 
     @Override
     public void onPostInsert(PostInsertEvent event) {
-        if(event.getEntity() instanceof FlyEntity) {
-            boolean doNotAudit = ((FlyEntity) event.getEntity()).isDoNotAudit();
+        if (event.getEntity() instanceof FlyEntity) {
+            boolean isIgnoreAudit = ((FlyEntity) event.getEntity()).isIgnoreAudit();
 
-            if (!doNotAudit) {
+            if (!isIgnoreAudit) {
                 super.onPostInsert(event);
             }
         } else {

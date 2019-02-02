@@ -7,9 +7,9 @@ public interface FlyEntity {
 
     void setId(Long value);
 
-    boolean isDoNotAudit();
+    boolean isIgnoreAudit();
 
-    void setDoNotAudit(boolean doNotAudit);
+    void setIgnoreAudit(boolean doNotAudit);
 
     boolean isIgnoreBeforeSave();
 

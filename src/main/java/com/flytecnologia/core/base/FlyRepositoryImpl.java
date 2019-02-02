@@ -206,15 +206,15 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         if (isEmpty(filter.getAcValue()))
             return Optional.empty();
 
-        notNull(filter.getAcFieldValue(), "fieldValue is required");
-        notNull(filter.getAcFieldDescription(), "fieldDescription is required");
+        validateFiltersRequiredToAutocomplete(filter);
 
         final String entityName = getEntityName();
         final String alias = entityName.substring(0, 1).toLowerCase() + entityName.substring(1);
 
         final StringBuilder hql = new StringBuilder()
-                .append("select distinct new Map( \n ")
-                .append(alias).append(".").append(filter.getAcFieldValue()).append(" as ").append(filter.getAcFieldValue()).append("\n ");
+                .append("select distinct new Map(\n ")
+                .append(alias).append(".").append(filter.getAcFieldValue())
+                .append(" as ").append(filter.getAcFieldValue()).append("\n ");
 
         addFieldDescriptionToListAutocomplete(filter, alias, hql);
 
@@ -263,14 +263,13 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         if (isEmpty(filter.getId()))
             return Optional.empty();
 
-        notNull(filter.getAcFieldValue(), "fieldValue is required");
-        notNull(filter.getAcFieldDescription(), "fieldDescription is required");
+        validateFiltersRequiredToAutocomplete(filter);
 
         final String entityName = getEntityName();
         final String alias = entityName.substring(0, 1).toLowerCase() + entityName.substring(1);
 
         final StringBuilder hql = new StringBuilder()
-                .append("select distinct new Map( \n ")
+                .append("select distinct new Map(\n ")
                 .append(alias).append(".").append(filter.getAcFieldValue())
                 .append(" as ").append(filter.getAcFieldValue());
 
@@ -315,6 +314,11 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         formatMapItemAutocomplete(alias, map);
 
         return Optional.of(map);
+    }
+
+    private void validateFiltersRequiredToAutocomplete(F filter) {
+        notNull(filter.getAcFieldValue(), "fieldValue is required");
+        notNull(filter.getAcFieldDescription(), "fieldDescription is required");
     }
 
     private void formatMapItemAutocomplete(String alias, Map<String, Object> map) {
