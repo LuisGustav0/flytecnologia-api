@@ -63,6 +63,16 @@ public class FlyHibernateConfig {
      */
 
     @Bean
+    public CurrentTenantIdentifierResolver getCurrentTenantIdentifierResolver() {
+        return new FlyTenantIdentifierResolver();
+    }
+
+    @Bean
+    public MultiTenantConnectionProvider getFlyMultiTenantConnectionProviderImpl() {
+        return new FlyMultiTenantConnectionProviderImpl();
+    }
+
+    @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource,
                                                                        MultiTenantConnectionProvider multiTenantConnectionProvider,
                                                                        CurrentTenantIdentifierResolver currentTenantIdentifierResolver) {
