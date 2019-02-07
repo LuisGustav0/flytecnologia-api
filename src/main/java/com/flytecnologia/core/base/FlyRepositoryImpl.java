@@ -8,6 +8,7 @@ import com.flytecnologia.core.model.FlyEntity;
 import com.flytecnologia.core.model.FlyEntityWithInactiveImpl;
 import com.flytecnologia.core.search.FlyFilter;
 import com.flytecnologia.core.search.FlyPageableResult;
+import lombok.NonNull;
 import org.apache.commons.lang3.ArrayUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -222,8 +223,8 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
         addExtraFieldsToAutocomplete(filter, alias, hql);
 
-        final Map<String, Object> parameters = new HashMap<>();
         final StringBuilder hqlJoin = new StringBuilder();
+        final Map<String, Object> parameters = new HashMap<>();
         changeSearchJoin(hqlJoin, parameters, filter);
 
         hql
@@ -386,13 +387,15 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
     private void addFieldDescriptionToListAutocomplete(F filter, String alias, StringBuilder hql) {
         if (isEmpty(filter.getAcFieldsListAutocomplete())) {
-            hql.append(",")
-                    .append(alias)
-                    .append(".")
-                    .append(filter.getAcFieldDescription().replace("__", "."))
-                    .append(" as ")
-                    .append(filter.getAcFieldDescription())
-                    .append(" \n ");
+            if (!filter.getAcFieldValue().equals(filter.getAcFieldDescription())) {
+                hql.append(",")
+                        .append(alias)
+                        .append(".")
+                        .append(getFormatedField(filter.getAcFieldDescription()))
+                        .append(" as ")
+                        .append(filter.getAcFieldDescription())
+                        .append(" \n ");
+            }
         } else {
             String[] extraField = filter.getAcFieldsListAutocomplete().split(",");
 
@@ -419,11 +422,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
     private void addFieldDescriptionToWhereAutocomplete(F filter, String alias, StringBuilder hql) {
         if (isEmpty(filter.getAcFieldsListAutocomplete())) {
-            hql.append("   fly_to_ascii(lower(")
-                    .append(alias)
-                    .append(".")
-                    .append(filter.getAcFieldDescription().replace("__", "."))
-                    .append(")) like fly_to_ascii(:value) \n ");
+            addLikeToFieldDescription(hql, alias, filter.getAcFieldDescription());
         } else {
             String[] extraField = filter.getAcFieldsListAutocomplete().split(",");
 
@@ -436,13 +435,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
                     hql.append(" OR ");
                 }
 
-                hql.append("   fly_to_ascii(lower(");
-
-                if (!field.contains("."))
-                    hql.append(alias).append(".");
-
-                hql.append(field.trim())
-                        .append(")) like fly_to_ascii(:value) \n ");
+                addLikeToFieldDescription(hql, alias, field);
 
                 count++;
             }
@@ -451,6 +444,21 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         }
     }
 
+    private String getFormatedField(@NonNull String field) {
+        return field.replace("__", ".");
+    }
+
+    private void addLikeToFieldDescription(StringBuilder hql, String alias, String field) {
+        field = getFormatedField(field);
+
+        hql.append("   fly_to_ascii(lower(cast(");
+
+        if (!field.contains("."))
+            hql.append(alias).append(".");
+
+        hql.append(field.trim())
+                .append(" as string))) like fly_to_ascii(cast(:value as string)) \n ");
+    }
 
     public FlyPageableResult search(F filter, Pageable pageable) {
         return null;
@@ -710,7 +718,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         if (isEmpty(columnReference) || isEmpty(value))
             return Optional.empty();
 
-        if(isEmpty(tenant))
+        if (isEmpty(tenant))
             tenant = getTenant();
 
         final String entityName = getEntityName();
