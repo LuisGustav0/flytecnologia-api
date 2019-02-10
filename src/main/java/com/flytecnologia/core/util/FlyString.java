@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -79,5 +80,26 @@ public class FlyString {
         nf.setMinimumFractionDigits(digits);
 
         return nf.format(value);
+    }
+
+    public static String getDayOfWeekPtBR(DayOfWeek dayOfWeek) {
+        switch (dayOfWeek) {
+            case MONDAY:
+                return "Segunda-feira";
+            case TUESDAY:
+                return "Terça-feira";
+            case WEDNESDAY:
+                return "Quarta-feira";
+            case THURSDAY:
+                return "Quinta-feira";
+            case FRIDAY:
+                return "Sexta-feira";
+            case SATURDAY:
+                return "Sábado";
+            case SUNDAY:
+                return "Domingo";
+        }
+
+        return null;
     }
 }
