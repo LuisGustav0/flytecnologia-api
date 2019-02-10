@@ -4,8 +4,10 @@ import com.flytecnologia.core.base.plusService.FlyPrintService;
 import com.flytecnologia.core.base.plusService.FlyTenantInformation;
 import com.flytecnologia.core.base.plusService.FlyTimeSpentService;
 import com.flytecnologia.core.base.plusService.FlyValidationBase;
+import com.flytecnologia.core.exception.BE;
 import com.flytecnologia.core.exception.BusinessException;
 import com.flytecnologia.core.model.FlyEntity;
+import com.flytecnologia.core.model.FlyEntityManualIdImpl;
 import com.flytecnologia.core.search.FlyFilter;
 import com.flytecnologia.core.search.FlyPageableResult;
 import com.flytecnologia.core.spring.FlyValidatorUtil;
@@ -106,7 +108,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         FlyReflection.setParentInTheChildrenList(entity);
     }
 
-    private void validateBeforeSave(T entity) {
+    private void validateBeforeCreate(T entity) {
         if (!entity.isIgnoreBeforeSave()) {
             beforeValidateSave(entity, null);
         }
@@ -119,13 +121,24 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         if (!entity.isIgnoreBeforeSave()) {
             beforeSave(entity, null);
         }
+
+        validateIdInUse(entity);
+    }
+
+    protected void validateIdInUse(T entity) {
+        if (!(entity instanceof FlyEntityManualIdImpl))
+            return;
+
+        if (existsById(entity.getId())) {
+            throw new BE("flyserivice.idInUse");
+        }
     }
 
     @Transactional
     public T create(T entity) {
         notNull(entity, "flyserivice.invalidRecord");
 
-        validateBeforeSave(entity);
+        validateBeforeCreate(entity);
 
         final boolean isIgnoreAfterSave = entity.isIgnoreAfterSave();
 
@@ -381,7 +394,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
 
     public void batchSaveComplete(List<T> entities, int batchSize) {
         entities.forEach(entity -> {
-            validateBeforeSave(entity);
+            validateBeforeCreate(entity);
 
             final boolean isIgnoreAfterSave = entity.isIgnoreAfterSave();
 

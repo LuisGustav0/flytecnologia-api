@@ -220,7 +220,7 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
 
     private String getMessage(String field, Object... args) {
         try {
-            return messageSource.getMessage(field, args, LocaleContextHolder.getLocale());
+             return messageSource.getMessage(field, args, LocaleContextHolder.getLocale());
         } catch (Exception ex) {
             return NO_MESSSAGE_AVAILABLE;
         }
