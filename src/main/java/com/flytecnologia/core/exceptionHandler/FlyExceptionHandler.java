@@ -148,7 +148,14 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({BusinessException.class, BE.class})
     public ResponseEntity<FlyErrorResponse> handleBusinessException(BusinessException ex) {
-        final ApiError apiError = toApiError(ex.getMessage(), null);
+        String msg = ex.getMessage();
+
+        ApiError apiError;
+        if(msg != null && !msg.contains(" ")) {
+            apiError = toApiError(ex.getMessage(), ex);
+        } else {
+            apiError = new ApiError("businessException", ex.getMessage(), getDevMessage(ex));
+        }
 
         if (flyAppProperty.getApp().isDebug()) {
             log.error(ex.getMessage());
