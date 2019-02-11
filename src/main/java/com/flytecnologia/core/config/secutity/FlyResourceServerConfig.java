@@ -66,14 +66,20 @@ public class FlyResourceServerConfig extends ResourceServerConfigurerAdapter {
      */
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
+        http
+                .cors()
+            .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+                .csrf().disable()
+                .formLogin().disable()
+                .httpBasic().disable()
+                .authorizeRequests()
                 .antMatchers(AUTH_WHITELIST_OTHERS).permitAll()
                 .antMatchers(AUTH_WHITELIST_LOGIN).permitAll()
                 .antMatchers(AUTH_WHITELIST_SWAGGER).permitAll()
                 .anyRequest().authenticated()
-                .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .csrf().disable();
         ;
     }
 
@@ -94,10 +100,6 @@ public class FlyResourceServerConfig extends ResourceServerConfigurerAdapter {
     public UserDetailsService userDetailsService() {
         return new FlyUserDetailsService();
     }
-    /*@Bean
-    public MethodSecurityExpressionHandler createExpressionHandler() {
-        return new OAuth2MethodSecurityExpressionHandler();
-    }*/
 
     @Bean
     protected MethodSecurityExpressionHandler createExpressionHandler() {

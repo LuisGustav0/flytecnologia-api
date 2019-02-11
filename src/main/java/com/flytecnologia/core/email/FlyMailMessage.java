@@ -3,7 +3,6 @@ package com.flytecnologia.core.email;
 
 import org.springframework.core.io.InputStreamSource;
 
-import java.io.File;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;

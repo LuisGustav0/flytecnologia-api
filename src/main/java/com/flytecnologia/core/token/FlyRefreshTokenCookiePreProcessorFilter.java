@@ -23,19 +23,20 @@ import java.util.Map;
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class FlyRefreshTokenCookiePreProcessorFilter implements Filter {
+    private static final String LOGIN_REST_URL = "/oauth/token";
+
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
         final HttpServletRequest req = addRequestInformation((HttpServletRequest) request);
 
-        //req.setAttribute(FlyMultiTenantConstants.REQUEST_HEADER_ID, getTenantId(req));
-
         chain.doFilter(req, response);
     }
 
     private HttpServletRequest addRequestInformation(HttpServletRequest req) {
-        if ("/oauth/token".equalsIgnoreCase(req.getRequestURI())
+        if (LOGIN_REST_URL.equalsIgnoreCase(req.getRequestURI())
                 && "refresh_token".equals(req.getParameter("grant_type"))
                 && req.getCookies() != null) {
 
