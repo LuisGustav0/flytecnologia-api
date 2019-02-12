@@ -36,6 +36,10 @@ public abstract class FlyEntityBase implements Serializable {
     @JsonIgnore
     private boolean ignoreAfterSave;
 
+    @Transient
+    @JsonIgnore
+    private String destinationTenant;
+
     public Map<String, Object> getParameters() {
         if (parameters == null)
             parameters = new HashMap<>();

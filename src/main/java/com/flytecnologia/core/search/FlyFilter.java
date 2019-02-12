@@ -79,4 +79,7 @@ public interface FlyFilter {
 
     void setShowAllRecordsOnSearch(boolean value);
 
+    void setTenantSearch(String tenant);
+
+    String getTenantSearch();
 }

@@ -22,4 +22,8 @@ public interface FlyEntity {
     Map<String, Object> getParameters();
 
     void setParameters(Map<String, Object> parameters);
+
+    void setDestinationTenant(String destinationTenant);
+
+    String getDestinationTenant();
 }

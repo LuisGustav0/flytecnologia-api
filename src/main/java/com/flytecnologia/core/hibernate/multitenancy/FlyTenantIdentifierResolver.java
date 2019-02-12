@@ -1,6 +1,5 @@
 package com.flytecnologia.core.hibernate.multitenancy;
 
-import com.flytecnologia.core.token.FlyTokenUserDetails;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -16,7 +15,7 @@ public class FlyTenantIdentifierResolver implements CurrentTenantIdentifierResol
         if (tenant != null)
             return tenant;
 
-        tenant = FlyTokenUserDetails.getCurrentSchemaNameOrElseNull();
+       /* tenant = FlyTokenUserDetails.getCurrentSchemaNameOrElseNull();
 
         if (tenant != null) {
             tenant = FlyMultiTenantConstants.DEFAULT_TENANT_SUFFIX + tenant;
@@ -24,7 +23,9 @@ public class FlyTenantIdentifierResolver implements CurrentTenantIdentifierResol
             return tenant;
         } else {
             return FlyMultiTenantConstants.DEFAULT_TENANT_ID;
-        }
+        }*/
+
+        return FlyMultiTenantConstants.DEFAULT_TENANT_ID;
     }
 
     @Override

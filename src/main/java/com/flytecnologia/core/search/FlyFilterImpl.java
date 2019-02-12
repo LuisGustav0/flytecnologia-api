@@ -1,5 +1,11 @@
 package com.flytecnologia.core.search;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public abstract class FlyFilterImpl implements FlyFilter {
     private String acFieldDescription;
     private String acFieldValue;
@@ -21,45 +27,8 @@ public abstract class FlyFilterImpl implements FlyFilter {
     private boolean isPreviousOrNextId;
     private boolean showAllRecordsOnSearch;
 
-    public String getAcFieldDescription() {
-        return acFieldDescription;
-    }
-
-    public void setAcFieldDescription(String acFieldDescription) {
-        this.acFieldDescription = acFieldDescription;
-    }
-
-    public String getAcFieldValue() {
-        return acFieldValue;
-    }
-
-    public void setAcFieldValue(String acFieldValue) {
-        this.acFieldValue = acFieldValue;
-    }
-
-    public String getAcExtraFieldsAutocomplete() {
-        return acExtraFieldsAutocomplete;
-    }
-
-    public void setAcExtraFieldsAutocomplete(String acExtraFieldsAutocomplete) {
-        this.acExtraFieldsAutocomplete = acExtraFieldsAutocomplete;
-    }
-
-    public String getAcFieldsListAutocomplete() {
-        return acFieldsListAutocomplete;
-    }
-
-    public void setAcFieldsListAutocomplete(String acFieldsListAutocomplete) {
-        this.acFieldsListAutocomplete = acFieldsListAutocomplete;
-    }
-
-    public String getAcValue() {
-        return acValue;
-    }
-
-    public void setAcValue(String acValue) {
-        this.acValue = acValue;
-    }
+    @JsonIgnore
+    private String tenantSearch;
 
     public Integer getAcLimit() {
         if (acLimit == null) {
@@ -67,10 +36,6 @@ public abstract class FlyFilterImpl implements FlyFilter {
         }
 
         return acLimit;
-    }
-
-    public void setAcLimit(Integer acLimit) {
-        this.acLimit = acLimit;
     }
 
     @Override
@@ -96,16 +61,8 @@ public abstract class FlyFilterImpl implements FlyFilter {
         return sortGridByField != null && !sortGridByField.contains(" ") ? sortGridByField : null;
     }
 
-    public void setSortGridByField(String sortGridByField) {
-        this.sortGridByField = sortGridByField;
-    }
-
     public String getTypeSortGridByField() {
         return "a".equals(typeSortGridByField) ? "asc" : "desc";
-    }
-
-    public void setTypeSortGridByField(String typeSortGridByField) {
-        this.typeSortGridByField = typeSortGridByField;
     }
 
     @Override
@@ -156,14 +113,6 @@ public abstract class FlyFilterImpl implements FlyFilter {
     @Override
     public void setIgnoreInactiveFilter(boolean ignoreInactiveFilter) {
         this.ignoreInactiveFilter = ignoreInactiveFilter;
-    }
-
-    public String getReportName() {
-        return reportName;
-    }
-
-    public void setReportName(String reportName) {
-        this.reportName = reportName;
     }
 
     @Override

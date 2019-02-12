@@ -12,6 +12,8 @@ import com.flytecnologia.core.search.FlyFilter;
 import com.flytecnologia.core.search.FlyPageableResult;
 import com.flytecnologia.core.spring.FlyValidatorUtil;
 import com.flytecnologia.core.util.FlyReflection;
+import org.hibernate.Session;
+import org.hibernate.proxy.HibernateProxy;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -41,7 +43,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         return getRepository().find(id, tenant);
     }
 
-    protected void beforeValidateSave(final T entity, final T oldEntity) {
+    protected void beforeValidateSave(T entity) {
     }
 
     protected void beforeSave(final T entity, final T oldEntity) {
@@ -53,7 +55,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
     protected void beforeDelete(final T entity) {
     }
 
-    protected void afterDelete(Long id) {
+    protected void afterDelete(Long id, String tenant) {
     }
 
     protected void beforeDeleteAll(List<T> entities) {
@@ -83,6 +85,14 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         return getRepository().getEntityClass();
     }
 
+
+    @Transactional
+    public T save(T entity, String tenant) {
+        entity.setDestinationTenant(tenant);
+
+        return save(entity);
+    }
+
     @Transactional
     public T save(T entity) {
         if (entity.getId() == null) {
@@ -110,7 +120,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
 
     private void validateBeforeCreate(T entity) {
         if (!entity.isIgnoreBeforeSave()) {
-            beforeValidateSave(entity, null);
+            beforeValidateSave(entity);
         }
 
         FlyValidatorUtil.validate(entity);
@@ -135,6 +145,12 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
     }
 
     @Transactional
+    public T create(T entity, String tenant) {
+        entity.setDestinationTenant(tenant);
+        return create(entity);
+    }
+
+    @Transactional
     public T create(T entity) {
         notNull(entity, "flyserivice.invalidRecord");
 
@@ -144,7 +160,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
 
         final Map<String, Object> parameters = entity.getParameters();
 
-        entity = getRepository().save(entity);
+        entity = saveOrUpdate(entity);
 
         entity.setParameters(parameters);
 
@@ -157,8 +173,46 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         return entity;
     }
 
+    private T saveOrUpdate(T entity) {
+
+        final String tenant = entity.getDestinationTenant();
+        final Session session = getRepository().getNewSession(entity.getDestinationTenant());
+
+        try {
+            if (session != null) {
+                Long id;
+
+                if (entity instanceof HibernateProxy && entity.getId() != null) {
+                    session.update(entity);
+                    id = entity.getId();
+                } else {
+                    id = (Long) session.save(entity);
+                }
+
+                entity = find(id, tenant).orElse(null);
+
+                session.getTransaction().commit();
+
+                return entity;
+            } else {
+                return getRepository().save(entity);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            getRepository().rollbackSessionTransaction(session);
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
     protected String getEntityName() {
         return getRepository().getEntityName();
+    }
+
+
+    @Transactional
+    public T update(Long id, T entity, String tenant) {
+        entity.setDestinationTenant(tenant);
+        return update(id, entity);
     }
 
     @Transactional
@@ -168,7 +222,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         notNull(entity.getId(), "flyserivice.invalidRecord");
 
         if (!entity.isIgnoreBeforeSave()) {
-            beforeValidateSave(entity, null);
+            beforeValidateSave(entity);
         }
 
         FlyValidatorUtil.validate(entity);
@@ -195,7 +249,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
 
         final Map<String, Object> parameters = entity.getParameters();
 
-        entitySaved = getRepository().save(entitySaved);
+        entitySaved = saveOrUpdate(entitySaved);
 
         entitySaved.setParameters(parameters);
 
@@ -259,27 +313,43 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
 
     @Transactional
     public void delete(Long id) {
-        delete(id, false, false);
+        delete(id, false, false, null);
+    }
+
+
+    @Transactional
+    public void delete(Long id, String tenant) {
+        delete(id, false, false, tenant);
     }
 
     @Transactional
-    public void delete(Long id, boolean isIgnoreBeforeDelete, boolean isIgnoreAfterDelete) {
+    public void delete(Long id, boolean isIgnoreBeforeDelete, boolean isIgnoreAfterDelete, String tenant) {
         notNull(id, "flyserivice.idNotNull");
 
-        final Optional<T> entityOptional = find(id);
+        final Optional<T> entityOptional = find(id, tenant);
 
-        T entity = entityOptional.orElseThrow(() -> new EmptyResultDataAccessException("delete " + getEntityName() + " -> " + id, 1));
+        T entity = entityOptional
+                .orElseThrow(() -> new EmptyResultDataAccessException("delete " + getEntityName() + " -> " + id, 1));
 
         if (!isIgnoreBeforeDelete) {
+            if (tenant != null) {
+                entity.getParameters().put("$tenant", tenant);
+            }
+
             beforeDelete(entity);
         }
 
-        getRepository().delete(entity);
+        if (tenant != null) {
+            getRepository().delete(entity, tenant);
+        } else {
+            getRepository().delete(entity);
+        }
 
         if (!isIgnoreAfterDelete) {
-            afterDelete(id);
+            afterDelete(id, tenant);
         }
     }
+
 
     @Transactional
     public void deleteAll(List<T> entities) {
@@ -364,12 +434,20 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         return getRepository().getReference(id);
     }
 
+    public Optional<T> getReference(Long id, String tenant) {
+        return getRepository().getReference(id, tenant);
+    }
+
     public <G extends FlyEntity> void detach(G entity) {
         getRepository().detach(entity);
     }
 
-    protected <E> Optional<E> getFieldById(Long id, String property) {
+    protected <N> Optional<N> getFieldById(Long id, String property) {
         return getRepository().getFieldById(id, property);
+    }
+
+    protected <N> Optional<N> getFieldById(Long id, String property, String tenant) {
+        return getRepository().getFieldById(id, property, tenant);
     }
 
     public boolean isInactive(Long id) {
@@ -408,8 +486,8 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         getRepository().batchSave(entities, batchSize);
     }
 
-    public void setTenantInCurrentConnection(String tenantIdentifier, Long userUd) {
-        getRepository().setTenantInCurrentConnection(tenantIdentifier, userUd);
+    public void setTenantInCurrentConnection(String tenantIdentifier) {
+        getRepository().setTenantInCurrentConnection(tenantIdentifier);
     }
 
     public boolean hasAnyPermission(String... roles) {
@@ -421,26 +499,32 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
     }
 
     public void unbindSession(String tenant) {
-        unbindSession(tenant, null);
-    }
+        //flySwitchTenantService.unbindSession();
 
-    public void unbindSession(String tenant, Long userId) {
-        flySwitchTenantService.unbindSession();
-
-        setTenantInCurrentConnection(tenant, userId);
+        setTenantInCurrentConnection(tenant);
     }
 
     public void bindSession(String tenant) {
-        bindSession(tenant, null);
+        //flySwitchTenantService.bindSession();
+
+        setTenantInCurrentConnection(tenant);
     }
 
-    public void bindSession(String tenant, Long userId) {
-        flySwitchTenantService.bindSession();
-
-        setTenantInCurrentConnection(tenant, userId);
+    public Optional<List<T>> findAll(String columnReference, Object value, String tenant) {
+        return getRepository().findAll(columnReference, value, tenant);
     }
 
-    public Optional<List<T>> findAll(String tenant, String columnReference, Object value) {
-        return getRepository().findAll(tenant, columnReference, value);
+    public Optional<List<T>> findAll(String columnReference, Object value) {
+        return getRepository().findAll(columnReference, value);
+    }
+
+    public <N> Optional<List<N>> findAll(String columnReference,
+                                         Object value, Class<?> nClass, String tenant) {
+        return getRepository().findAll(columnReference, value, nClass, tenant);
+    }
+
+    public <N> Optional<List<N>> findAll(String columnReference,
+                                         Object value, Class<?> nClass) {
+        return getRepository().findAll(columnReference, value, nClass);
     }
 }

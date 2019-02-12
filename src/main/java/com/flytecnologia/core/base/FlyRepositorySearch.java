@@ -26,5 +26,5 @@ public interface FlyRepositorySearch<F extends FlyFilter> {
 
     Optional<Long> getRecordListCount(Long id, String listName);
 
-    void setTenantInCurrentConnection(String tenantIdentifier, Long userId);
+    void setTenantInCurrentConnection(String tenantIdentifier);
 }

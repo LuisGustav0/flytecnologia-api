@@ -30,7 +30,7 @@ public class FlyTokenUserDetails {
     }
 
     public static Optional<Object> getAuthenticationInformation(String key) {
-        final Optional<Map> auten = getAuthenticationDecodedDetails();
+        final Optional<Map> auten = FlyTokenUserDetails.getAuthenticationDecodedDetails();
 
         return auten.map(map -> map.get(key));
     }
