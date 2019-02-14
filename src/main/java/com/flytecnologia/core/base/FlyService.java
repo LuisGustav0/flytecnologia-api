@@ -6,6 +6,7 @@ import com.flytecnologia.core.base.plusService.FlyTimeSpentService;
 import com.flytecnologia.core.base.plusService.FlyValidationBase;
 import com.flytecnologia.core.exception.BE;
 import com.flytecnologia.core.exception.BusinessException;
+import com.flytecnologia.core.hibernate.multitenancy.FlyTenantThreadLocal;
 import com.flytecnologia.core.model.FlyEntity;
 import com.flytecnologia.core.model.FlyEntityManualIdImpl;
 import com.flytecnologia.core.search.FlyFilter;
@@ -70,9 +71,6 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
 
     @Autowired
     private MessageSource messageSource;
-
-    @Autowired
-    private FlySwitchTenantService flySwitchTenantService;
 
     public FlyService() {
     }
@@ -486,28 +484,17 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         getRepository().batchSave(entities, batchSize);
     }
 
-    public void setTenantInCurrentConnection(String tenantIdentifier) {
-        getRepository().setTenantInCurrentConnection(tenantIdentifier);
-    }
-
     public boolean hasAnyPermission(String... roles) {
         return getRepository().hasAnyPermission(roles);
     }
 
-    public FlySwitchTenantService getFlySwitchTenantService() {
-        return flySwitchTenantService;
-    }
+    public void setTenantInCurrentSession(String tenant) {
+        if(isEmpty(tenant))
+            return;
 
-    public void unbindSession(String tenant) {
-        //flySwitchTenantService.unbindSession();
+        FlyTenantThreadLocal.setTenant(tenant);
 
-        setTenantInCurrentConnection(tenant);
-    }
-
-    public void bindSession(String tenant) {
-        //flySwitchTenantService.bindSession();
-
-        setTenantInCurrentConnection(tenant);
+        getRepository().setTenantInCurrentConnection(tenant);
     }
 
     public Optional<List<T>> findAll(String columnReference, Object value, String tenant) {
