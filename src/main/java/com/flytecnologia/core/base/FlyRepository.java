@@ -71,6 +71,8 @@ public interface FlyRepository<T extends FlyEntity, PK extends Serializable, F e
 
     <N> Optional<N> getValue(String hql, Map<String, Object> parameters, String tenant);
 
+    Optional<List<T>> findAll(String tenant);
+
     Optional<List<T>> findAll(String columnReference, Object value);
 
     <N> Optional<List<N>> findAll(String columnReference, Object value, Class<?> nClass);

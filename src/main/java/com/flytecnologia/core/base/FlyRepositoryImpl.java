@@ -285,7 +285,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
         changeSearchWhere(hql, parameters, filter);
 
-        return getListMap(hql, parameters, filter.getAcLimit());
+        return getResultListMap(hql, parameters, filter.getAcLimit());
     }
 
     private void addFieldIdToAutocomplete(F filter, String alias, StringBuilder hql) {
@@ -587,16 +587,16 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         getEntityManager().flush();
     }
 
-    protected <L> Optional<List<Map<String, L>>> getListMap(StringBuilder hql) {
-        return getListMap(hql, null, 0);
+    protected <L> Optional<List<Map<String, L>>> getResultListMap(StringBuilder hql) {
+        return getResultListMap(hql, null, 0);
     }
 
-    protected <L> Optional<List<Map<String, L>>> getListMap(StringBuilder hql, Map<String, Object> parameters) {
-        return getListMap(hql, parameters, 0);
+    protected <L> Optional<List<Map<String, L>>> getResultListMap(StringBuilder hql, Map<String, Object> parameters) {
+        return getResultListMap(hql, parameters, 0);
     }
 
-    protected <L> Optional<List<Map<String, L>>> getListMap(StringBuilder hql, Map<String, Object> parameters, int limit) {
-        final TypedQuery<?> query = getEntityManager().createQuery(hql.toString(), Map.class);
+    protected <L> Optional<List<Map<String, L>>> getResultListMap(StringBuilder hql, Map<String, Object> parameters, int limit) {
+        final Query query = getEntityManager().createQuery(hql.toString(), Map.class);
 
         if (limit > 0)
             query.setMaxResults(limit);
@@ -604,7 +604,50 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         if (parameters != null)
             parameters.forEach(query::setParameter);
 
-        return Optional.ofNullable((List<Map<String, L>>) query.getResultList());
+        List list = query.getResultList();
+
+        if (list == null || list.size() == 0)
+            return Optional.empty();
+
+        return Optional.of(list);
+    }
+
+    public Optional<List<T>> getResultList(StringBuilder hql) {
+        return getResultList(hql, null, 0, getEntityClass());
+    }
+
+    public Optional<List<T>> getResultList(StringBuilder hql, Map<String, Object> parameters) {
+        return getResultList(hql, parameters, 0, getEntityClass());
+    }
+
+    public Optional<List<T>> getResultList(StringBuilder hql, Map<String, Object> parameters, int limit) {
+        return getResultList(hql, parameters, limit, getEntityClass());
+    }
+
+    public <N> Optional<List<N>> getResultList(StringBuilder hql, Class<N> nClass) {
+        return getResultList(hql, null, 0, nClass);
+    }
+
+    public <N> Optional<List<N>> getResultList(StringBuilder hql, Map<String, Object> parameters, Class<N> nClass) {
+        return getResultList(hql, parameters, 0, nClass);
+    }
+
+    public <N> Optional<List<N>> getResultList(StringBuilder hql, Map<String, Object> parameters,
+                                               int limit, Class<N> nClass) {
+        final TypedQuery<N> query = getEntityManager().createQuery(hql.toString(), nClass);
+
+        if (limit > 0)
+            query.setMaxResults(limit);
+
+        if (parameters != null)
+            parameters.forEach(query::setParameter);
+
+        final List<N> list = query.getResultList();
+
+        if (isEmpty(list))
+            return Optional.empty();
+
+        return Optional.of(list);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -764,6 +807,10 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         return findByInstruction(hql, parameters, tenant);
     }
 
+    public Optional<List<T>> findAll(String tenant) {
+        return findAll(null, null, getEntityClass(), tenant, false);
+    }
+
     public Optional<List<T>> findAll(String columnReference, Object value) {
         return findAll(columnReference, value, getEntityClass(), null);
     }
@@ -779,8 +826,19 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
     public <N> Optional<List<N>> findAll(String columnReference,
                                          Object value, Class<?> nClass, String tenant) {
-        if (isEmpty(columnReference) || isEmpty(value))
-            return Optional.empty();
+        return findAll(columnReference, value, nClass, tenant, true);
+    }
+
+    private <N> Optional<List<N>> findAll(String columnReference,
+                                          Object value, Class<?> nClass,
+                                          String tenant,
+                                          boolean isColumnReferenceRequired) {
+
+        if (isColumnReferenceRequired) {
+            if (isEmpty(columnReference) || isEmpty(value))
+                return Optional.empty();
+        }
+
 
         final String entityName = nClass.getSimpleName();
 
@@ -788,12 +846,16 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
                 .append("select \n ")
                 .append("   r \n")
                 .append("from ").append(entityName)
-                .append(" r\n")
-                .append("where \n ").append(columnReference)
-                .append(" = :value");
+                .append(" r\n");
 
         Map<String, Object> parameter = new HashMap<>();
-        parameter.put("value", value);
+
+        if (columnReference != null) {
+            hql.append("where \n ").append(columnReference)
+                    .append(" = :value");
+
+            parameter.put("value", value);
+        }
 
         return findAllByInstruction(hql, parameter, nClass, tenant);
     }
@@ -986,5 +1048,11 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
             session.getTransaction().rollback();
             throw new RuntimeException(e.getMessage());
         }
+    }
+
+    public Map<String, Object> getMapParameter(String key, Object value) {
+        Map<String, Object> parameter = new HashMap<>();
+        parameter.put(key, value);
+        return parameter;
     }
 }

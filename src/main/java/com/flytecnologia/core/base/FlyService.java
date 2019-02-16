@@ -497,6 +497,10 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         getRepository().setTenantInCurrentConnection(tenant);
     }
 
+    public Optional<List<T>> findAll(String tenant) {
+        return getRepository().findAll(tenant);
+    }
+
     public Optional<List<T>> findAll(String columnReference, Object value, String tenant) {
         return getRepository().findAll(columnReference, value, tenant);
     }
