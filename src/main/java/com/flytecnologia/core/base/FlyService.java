@@ -14,6 +14,7 @@ import com.flytecnologia.core.search.FlyPageableResult;
 import com.flytecnologia.core.spring.FlyValidatorUtil;
 import com.flytecnologia.core.util.FlyReflection;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -178,6 +179,8 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
 
         try {
             if (session != null) {
+                Transaction tx = session.beginTransaction();
+
                 Long id;
 
                 if (entity instanceof HibernateProxy && entity.getId() != null) {
@@ -187,9 +190,10 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
                     id = (Long) session.save(entity);
                 }
 
-                entity = find(id, tenant).orElse(null);
+                entity = session.find(getEntityClass(), id);
 
-                session.getTransaction().commit();
+                tx.commit();
+                session.close();;
 
                 return entity;
             } else {
