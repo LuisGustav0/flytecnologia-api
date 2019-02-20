@@ -830,12 +830,13 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
     }
 
     private <N> Optional<List<N>> findAll(String columnReference,
-                                          Object value, Class<?> nClass,
+                                          Object value,
+                                          Class<?> nClass,
                                           String tenant,
                                           boolean isColumnReferenceRequired) {
 
         if (isColumnReferenceRequired) {
-            if (isEmpty(columnReference) || isEmpty(value))
+            if (isEmpty(columnReference))
                 return Optional.empty();
         }
 
@@ -851,10 +852,15 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         Map<String, Object> parameter = new HashMap<>();
 
         if (columnReference != null) {
-            hql.append("where \n ").append(columnReference)
-                    .append(" = :value");
+            hql.append("where \n ").append(columnReference);
 
-            parameter.put("value", value);
+            if (!isEmpty(value)) {
+                hql.append(" = :value");
+
+                parameter.put("value", value);
+            } else {
+                hql.append(" is null");
+            }
         }
 
         return findAllByInstruction(hql, parameter, nClass, tenant);
