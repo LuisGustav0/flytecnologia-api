@@ -20,6 +20,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
@@ -173,12 +174,12 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
     }
 
     private T saveOrUpdate(T entity) {
-
-        final String tenant = entity.getDestinationTenant();
         final Session session = getRepository().getNewSession(entity.getDestinationTenant());
 
-        try {
-            if (session != null) {
+        if (session == null) {
+            return getRepository().save(entity);
+        } else {
+            try {
                 Transaction tx = session.beginTransaction();
 
                 Long id;
@@ -193,16 +194,18 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
                 entity = session.find(getEntityClass(), id);
 
                 tx.commit();
-                session.close();;
+                session.close();
 
                 return entity;
-            } else {
-                return getRepository().save(entity);
+            } catch (DataIntegrityViolationException de) {
+                de.printStackTrace();
+                getRepository().rollbackSessionTransaction(session);
+                throw new DataIntegrityViolationException(de.getMessage(), de.getCause());
+            } catch (Exception e) {
+                e.printStackTrace();
+                getRepository().rollbackSessionTransaction(session);
+                throw new RuntimeException(e.getMessage(), e.getCause());
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            getRepository().rollbackSessionTransaction(session);
-            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -493,7 +496,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
     }
 
     public void setTenantInCurrentSession(String tenant) {
-        if(isEmpty(tenant))
+        if (isEmpty(tenant))
             return;
 
         FlyTenantThreadLocal.setTenant(tenant);
