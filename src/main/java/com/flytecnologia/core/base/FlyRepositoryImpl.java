@@ -866,10 +866,44 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         return findAllByInstruction(hql, parameter, nClass, tenant);
     }
 
+    public Optional<T> find(String columnReference,
+                            Object value) {
+        return find(columnReference, value, null);
+    }
+
+    public Optional<T> find(String columnReference,
+                            Object value,
+                            String tenant) {
+
+        if (isEmpty(columnReference))
+            return Optional.empty();
+
+        final StringBuilder hql = new StringBuilder()
+                .append("select \n ")
+                .append("   r \n")
+                .append("from ").append(getEntityName())
+                .append(" r\n");
+
+        Map<String, Object> parameter = new HashMap<>();
+
+        if (columnReference != null) {
+            hql.append("where \n ").append(columnReference);
+
+            if (!isEmpty(value)) {
+                parameter.put("value", value);
+
+                hql.append(" = :value");
+            } else {
+                hql.append(" is null");
+            }
+        }
+
+        return findByInstruction(hql, parameter, getEntityClass(), tenant);
+    }
+
     public Optional<T> findByInstruction(@NonNull String hql) {
         return findByInstruction(hql, null, null);
     }
-
 
     public Optional<T> findByInstruction(@NonNull StringBuilder hql) {
         return findByInstruction(hql, null, null);
