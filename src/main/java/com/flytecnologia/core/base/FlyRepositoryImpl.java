@@ -988,6 +988,13 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
 
     public <N> Optional<List<N>> findAllByInstruction(@NonNull StringBuilder hql,
                                                       Map<String, ?> parameters,
+                                                      Class<?> nClass) {
+        return findAllByInstruction(hql.toString(), parameters, nClass, null);
+    }
+
+
+    public <N> Optional<List<N>> findAllByInstruction(@NonNull StringBuilder hql,
+                                                      Map<String, ?> parameters,
                                                       Class<?> nClass,
                                                       String tenant) {
         return findAllByInstruction(hql.toString(), parameters, nClass, tenant);
