@@ -10,15 +10,13 @@ import java.util.List;
 
 @Service
 public class FlyDatabaseMigration {
-    private Flyway flyway;
     private FlyUserService flyUserService;
+    private DataSource dataSource;
 
-    public FlyDatabaseMigration(Flyway flyway,
-                                DataSource dataSource,
+    public FlyDatabaseMigration(DataSource dataSource,
                                 FlyUserService flyUserService) {
-        this.flyway = flyway;
+        this.dataSource = dataSource;
         this.flyUserService = flyUserService;
-        this.flyway.setDataSource(dataSource);
     }
 
     @PostConstruct
@@ -41,8 +39,13 @@ public class FlyDatabaseMigration {
      * Used when creating a new schema for a new client
      */
     public void migrateSpecificSchema(String schema) {
-        flyway.setLocations("db/migration/common", "db/migration/specific", "db/migration/" + schema);
-        flyway.setSchemas(schema);
+        Flyway flyway = Flyway.configure()
+                .dataSource(dataSource)
+                .locations("db/migration/common", "db/migration/specific", "db/migration/" + schema)
+                .schemas(schema)
+                .ignoreMissingMigrations(true)
+                .load();
+
         flyway.migrate();
     }
 }
