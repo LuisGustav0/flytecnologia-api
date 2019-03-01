@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -53,7 +54,7 @@ public class FlyAutorizationServerConfig extends AuthorizationServerConfigurerAd
                 .authorizedGrantTypes("password", "refresh_token")
                 .accessTokenValiditySeconds(60 * 60 * 2) //duration's token//TODO ao renovar o token, considerar o tenant do token atual....ao renover volta pro tenant do usuario
                 .refreshTokenValiditySeconds(3600 * 24) //1 day
-            .and()
+                .and()
                 .withClient("mobile")
                 .secret(new BCryptPasswordEncoder().encode(secretKeyMobile))
                 .scopes("read", "mobile")
@@ -98,5 +99,9 @@ public class FlyAutorizationServerConfig extends AuthorizationServerConfigurerAd
     @Bean
     public TokenEnhancer tokenEnhancer() {
         return new FlyTokenEnhancer();
+    }
+
+    static {
+        SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
     }
 }
