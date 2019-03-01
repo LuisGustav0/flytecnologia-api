@@ -43,7 +43,6 @@ public class FlyDatabaseMigration {
                 .dataSource(dataSource)
                 .locations("db/migration/common", "db/migration/specific", "db/migration/" + schema)
                 .schemas(schema)
-                .ignoreMissingMigrations(true)
                 .load();
 
         flyway.migrate();
