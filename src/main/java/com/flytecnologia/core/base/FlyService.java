@@ -135,7 +135,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         validateIdInUse(entity);
     }
 
-    protected void validateIdInUse(T entity) {
+    private void validateIdInUse(T entity) {
         if (!(entity instanceof FlyEntityManualIdImpl))
             return;
 
@@ -209,10 +209,9 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         }
     }
 
-    protected String getEntityName() {
+    private String getEntityName() {
         return getRepository().getEntityName();
     }
-
 
     @Transactional
     public T update(Long id, T entity, String tenant) {
@@ -491,11 +490,11 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         getRepository().batchSave(entities, batchSize);
     }
 
-    public boolean hasAnyPermission(String... roles) {
+    protected boolean hasAnyPermission(String... roles) {
         return getRepository().hasAnyPermission(roles);
     }
 
-    public void setTenantInCurrentSession(String tenant) {
+    protected void setTenantInCurrentSession(String tenant) {
         if (isEmpty(tenant))
             return;
 
