@@ -1,4 +1,4 @@
-package com.flytecnologia.core.base.plusService;
+package com.flytecnologia.core.base.service.plus;
 
 import com.flytecnologia.core.exception.BusinessException;
 import com.flytecnologia.core.search.FlyFilter;

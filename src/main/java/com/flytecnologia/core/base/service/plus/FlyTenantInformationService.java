@@ -1,10 +1,10 @@
-package com.flytecnologia.core.base.plusService;
+package com.flytecnologia.core.base.service.plus;
 
 import com.flytecnologia.core.hibernate.multitenancy.FlyMultiTenantConstants;
 import com.flytecnologia.core.hibernate.multitenancy.FlyTenantThreadLocal;
 import com.flytecnologia.core.token.FlyTokenUserDetails;
 
-public interface FlyTenantInformation extends FlyValidationBase {
+public interface FlyTenantInformationService extends FlyValidationService {
 
     default String getTenant() {
         String tenantId = FlyTenantThreadLocal.getTenant();

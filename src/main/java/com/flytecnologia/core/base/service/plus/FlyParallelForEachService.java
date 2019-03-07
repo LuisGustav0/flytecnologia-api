@@ -1,11 +1,11 @@
-package com.flytecnologia.core.base.plusService;
+package com.flytecnologia.core.base.service.plus;
 
 import com.flytecnologia.core.hibernate.multitenancy.FlyTenantThreadLocal;
 
 import java.util.Collection;
 import java.util.function.Consumer;
 
-public interface FlyServiceParallelForEach extends FlyValidationBase, FlyTenantInformation {
+public interface FlyParallelForEachService extends FlyValidationService, FlyTenantInformationService {
     default <E> void parallelForEach(Collection<E> collection, Consumer<E> consumer) {
         final String finalTenantId = getTenant();
         final Long finalUserId = getUserId();

@@ -1,5 +1,6 @@
-package com.flytecnologia.core.base;
+package com.flytecnologia.core.base.controller;
 
+import com.flytecnologia.core.base.service.FlyService;
 import com.flytecnologia.core.model.FlyEntity;
 import com.flytecnologia.core.search.FlyFilter;
 import com.flytecnologia.core.search.FlyPageableResult;

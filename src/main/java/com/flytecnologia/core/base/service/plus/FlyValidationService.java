@@ -1,4 +1,4 @@
-package com.flytecnologia.core.base.plusService;
+package com.flytecnologia.core.base.service.plus;
 
 import com.flytecnologia.core.exception.BusinessException;
 import com.flytecnologia.core.model.FlyEntity;
@@ -8,7 +8,7 @@ import org.springframework.util.StringUtils;
 import java.time.LocalDate;
 import java.util.Collection;
 
-public interface FlyValidationBase {
+public interface FlyValidationService {
     default boolean isEmpty(Object value) {
         if (value == null)
             return true;

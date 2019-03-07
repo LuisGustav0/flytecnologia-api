@@ -1,9 +1,10 @@
-package com.flytecnologia.core.base;
+package com.flytecnologia.core.base.service;
 
-import com.flytecnologia.core.base.plusService.FlyPrintService;
-import com.flytecnologia.core.base.plusService.FlyTenantInformation;
-import com.flytecnologia.core.base.plusService.FlyTimeSpentService;
-import com.flytecnologia.core.base.plusService.FlyValidationBase;
+import com.flytecnologia.core.base.service.plus.FlyPrintService;
+import com.flytecnologia.core.base.service.plus.FlyTenantInformationService;
+import com.flytecnologia.core.base.service.plus.FlyTimeSpentService;
+import com.flytecnologia.core.base.service.plus.FlyValidationService;
+import com.flytecnologia.core.base.repository.FlyRepository;
 import com.flytecnologia.core.exception.BE;
 import com.flytecnologia.core.exception.BusinessException;
 import com.flytecnologia.core.hibernate.multitenancy.FlyTenantThreadLocal;
@@ -11,6 +12,7 @@ import com.flytecnologia.core.model.FlyEntity;
 import com.flytecnologia.core.model.FlyEntityManualIdImpl;
 import com.flytecnologia.core.search.FlyFilter;
 import com.flytecnologia.core.search.FlyPageableResult;
+import com.flytecnologia.core.security.FlyPermissionService;
 import com.flytecnologia.core.spring.FlyValidatorUtil;
 import com.flytecnologia.core.util.FlyReflection;
 import org.hibernate.Session;
@@ -33,8 +35,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> implements FlyValidationBase,
-        FlyTenantInformation, FlyTimeSpentService, FlyPrintService<F> {
+public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> implements FlyValidationService,
+        FlyTenantInformationService, FlyTimeSpentService, FlyPrintService<F> {
 
     protected abstract FlyRepository<T, Long, F> getRepository();
 
@@ -454,7 +456,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         return getRepository().getFieldById(id, property, tenant);
     }
 
-    public boolean isInactive(Long id) {
+    protected boolean isInactive(Long id) {
         return getRepository().isInactive(id);
     }
 
@@ -470,11 +472,11 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         getRepository().batchSave(entities, batchSize);
     }
 
-    public void batchSaveComplete(List<T> entities) {
+    protected void batchSaveComplete(List<T> entities) {
         batchSaveComplete(entities, 250);
     }
 
-    public void batchSaveComplete(List<T> entities, int batchSize) {
+    protected void batchSaveComplete(List<T> entities, int batchSize) {
         entities.forEach(entity -> {
             validateBeforeCreate(entity);
 
@@ -491,7 +493,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
     }
 
     protected boolean hasAnyPermission(String... roles) {
-        return getRepository().hasAnyPermission(roles);
+        return FlyPermissionService.hasAnyPermission(roles);
     }
 
     protected void setTenantInCurrentSession(String tenant) {
@@ -503,25 +505,25 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         getRepository().setTenantInCurrentConnection(tenant);
     }
 
-    public Optional<List<T>> findAll(String tenant) {
+    protected Optional<List<T>> findAll(String tenant) {
         return getRepository().findAll(tenant);
     }
 
-    public Optional<List<T>> findAll(String columnReference, Object value, String tenant) {
+    protected Optional<List<T>> findAll(String columnReference, Object value, String tenant) {
         return getRepository().findAll(columnReference, value, tenant);
     }
 
-    public Optional<List<T>> findAll(String columnReference, Object value) {
+    protected Optional<List<T>> findAll(String columnReference, Object value) {
         return getRepository().findAll(columnReference, value);
     }
 
-    public <N> Optional<List<N>> findAll(String columnReference,
-                                         Object value, Class<?> nClass, String tenant) {
+    protected <N> Optional<List<N>> findAll(String columnReference,
+                                            Object value, Class<?> nClass, String tenant) {
         return getRepository().findAll(columnReference, value, nClass, tenant);
     }
 
-    public <N> Optional<List<N>> findAll(String columnReference,
-                                         Object value, Class<?> nClass) {
+    protected <N> Optional<List<N>> findAll(String columnReference,
+                                            Object value, Class<?> nClass) {
         return getRepository().findAll(columnReference, value, nClass);
     }
 }

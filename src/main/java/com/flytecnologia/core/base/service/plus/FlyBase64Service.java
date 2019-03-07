@@ -1,8 +1,8 @@
-package com.flytecnologia.core.base.plusService;
+package com.flytecnologia.core.base.service.plus;
 
 import java.util.Base64;
 
-public interface FlyServiceBase64 extends FlyValidationBase {
+public interface FlyBase64Service extends FlyValidationService {
     default String removeBase64Information(String encode) {
         if (isEmpty(encode))
             return encode;

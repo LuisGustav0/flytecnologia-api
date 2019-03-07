@@ -1,8 +1,10 @@
-package com.flytecnologia.core.base;
+package com.flytecnologia.core.base.repository;
 
 import com.flytecnologia.core.model.FlyEntity;
 import com.flytecnologia.core.search.FlyFilter;
+import com.flytecnologia.core.search.FlyPageableResult;
 import org.hibernate.Session;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
@@ -44,8 +46,6 @@ public interface FlyRepository<T extends FlyEntity, PK extends Serializable, F e
     void batchSave(List<T> entities, int batchSize);
 
     boolean isInactive(Long id);
-
-    boolean hasAnyPermission(String... roles);
 
     void delete(T entity, String tenant);
 
@@ -108,4 +108,22 @@ public interface FlyRepository<T extends FlyEntity, PK extends Serializable, F e
     <N> Optional<List<N>> findAllByInstruction(StringBuilder hql, Map<String, ?> parameters, Class<?> nClass, String tenant);
 
     <N> Optional<List<N>> findAllByInstruction(String hql, Map<String, ?> parameters, Class<?> nClass, String tenant);
+
+    FlyPageableResult search(F filter, Pageable pageable);
+
+    Optional<Long> getFirstId(F filter);
+
+    Optional<Long> getPreviousId(F filter);
+
+    Optional<Long> getLastId(F filter);
+
+    Optional<Long> getNextId(F filter);
+
+    Optional<List<Map<String, Object>>> getItemsAutocomplete(F filter);
+
+    Optional<Map> getItemAutocomplete(F filter);
+
+    Optional<Long> getRecordListCount(Long id, String listName);
+
+    void setTenantInCurrentConnection(String tenantIdentifier);
 }
