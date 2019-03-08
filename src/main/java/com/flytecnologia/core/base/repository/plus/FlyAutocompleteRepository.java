@@ -164,7 +164,7 @@ public interface FlyAutocompleteRepository<T extends FlyEntity, F extends FlyFil
                 hql.append(",")
                         .append(alias)
                         .append(".")
-                        .append(getFormatedField(filter.getAcFieldDescription()))
+                        .append(FlyACHidden.getFormatedField(filter.getAcFieldDescription()))
                         .append(" as ")
                         .append(filter.getAcFieldDescription())
                         .append(" \n ");
@@ -191,46 +191,6 @@ public interface FlyAutocompleteRepository<T extends FlyEntity, F extends FlyFil
 
             hql.append(") as ").append(filter.getAcFieldDescription()).append(" \n ");
         }
-    }
-
-    default void addFieldDescriptionToWhereAutocomplete(F filter, String alias, StringBuilder hql) {
-        if (isEmpty(filter.getAcFieldsListAutocomplete())) {
-            addLikeToFieldDescription(hql, alias, filter.getAcFieldDescription());
-        } else {
-            String[] extraField = filter.getAcFieldsListAutocomplete().split(",");
-
-            int count = 0;
-
-            hql.append("(");
-
-            for (String field : extraField) {
-                if (count > 0) {
-                    hql.append(" OR ");
-                }
-
-                addLikeToFieldDescription(hql, alias, field);
-
-                count++;
-            }
-
-            hql.append(")");
-        }
-    }
-
-    default String getFormatedField(@NonNull String field) {
-        return field.replace("__", ".");
-    }
-
-    default void addLikeToFieldDescription(StringBuilder hql, String alias, String field) {
-        field = getFormatedField(field);
-
-        hql.append("   fly_to_ascii(lower(cast(");
-
-        if (!field.contains("."))
-            hql.append(alias).append(".");
-
-        hql.append(field.trim())
-                .append(" as string))) like fly_to_ascii(cast(:value as string)) \n ");
     }
 
     default Optional<List<Map<String, Object>>> getItemsAutocomplete(F filter) {
@@ -264,7 +224,7 @@ public interface FlyAutocompleteRepository<T extends FlyEntity, F extends FlyFil
                 .append(hqlJoin).append(" \n")
                 .append("where (\n ");
 
-        addFieldDescriptionToWhereAutocomplete(filter, alias, hql);
+        FlyACHidden.addFieldDescriptionToWhereAutocomplete(filter, alias, hql);
 
         hql.append(" OR CONCAT(").append(alias).append(".").append(filter.getAcFieldValue()).append(", '') = :valueId) \n ");
 
@@ -282,5 +242,47 @@ public interface FlyAutocompleteRepository<T extends FlyEntity, F extends FlyFil
         changeSearchWhere(hql, parameters, filter);
 
         return getResultListMap(hql, parameters, filter.getAcLimit());
+    }
+
+    class FlyACHidden {
+        private static  String getFormatedField(@NonNull String field) {
+            return field.replace("__", ".");
+        }
+
+        private static void addLikeToFieldDescription(StringBuilder hql, String alias, String field) {
+            field = getFormatedField(field);
+
+            hql.append("   fly_to_ascii(lower(cast(");
+
+            if (!field.contains("."))
+                hql.append(alias).append(".");
+
+            hql.append(field.trim())
+                    .append(" as string))) like fly_to_ascii(cast(:value as string)) \n ");
+        }
+
+        private static void addFieldDescriptionToWhereAutocomplete(FlyFilter filter, String alias, StringBuilder hql) {
+            if (filter.getAcFieldsListAutocomplete() == null || filter.getAcFieldsListAutocomplete().trim().length() == 0) {
+                FlyACHidden.addLikeToFieldDescription(hql, alias, filter.getAcFieldDescription());
+            } else {
+                String[] extraField = filter.getAcFieldsListAutocomplete().split(",");
+
+                int count = 0;
+
+                hql.append("(");
+
+                for (String field : extraField) {
+                    if (count > 0) {
+                        hql.append(" OR ");
+                    }
+
+                    FlyACHidden.addLikeToFieldDescription(hql, alias, field);
+
+                    count++;
+                }
+
+                hql.append(")");
+            }
+        }
     }
 }

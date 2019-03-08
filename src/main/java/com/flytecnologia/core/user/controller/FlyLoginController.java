@@ -3,7 +3,7 @@ package com.flytecnologia.core.user.controller;
 import com.flytecnologia.core.config.property.FlyAppProperty;
 import com.flytecnologia.core.hibernate.multitenancy.FlyTenantThreadLocal;
 import com.flytecnologia.core.user.FlyUserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,17 +18,10 @@ import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping(value = "login")
+@AllArgsConstructor
 public class FlyLoginController {
-
     private FlyUserService service;
     private FlyAppProperty flyAppProperty;
-
-    @Autowired
-    public FlyLoginController(FlyUserService service,
-                              FlyAppProperty flyAppProperty) {
-        this.service = service;
-        this.flyAppProperty = flyAppProperty;
-    }
 
     @DeleteMapping("/revoke")
     public void revoke(HttpServletRequest req, HttpServletResponse resp) {
