@@ -22,18 +22,12 @@ public interface FlyAutocompleteRepository<T extends FlyEntity, F extends FlyFil
         FlySearchRepository<T, F>,
         FlyResultListRepository<T> {
 
-    default void addFieldIdToAutocomplete(F filter, String alias, StringBuilder hql) {
-        if (!"id".equals(filter.getAcFieldValue())) {
-            hql.append(",").append(alias).append(".id \n ");
-        }
-    }
-
     default Optional<Map> getItemAutocomplete(F filter) {
         if (isEmpty(filter.getId())) {
             return Optional.empty();
         }
 
-        validateFiltersRequiredToAutocomplete(filter);
+        FlyACHidden.validateFiltersRequiredToAutocomplete(filter);
 
         final String entityName = getEntityName();
         final String alias = entityName.substring(0, 1).toLowerCase() + entityName.substring(1);
@@ -43,11 +37,11 @@ public interface FlyAutocompleteRepository<T extends FlyEntity, F extends FlyFil
                 .append(alias).append(".").append(filter.getAcFieldValue())
                 .append(" as ").append(filter.getAcFieldValue());
 
-        addFieldDescriptionToListAutocomplete(filter, alias, hql);
+        FlyACHidden.addFieldDescriptionToListAutocomplete(filter, alias, hql);
 
-        addFieldIdToAutocomplete(filter, alias, hql);
+        FlyACHidden.addFieldIdToAutocomplete(filter, alias, hql);
 
-        addExtraFieldsToAutocomplete(filter, alias, hql);
+        FlyACHidden.addExtraFieldsToAutocomplete(filter, alias, hql);
 
         final Map<String, Object> parameters = new HashMap<>();
         final StringBuilder hqlJoin = new StringBuilder();
@@ -82,119 +76,16 @@ public interface FlyAutocompleteRepository<T extends FlyEntity, F extends FlyFil
             return Optional.empty();
         }
 
-        formatMapItemAutocomplete(alias, map);
+        FlyACHidden.formatMapItemAutocomplete(alias, map);
 
         return Optional.of(map);
-    }
-
-    default void validateFiltersRequiredToAutocomplete(F filter) {
-        notNull(filter.getAcFieldValue(), "fieldValue is required");
-        notNull(filter.getAcFieldDescription(), "fieldDescription is required");
-    }
-
-    default void formatMapItemAutocomplete(String alias, Map<String, Object> map) {
-        final Set<String> keys = map.keySet();
-
-        final Iterator<String> it = keys.iterator();
-
-        final Map<String, Object> mapAux = new HashMap<>();
-
-        while (it.hasNext()) {
-            String key = it.next();
-
-            if (key.contains("$")) {
-                Object value = map.get(key);
-                //map.remove(key);
-
-                String[] children = key.split("\\$");
-
-                if (children[0].equals(alias)) {
-                    children = ArrayUtils.removeElement(children, children[0]);
-                }
-
-                for (int x = 0; x < children.length; x++) {
-                    String child = children[x];
-
-                    if (x < children.length - 1) {
-                        if (x == 0) {
-                            mapAux.put(child, new HashMap<>());
-                        } else {
-                            ((Map) mapAux.get(children[x - 1])).put(child, new HashMap<>());
-                        }
-                    } else {
-                        ((Map) mapAux.get(children[x - 1])).put(child, value);
-                    }
-                }
-
-            }
-        }
-
-        map.putAll(mapAux);
-    }
-
-    default void addExtraFieldsToAutocomplete(F filter, String alias, StringBuilder hql) {
-        if (!isEmpty(filter.getAcExtraFieldsAutocomplete())) {
-            String[] extraField = filter.getAcExtraFieldsAutocomplete().split(",");
-
-            for (String field : extraField) {
-                hql.append(",");
-
-                addExtraFieldsToAutocomplete(field, alias, hql);
-            }
-        }
-    }
-
-    default void addExtraFieldsToAutocomplete(String field, String alias, StringBuilder hql) {
-        if (!field.contains(".")) {
-            hql.append(alias)
-                    .append(".")
-                    .append(field.trim())
-                    .append(" as ").append(field.trim()).append(" \n ");
-        } else {
-            hql.append(field.trim()).append(" as ").append(field.trim().replace(".", "$")).append(" \n ");
-        }
-    }
-
-    default void addFieldDescriptionToListAutocomplete(F filter, String alias, StringBuilder hql) {
-        if (isEmpty(filter.getAcFieldsListAutocomplete())) {
-            if (!filter.getAcFieldValue().equals(filter.getAcFieldDescription())) {
-                hql.append(",")
-                        .append(alias)
-                        .append(".")
-                        .append(FlyACHidden.getFormatedField(filter.getAcFieldDescription()))
-                        .append(" as ")
-                        .append(filter.getAcFieldDescription())
-                        .append(" \n ");
-            }
-        } else {
-            String[] extraField = filter.getAcFieldsListAutocomplete().split(",");
-
-            hql.append(",CONCAT(");
-
-            int count = 0;
-
-            for (String field : extraField) {
-                if (!field.contains("."))
-                    hql.append(alias).append(".");
-
-                hql.append(field.trim());
-
-                if (count < extraField.length - 1) {
-                    hql.append(", ' - ', ");
-                }
-
-                count++;
-            }
-
-            hql.append(") as ").append(filter.getAcFieldDescription()).append(" \n ");
-        }
     }
 
     default Optional<List<Map<String, Object>>> getItemsAutocomplete(F filter) {
         if (isEmpty(filter.getAcValue()))
             return Optional.empty();
 
-        validateFiltersRequiredToAutocomplete(filter);
+        FlyACHidden.validateFiltersRequiredToAutocomplete(filter);
 
         final String entityName = getEntityName();
         final String alias = entityName.substring(0, 1).toLowerCase() + entityName.substring(1);
@@ -204,11 +95,11 @@ public interface FlyAutocompleteRepository<T extends FlyEntity, F extends FlyFil
                 .append(alias).append(".").append(filter.getAcFieldValue())
                 .append(" as ").append(filter.getAcFieldValue()).append("\n ");
 
-        addFieldDescriptionToListAutocomplete(filter, alias, hql);
+        FlyACHidden.addFieldDescriptionToListAutocomplete(filter, alias, hql);
 
-        addFieldIdToAutocomplete(filter, alias, hql);
+        FlyACHidden.addFieldIdToAutocomplete(filter, alias, hql);
 
-        addExtraFieldsToAutocomplete(filter, alias, hql);
+        FlyACHidden.addExtraFieldsToAutocomplete(filter, alias, hql);
 
         final StringBuilder hqlJoin = new StringBuilder();
         final Map<String, Object> parameters = new HashMap<>();
@@ -242,6 +133,122 @@ public interface FlyAutocompleteRepository<T extends FlyEntity, F extends FlyFil
     }
 
     class FlyACHidden {
+        private static <F extends FlyFilter> void addExtraFieldsToAutocomplete(F filter,
+                                                                               String alias,
+                                                                               StringBuilder hql) {
+            if (!isEmpty(filter.getAcExtraFieldsAutocomplete())) {
+                String[] extraField = filter.getAcExtraFieldsAutocomplete().split(",");
+
+                for (String field : extraField) {
+                    hql.append(",");
+
+                    addExtraFieldsToAutocomplete(field, alias, hql);
+                }
+            }
+        }
+
+        private static void addExtraFieldsToAutocomplete(String field, String alias, StringBuilder hql) {
+            if (!field.contains(".")) {
+                hql.append(alias)
+                        .append(".")
+                        .append(field.trim())
+                        .append(" as ").append(field.trim()).append(" \n ");
+            } else {
+                hql.append(field.trim()).append(" as ").append(field.trim().replace(".", "$")).append(" \n ");
+            }
+        }
+
+        private static <F extends FlyFilter> void addFieldDescriptionToListAutocomplete(F filter,
+                                                                                        String alias,
+                                                                                        StringBuilder hql) {
+            if (isEmpty(filter.getAcFieldsListAutocomplete())) {
+                if (!filter.getAcFieldValue().equals(filter.getAcFieldDescription())) {
+                    hql.append(",")
+                            .append(alias)
+                            .append(".")
+                            .append(FlyACHidden.getFormatedField(filter.getAcFieldDescription()))
+                            .append(" as ")
+                            .append(filter.getAcFieldDescription())
+                            .append(" \n ");
+                }
+            } else {
+                String[] extraField = filter.getAcFieldsListAutocomplete().split(",");
+
+                hql.append(",CONCAT(");
+
+                int count = 0;
+
+                for (String field : extraField) {
+                    if (!field.contains("."))
+                        hql.append(alias).append(".");
+
+                    hql.append(field.trim());
+
+                    if (count < extraField.length - 1) {
+                        hql.append(", ' - ', ");
+                    }
+
+                    count++;
+                }
+
+                hql.append(") as ").append(filter.getAcFieldDescription()).append(" \n ");
+            }
+        }
+
+        private static void formatMapItemAutocomplete(String alias, Map<String, Object> map) {
+            final Set<String> keys = map.keySet();
+
+            final Iterator<String> it = keys.iterator();
+
+            final Map<String, Object> mapAux = new HashMap<>();
+
+            while (it.hasNext()) {
+                String key = it.next();
+
+                if (key.contains("$")) {
+                    Object value = map.get(key);
+                    //map.remove(key);
+
+                    String[] children = key.split("\\$");
+
+                    if (children[0].equals(alias)) {
+                        children = ArrayUtils.removeElement(children, children[0]);
+                    }
+
+                    for (int x = 0; x < children.length; x++) {
+                        String child = children[x];
+
+                        if (x < children.length - 1) {
+                            if (x == 0) {
+                                mapAux.put(child, new HashMap<>());
+                            } else {
+                                ((Map) mapAux.get(children[x - 1])).put(child, new HashMap<>());
+                            }
+                        } else {
+                            ((Map) mapAux.get(children[x - 1])).put(child, value);
+                        }
+                    }
+
+                }
+            }
+
+            map.putAll(mapAux);
+        }
+
+        private static <F extends FlyFilter> void validateFiltersRequiredToAutocomplete(F filter) {
+            notNull(filter.getAcFieldValue(), "fieldValue is required");
+            notNull(filter.getAcFieldDescription(), "fieldDescription is required");
+        }
+
+
+        private static <F extends FlyFilter> void addFieldIdToAutocomplete(F filter,
+                                                                           String alias,
+                                                                           StringBuilder hql) {
+            if (!"id".equals(filter.getAcFieldValue())) {
+                hql.append(",").append(alias).append(".id \n ");
+            }
+        }
+
         private static String getFormatedField(@NonNull String field) {
             return field.replace("__", ".");
         }
@@ -258,8 +265,11 @@ public interface FlyAutocompleteRepository<T extends FlyEntity, F extends FlyFil
                     .append(" as string))) like fly_to_ascii(cast(:value as string)) \n ");
         }
 
-        private static void addFieldDescriptionToWhereAutocomplete(FlyFilter filter, String alias, StringBuilder hql) {
-            if (filter.getAcFieldsListAutocomplete() == null || filter.getAcFieldsListAutocomplete().trim().length() == 0) {
+        private static void addFieldDescriptionToWhereAutocomplete(FlyFilter filter,
+                                                                   String alias,
+                                                                   StringBuilder hql) {
+            if (filter.getAcFieldsListAutocomplete() == null ||
+                    filter.getAcFieldsListAutocomplete().trim().length() == 0) {
                 FlyACHidden.addLikeToFieldDescription(hql, alias, filter.getAcFieldDescription());
             } else {
                 String[] extraField = filter.getAcFieldsListAutocomplete().split(",");

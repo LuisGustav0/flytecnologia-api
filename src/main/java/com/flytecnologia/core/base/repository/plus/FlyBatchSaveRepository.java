@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface FlyBatchSaveRepository<T extends FlyEntity> extends FlyEntityManagerRepository {
+
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     default void batchSave(List<T> entities, int batchSize) {
         final int entityCount = entities.size();
