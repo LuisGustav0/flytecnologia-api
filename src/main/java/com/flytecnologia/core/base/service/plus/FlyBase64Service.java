@@ -2,8 +2,10 @@ package com.flytecnologia.core.base.service.plus;
 
 import java.util.Base64;
 
-public interface FlyBase64Service extends FlyValidationService {
-    default String removeBase64Information(String encode) {
+import static com.flytecnologia.core.base.service.plus.FlyValidateEmptyService.isEmpty;
+
+public class FlyBase64Service {
+    public static String removeBase64Information(String encode) {
         if (isEmpty(encode))
             return encode;
 
@@ -15,7 +17,7 @@ public interface FlyBase64Service extends FlyValidationService {
         return encode.substring(indexOf + 8);
     }
 
-    default String convertToBase64(byte[] data) {
+    public static String convertToBase64(byte[] data) {
         if (data == null)
             return null;
 

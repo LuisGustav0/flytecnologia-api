@@ -1,6 +1,5 @@
 package com.flytecnologia.core.base.repository.plus;
 
-import com.flytecnologia.core.base.service.plus.FlyValidationService;
 import com.flytecnologia.core.model.FlyEntity;
 import lombok.NonNull;
 import org.hibernate.Session;
@@ -11,8 +10,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.flytecnologia.core.base.service.plus.FlyValidateEmptyService.isEmpty;
+
 public interface FlyFindValueRepository<T extends FlyEntity>
-        extends FlyHibernateSessionRepository, FlyCreateQueryRepository<T>, FlyValidationService {
+        extends FlyHibernateSessionRepository, FlyCreateQueryRepository<T> {
     String getEntityName();
 
     default <N> Optional<N> getValue(@NonNull StringBuilder hql, @NonNull Long id) {

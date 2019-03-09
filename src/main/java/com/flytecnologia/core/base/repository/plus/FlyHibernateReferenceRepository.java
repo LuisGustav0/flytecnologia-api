@@ -1,14 +1,14 @@
 package com.flytecnologia.core.base.repository.plus;
 
-import com.flytecnologia.core.base.service.plus.FlyValidationService;
 import com.flytecnologia.core.model.FlyEntity;
 import org.hibernate.Session;
 
 import javax.persistence.EntityManager;
 import java.util.Optional;
 
-public interface FlyHibernateReferenceRepository<T extends FlyEntity> extends FlyHibernateSessionRepository,
-        FlyValidationService {
+import static com.flytecnologia.core.base.service.plus.FlyValidateEmptyService.isEmpty;
+
+public interface FlyHibernateReferenceRepository<T extends FlyEntity> extends FlyHibernateSessionRepository {
     EntityManager getEntityManager();
 
     Class<T> getEntityClass();
@@ -18,8 +18,9 @@ public interface FlyHibernateReferenceRepository<T extends FlyEntity> extends Fl
     }
 
     default Optional<T> getReference(Long id, String tenant) {
-        if (isEmpty(id))
+        if (isEmpty(id)) {
             return Optional.empty();
+        }
 
         final Session session = getNewSession(tenant);
 
@@ -35,8 +36,9 @@ public interface FlyHibernateReferenceRepository<T extends FlyEntity> extends Fl
 
             closeSession(session);
 
-            if (entity == null)
+            if (entity == null) {
                 return Optional.empty();
+            }
 
             return Optional.of(entity);
         } catch (Exception e) {

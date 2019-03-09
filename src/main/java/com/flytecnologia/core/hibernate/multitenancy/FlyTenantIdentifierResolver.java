@@ -1,5 +1,6 @@
 package com.flytecnologia.core.hibernate.multitenancy;
 
+import com.flytecnologia.core.base.service.plus.FlyTenantInformationService;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -10,22 +11,7 @@ public class FlyTenantIdentifierResolver implements CurrentTenantIdentifierResol
 
     @Override
     public String resolveCurrentTenantIdentifier() {
-        String tenant = FlyTenantThreadLocal.getTenant();
-
-        if (tenant != null)
-            return tenant;
-
-       /* tenant = FlyTokenUserDetails.getCurrentSchemaNameOrElseNull();
-
-        if (tenant != null) {
-            tenant = FlyMultiTenantConstants.DEFAULT_TENANT_SUFFIX + tenant;
-            FlyTenantThreadLocal.setTenant(tenant);
-            return tenant;
-        } else {
-            return FlyMultiTenantConstants.DEFAULT_TENANT_ID;
-        }*/
-
-        return FlyMultiTenantConstants.DEFAULT_TENANT_ID;
+        return FlyTenantInformationService.getTenant();
     }
 
     @Override

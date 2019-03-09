@@ -1,10 +1,7 @@
 package com.flytecnologia.core.base.service;
 
-import com.flytecnologia.core.base.service.plus.FlyPrintService;
-import com.flytecnologia.core.base.service.plus.FlyTenantInformationService;
-import com.flytecnologia.core.base.service.plus.FlyTimeSpentService;
-import com.flytecnologia.core.base.service.plus.FlyValidationService;
 import com.flytecnologia.core.base.repository.FlyRepository;
+import com.flytecnologia.core.base.service.plus.FlyPrintService;
 import com.flytecnologia.core.exception.BE;
 import com.flytecnologia.core.exception.BusinessException;
 import com.flytecnologia.core.hibernate.multitenancy.FlyTenantThreadLocal;
@@ -35,8 +32,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> implements FlyValidationService,
-        FlyTenantInformationService, FlyTimeSpentService, FlyPrintService<F> {
+import static com.flytecnologia.core.base.service.plus.FlyValidateEmptyService.isEmpty;
+import static com.flytecnologia.core.base.service.plus.FlyValidateEmptyService.notNull;
+
+public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> implements FlyPrintService<F> {
 
     protected abstract FlyRepository<T, Long, F> getRepository();
 

@@ -1,6 +1,5 @@
 package com.flytecnologia.core.base.repository.plus;
 
-import com.flytecnologia.core.base.service.plus.FlyValidationService;
 import com.flytecnologia.core.model.FlyEntity;
 import com.flytecnologia.core.model.FlyEntityWithInactiveImpl;
 import com.flytecnologia.core.search.FlyFilter;
@@ -17,8 +16,11 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.flytecnologia.core.base.service.plus.FlyValidateEmptyService.isEmpty;
+import static com.flytecnologia.core.base.service.plus.FlyValidateEmptyService.notNull;
+
 public interface FlyAutocompleteRepository<T extends FlyEntity, F extends FlyFilter>
-        extends FlyValidationService, FlySearchRepository<T, F>, FlyResultListRepository<T> {
+        extends FlySearchRepository<T, F>, FlyResultListRepository<T> {
 
     String getEntityName();
 
@@ -33,8 +35,9 @@ public interface FlyAutocompleteRepository<T extends FlyEntity, F extends FlyFil
     }
 
     default Optional<Map> getItemAutocomplete(F filter) {
-        if (isEmpty(filter.getId()))
+        if (isEmpty(filter.getId())) {
             return Optional.empty();
+        }
 
         validateFiltersRequiredToAutocomplete(filter);
 
@@ -245,7 +248,7 @@ public interface FlyAutocompleteRepository<T extends FlyEntity, F extends FlyFil
     }
 
     class FlyACHidden {
-        private static  String getFormatedField(@NonNull String field) {
+        private static String getFormatedField(@NonNull String field) {
             return field.replace("__", ".");
         }
 

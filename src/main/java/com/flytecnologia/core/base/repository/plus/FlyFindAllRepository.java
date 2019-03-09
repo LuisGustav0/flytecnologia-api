@@ -1,6 +1,5 @@
 package com.flytecnologia.core.base.repository.plus;
 
-import com.flytecnologia.core.base.service.plus.FlyValidationService;
 import com.flytecnologia.core.model.FlyEntity;
 
 import java.util.HashMap;
@@ -8,8 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.flytecnologia.core.base.service.plus.FlyValidateEmptyService.isEmpty;
+
 public interface FlyFindAllRepository<T extends FlyEntity> extends
-        FlyValidationService, FlyFindByInstructionRepository<T> {
+        FlyFindByInstructionRepository<T> {
     Class<T> getEntityClass();
 
     default Optional<List<T>> findAll(String tenant) {
@@ -41,8 +42,9 @@ public interface FlyFindAllRepository<T extends FlyEntity> extends
                                           boolean isColumnReferenceRequired) {
 
         if (isColumnReferenceRequired) {
-            if (isEmpty(columnReference))
+            if (isEmpty(columnReference)) {
                 return Optional.empty();
+            }
         }
 
 

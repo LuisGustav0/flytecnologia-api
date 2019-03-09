@@ -5,8 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-public interface FlyTimeSpentService {
-    default String getMessageTimeSpent(long start, String message) {
+public class FlyTimeSpentService {
+    public static String getMessageTimeSpent(long start, String message) {
         final long end = System.currentTimeMillis();
 
         final Date date = new Date(end - start);

@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.flytecnologia.core.base.service.plus.FlyValidateEmptyService.isEmpty;
+
 public interface FlyFindRepository<T extends FlyEntity> extends FlyFindByInstructionRepository<T> {
     Class<T> getEntityClass();
 

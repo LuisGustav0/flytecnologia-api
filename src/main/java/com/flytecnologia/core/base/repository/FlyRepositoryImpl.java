@@ -15,8 +15,6 @@ import com.flytecnologia.core.base.repository.plus.FlyInactiveRepository;
 import com.flytecnologia.core.base.repository.plus.FlyResultListRepository;
 import com.flytecnologia.core.base.repository.plus.FlySearchRepository;
 import com.flytecnologia.core.base.repository.plus.FlyTenantRepository;
-import com.flytecnologia.core.base.service.plus.FlyTenantInformationService;
-import com.flytecnologia.core.base.service.plus.FlyValidationService;
 import com.flytecnologia.core.model.FlyEntity;
 import com.flytecnologia.core.search.FlyFilter;
 import org.springframework.data.repository.NoRepositoryBean;
@@ -29,8 +27,7 @@ import java.util.Map;
 
 @NoRepositoryBean
 public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter>
-        implements FlyValidationService,
-        FlyTenantInformationService,
+        implements
         FlyHibernateSessionRepository,
         FlyHibernateReferenceRepository<T>,
         FlyAutocompleteRepository<T, F>,

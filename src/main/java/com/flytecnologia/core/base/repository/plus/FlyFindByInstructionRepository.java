@@ -1,6 +1,5 @@
 package com.flytecnologia.core.base.repository.plus;
 
-import com.flytecnologia.core.base.service.plus.FlyValidationService;
 import com.flytecnologia.core.model.FlyEntity;
 import lombok.NonNull;
 import org.hibernate.Session;
@@ -11,8 +10,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.flytecnologia.core.base.service.plus.FlyValidateEmptyService.isEmpty;
+
 public interface FlyFindByInstructionRepository<T extends FlyEntity> extends
-        FlyHibernateSessionRepository, FlyValidationService, FlyCreateQueryRepository<T> {
+        FlyHibernateSessionRepository, FlyCreateQueryRepository<T> {
 
     default Optional<T> findByInstruction(@NonNull String hql) {
         return findByInstruction(hql, null, null);
@@ -130,8 +131,9 @@ public interface FlyFindByInstructionRepository<T extends FlyEntity> extends
 
             closeSession(session);
 
-            if (isEmpty(provider))
+            if (isEmpty(provider)) {
                 return Optional.empty();
+            }
 
             return Optional.ofNullable((List<N>) provider);
         } catch (Exception e) {

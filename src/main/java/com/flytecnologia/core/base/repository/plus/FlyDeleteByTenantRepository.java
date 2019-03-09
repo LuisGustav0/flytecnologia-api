@@ -1,11 +1,11 @@
 package com.flytecnologia.core.base.repository.plus;
 
-import com.flytecnologia.core.base.service.plus.FlyValidationService;
 import com.flytecnologia.core.model.FlyEntity;
 import org.hibernate.Session;
 
+import static com.flytecnologia.core.base.service.plus.FlyValidateEmptyService.isEmpty;
+
 public interface FlyDeleteByTenantRepository<T extends FlyEntity> extends
-        FlyValidationService,
         FlyHibernateSessionRepository {
 
     default void delete(T entity, String tenant) {

@@ -18,8 +18,9 @@ public interface FlyInactiveRepository<T extends FlyEntity, F extends FlyFilter>
     }
 
     default boolean isInactive(Long id) {
-        if (id == null)
+        if (id == null) {
             return false;
+        }
 
         final Optional<Boolean> inative = getFieldById(id, "inactive");
 
