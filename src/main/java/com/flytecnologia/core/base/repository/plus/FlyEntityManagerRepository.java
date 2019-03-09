@@ -10,7 +10,7 @@ public interface FlyEntityManagerRepository {
 
     EntityManagerFactory getEntityManagerFactory();
 
-    default <G extends FlyEntity> void detach(G entity) {
+    default <T extends FlyEntity> void detach(T entity) {
         if (entity != null)
             getEntityManager().detach(entity);
     }

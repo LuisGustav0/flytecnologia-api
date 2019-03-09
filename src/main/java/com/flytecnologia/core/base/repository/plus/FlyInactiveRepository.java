@@ -8,7 +8,6 @@ import java.util.Optional;
 public interface FlyInactiveRepository<T extends FlyEntity, F extends FlyFilter> extends
         FlyFindValueRepository<T> {
 
-
     default void addInactiveFilter(F filter, StringBuilder hqlWhere, String entityName) {
         if (!filter.isIgnoreInactiveFilter()) {
             if (filter.getInactive() != null) {

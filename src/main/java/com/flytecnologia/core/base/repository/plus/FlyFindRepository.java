@@ -8,10 +8,8 @@ import java.util.Optional;
 
 import static com.flytecnologia.core.base.service.plus.FlyValidateEmptyService.isEmpty;
 
-public interface FlyFindRepository<T extends FlyEntity> extends FlyFindByInstructionRepository<T> {
-    Class<T> getEntityClass();
-
-    String getEntityName();
+public interface FlyFindRepository<T extends FlyEntity> extends
+        FlyFindByInstructionRepository<T> {
 
     default Optional<T> find(Long id) {
         if (isEmpty(id))

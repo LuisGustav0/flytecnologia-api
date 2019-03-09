@@ -1,4 +1,4 @@
-package com.flytecnologia.core.base;
+package com.flytecnologia.core.base.service.plus;
 
 import org.springframework.orm.jpa.EntityManagerFactoryUtils;
 import org.springframework.orm.jpa.EntityManagerHolder;

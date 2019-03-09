@@ -10,14 +10,10 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 
 public interface FlySearchRepository<T extends FlyEntity, F extends FlyFilter> extends
         FlyHibernateSessionRepository,
         FlyCreateQueryRepository<T> {
-
-    String getEntityName();
 
     default void changeSearchWhere(StringBuilder hqlWhere, Map<String, Object> parameters, F filter) {
     }
@@ -105,19 +101,5 @@ public interface FlySearchRepository<T extends FlyEntity, F extends FlyFilter> e
 
         query.setFirstResult(firtRecordOfPage);
         query.setMaxResults(qtdRecordsPerPage);
-    }
-
-    default Optional<Long> getRecordListCount(Long id, String listName) {
-        final String entityName = getEntityName();
-
-        StringBuilder hql = new StringBuilder()
-                .append("select count(entities.id)  \nfrom  ").append(entityName).append(" super  \n")
-                .append("inner join super.").append(listName).append(" as entities \n")
-                .append("where super.id = :id\n");
-
-        final TypedQuery<Long> query = getEntityManager().createQuery(hql.toString(), Long.class);
-        query.setParameter("id", id);
-
-        return query.getResultList().stream().filter(Objects::nonNull).findFirst();
     }
 }

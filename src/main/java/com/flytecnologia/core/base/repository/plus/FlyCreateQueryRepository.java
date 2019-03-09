@@ -4,13 +4,12 @@ import com.flytecnologia.core.model.FlyEntity;
 import lombok.NonNull;
 import org.hibernate.Session;
 
-import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
-public interface FlyCreateQueryRepository<T extends FlyEntity> {
-    EntityManager getEntityManager();
-    Class<T> getEntityClass();
+public interface FlyCreateQueryRepository<T extends FlyEntity> extends
+        FlyEntityManagerRepository,
+        FlyEntityRepository<T> {
 
     default TypedQuery<T> createTypedQuery(@NonNull StringBuilder hql, Session session) {
         return createTypedQuery(hql.toString(), session);

@@ -10,8 +10,8 @@ import java.util.Optional;
 import static com.flytecnologia.core.base.service.plus.FlyValidateEmptyService.isEmpty;
 
 public interface FlyFindAllRepository<T extends FlyEntity> extends
-        FlyFindByInstructionRepository<T> {
-    Class<T> getEntityClass();
+        FlyFindByInstructionRepository<T>,
+        FlyEntityRepository<T> {
 
     default Optional<List<T>> findAll(String tenant) {
         return findAll(null, null, getEntityClass(), tenant, false);

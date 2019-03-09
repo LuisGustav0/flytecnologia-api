@@ -13,7 +13,6 @@ import static com.flytecnologia.core.base.service.plus.FlyValidateEmptyService.i
 
 public interface FlyFindNextRepository<T extends FlyEntity, F extends FlyFilter> extends
         FlySearchRepository<T, F> {
-    String getEntityName();
 
     default Optional<Long> getFirstId(F filter) {
         return getPreviousNextId(filter, "min", "=", null);

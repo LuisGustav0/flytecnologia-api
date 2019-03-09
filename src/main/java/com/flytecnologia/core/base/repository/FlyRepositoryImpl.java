@@ -4,14 +4,16 @@ import com.flytecnologia.core.base.repository.plus.FlyAutocompleteRepository;
 import com.flytecnologia.core.base.repository.plus.FlyBatchSaveRepository;
 import com.flytecnologia.core.base.repository.plus.FlyDeleteByTenantRepository;
 import com.flytecnologia.core.base.repository.plus.FlyEntityManagerRepository;
+import com.flytecnologia.core.base.repository.plus.FlyEntityRepository;
 import com.flytecnologia.core.base.repository.plus.FlyFindAllRepository;
 import com.flytecnologia.core.base.repository.plus.FlyFindByInstructionRepository;
 import com.flytecnologia.core.base.repository.plus.FlyFindNextRepository;
 import com.flytecnologia.core.base.repository.plus.FlyFindRepository;
 import com.flytecnologia.core.base.repository.plus.FlyFindValueRepository;
-import com.flytecnologia.core.base.repository.plus.FlyHibernateReferenceRepository;
+import com.flytecnologia.core.base.repository.plus.FlyEntityReferenceRepository;
 import com.flytecnologia.core.base.repository.plus.FlyHibernateSessionRepository;
 import com.flytecnologia.core.base.repository.plus.FlyInactiveRepository;
+import com.flytecnologia.core.base.repository.plus.FlyRecordCountRepository;
 import com.flytecnologia.core.base.repository.plus.FlyResultListRepository;
 import com.flytecnologia.core.base.repository.plus.FlySearchRepository;
 import com.flytecnologia.core.base.repository.plus.FlyTenantRepository;
@@ -26,10 +28,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 @NoRepositoryBean
-public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter>
-        implements
+public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter> implements
         FlyHibernateSessionRepository,
-        FlyHibernateReferenceRepository<T>,
+        FlyEntityReferenceRepository<T>,
         FlyAutocompleteRepository<T, F>,
         FlyFindByInstructionRepository<T>,
         FlySearchRepository<T, F>,
@@ -42,7 +43,9 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         FlyResultListRepository<T>,
         FlyBatchSaveRepository<T>,
         FlyDeleteByTenantRepository<T>,
-        FlyInactiveRepository<T, F> {
+        FlyInactiveRepository<T, F>,
+        FlyRecordCountRepository<T, F>,
+        FlyEntityRepository<T> {
 
     private Class<T> entityClass;
     private EntityManager entityManager;
@@ -62,11 +65,6 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
     @Override
     public EntityManagerFactory getEntityManagerFactory() {
         return this.entityManagerFactory;
-    }
-
-    @Override
-    public String getEntityName() {
-        return getEntityClass().getSimpleName();
     }
 
     @Override

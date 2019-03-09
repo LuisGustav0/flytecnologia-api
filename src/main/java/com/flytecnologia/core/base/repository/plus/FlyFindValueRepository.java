@@ -12,9 +12,9 @@ import java.util.Optional;
 
 import static com.flytecnologia.core.base.service.plus.FlyValidateEmptyService.isEmpty;
 
-public interface FlyFindValueRepository<T extends FlyEntity>
-        extends FlyHibernateSessionRepository, FlyCreateQueryRepository<T> {
-    String getEntityName();
+public interface FlyFindValueRepository<T extends FlyEntity> extends
+        FlyHibernateSessionRepository,
+        FlyCreateQueryRepository<T> {
 
     default <N> Optional<N> getValue(@NonNull StringBuilder hql, @NonNull Long id) {
         return getValue(hql.toString(), id, null);

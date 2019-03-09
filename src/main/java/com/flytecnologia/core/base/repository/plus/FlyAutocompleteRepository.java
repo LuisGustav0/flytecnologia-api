@@ -6,7 +6,6 @@ import com.flytecnologia.core.search.FlyFilter;
 import lombok.NonNull;
 import org.apache.commons.lang3.ArrayUtils;
 
-import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -19,14 +18,9 @@ import java.util.Set;
 import static com.flytecnologia.core.base.service.plus.FlyValidateEmptyService.isEmpty;
 import static com.flytecnologia.core.base.service.plus.FlyValidateEmptyService.notNull;
 
-public interface FlyAutocompleteRepository<T extends FlyEntity, F extends FlyFilter>
-        extends FlySearchRepository<T, F>, FlyResultListRepository<T> {
-
-    String getEntityName();
-
-    Class<T> getEntityClass();
-
-    EntityManager getEntityManager();
+public interface FlyAutocompleteRepository<T extends FlyEntity, F extends FlyFilter> extends
+        FlySearchRepository<T, F>,
+        FlyResultListRepository<T> {
 
     default void addFieldIdToAutocomplete(F filter, String alias, StringBuilder hql) {
         if (!"id".equals(filter.getAcFieldValue())) {
