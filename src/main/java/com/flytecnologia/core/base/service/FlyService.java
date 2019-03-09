@@ -13,7 +13,10 @@ import com.flytecnologia.core.base.service.plus.FlyGetRepositoryService;
 import com.flytecnologia.core.base.service.plus.FlyGoToService;
 import com.flytecnologia.core.base.service.plus.FlyInactiveService;
 import com.flytecnologia.core.base.service.plus.FlyPrintService;
-import com.flytecnologia.core.base.service.plus.FlyTenantInformationService;
+import com.flytecnologia.core.base.service.plus.FlyRecordCountService;
+import com.flytecnologia.core.base.service.plus.FlySaveService;
+import com.flytecnologia.core.base.service.plus.FlySearchService;
+import com.flytecnologia.core.base.service.plus.FlyTenantService;
 import com.flytecnologia.core.model.FlyEntity;
 import com.flytecnologia.core.search.FlyFilter;
 import lombok.NoArgsConstructor;
@@ -24,18 +27,18 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         FlyGetRepositoryService<T, F>,
         FlyFindService<T, F>,
         FlyFindAllService<T, F>,
-        FlyTenantInformationService.FlySaveService<T, F>,
+        FlySaveService<T, F>,
         FlyDeleteService<T, F>,
         FlyEntityInformationService<T, F>,
-        FlyTenantInformationService.FlySearchService<T, F>,
+        FlySearchService<T, F>,
         FlyAutocompleteService<T, F>,
         FlyEntityReferenceService<T, F>,
         FlyFindNextService<T, F>,
         FlyGoToService<T, F>,
-        FlyTenantInformationService.FlyTenantService<T, F>,
+        FlyTenantService<T, F>,
         FlyFindValueService<T, F>,
         FlyDetachService<T, F>,
-        FlyTenantInformationService.FlyRecordCountService<T, F>,
+        FlyRecordCountService<T, F>,
         FlyInactiveService<T, F> {
 
 }
