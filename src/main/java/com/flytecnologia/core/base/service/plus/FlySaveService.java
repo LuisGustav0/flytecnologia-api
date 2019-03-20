@@ -24,7 +24,7 @@ import static com.flytecnologia.core.base.service.plus.FlyInvokeBaseLazyAtribute
 import static com.flytecnologia.core.base.service.plus.FlyValidateEmptyService.notNull;
 
 public interface FlySaveService<T extends FlyEntity, F extends FlyFilter>
-        extends FlyPrintService<F>, FlyFindService<T, F> {
+        extends FlyPrintService<F>, FlyFindService<T, F>, FlyExistsService<T, F> {
 
     default void beforeSave(final T entity, final T oldEntity) {
     }
@@ -92,7 +92,7 @@ public interface FlySaveService<T extends FlyEntity, F extends FlyFilter>
         if (!(entity instanceof FlyEntityManualIdImpl))
             return;
 
-        if (getRepository().existsById(entity.getId())) {
+        if (existsById(entity.getId())) {
             throw new BE("flyserivice.idInUse");
         }
     }

@@ -6,6 +6,7 @@ import com.flytecnologia.core.base.repository.plus.FlyDeleteByTenantRepository;
 import com.flytecnologia.core.base.repository.plus.FlyEntityManagerRepository;
 import com.flytecnologia.core.base.repository.plus.FlyEntityReferenceRepository;
 import com.flytecnologia.core.base.repository.plus.FlyEntityRepository;
+import com.flytecnologia.core.base.repository.plus.FlyExistsRepository;
 import com.flytecnologia.core.base.repository.plus.FlyFindAllRepository;
 import com.flytecnologia.core.base.repository.plus.FlyFindByInstructionRepository;
 import com.flytecnologia.core.base.repository.plus.FlyFindNextRepository;
@@ -43,7 +44,8 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         FlyDeleteByTenantRepository<T>,
         FlyInactiveRepository<T, F>,
         FlyRecordCountRepository<T, F>,
-        FlyEntityRepository<T> {
+        FlyEntityRepository<T>,
+        FlyExistsRepository<T> {
 
     private Class<T> entityClass;
     private EntityManager entityManager;

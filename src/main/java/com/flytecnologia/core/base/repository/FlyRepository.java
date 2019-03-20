@@ -126,4 +126,6 @@ public interface FlyRepository<T extends FlyEntity, PK extends Serializable, F e
     Optional<Long> getRecordListCount(Long id, String listName);
 
     void setTenantInCurrentConnection(String tenantIdentifier);
+
+    boolean existsById(Long id, String tenant);
 }
