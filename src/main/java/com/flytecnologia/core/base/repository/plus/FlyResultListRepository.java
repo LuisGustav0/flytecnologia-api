@@ -1,6 +1,6 @@
 package com.flytecnologia.core.base.repository.plus;
 
-import com.flytecnologia.core.base.service.plus.FlyEntityClass;
+import com.flytecnologia.core.base.service.plus.FlyEntityClassService;
 import com.flytecnologia.core.model.FlyEntity;
 
 import javax.persistence.Query;
@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface FlyResultListRepository<T extends FlyEntity> extends
-        FlyEntityManagerRepository, FlyEntityClass<T> {
+        FlyEntityManagerRepository, FlyEntityClassService<T> {
 
     default <L> Optional<List<Map<String, L>>> getResultListMap(StringBuilder hql) {
         return getResultListMap(hql, null, 0);

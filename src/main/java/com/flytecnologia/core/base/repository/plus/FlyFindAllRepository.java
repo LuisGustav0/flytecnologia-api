@@ -1,5 +1,6 @@
 package com.flytecnologia.core.base.repository.plus;
 
+import com.flytecnologia.core.base.service.plus.FlyEntityClassService;
 import com.flytecnologia.core.model.FlyEntity;
 
 import java.util.HashMap;
@@ -11,7 +12,7 @@ import static com.flytecnologia.core.base.service.plus.FlyValidateEmptyService.i
 
 public interface FlyFindAllRepository<T extends FlyEntity> extends
         FlyFindByInstructionRepository<T>,
-        FlyEntityRepository<T> {
+        FlyEntityClassService<T> {
 
     default Optional<List<T>> findAll(String tenant) {
         return findAll(null, null, getEntityClass(), tenant, false);
