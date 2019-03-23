@@ -4,7 +4,7 @@ import com.flytecnologia.core.model.FlyEntity;
 
 import java.lang.reflect.ParameterizedType;
 
-public interface FlyEntityClass<T extends FlyEntity> {
+public interface FlyEntityClassService<T extends FlyEntity> {
     default Class<T> getEntityClass() {
         return (Class<T>) ((ParameterizedType) getClass()
                 .getGenericSuperclass()).getActualTypeArguments()[0];

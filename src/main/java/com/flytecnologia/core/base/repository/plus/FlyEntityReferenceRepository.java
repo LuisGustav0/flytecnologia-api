@@ -1,5 +1,6 @@
 package com.flytecnologia.core.base.repository.plus;
 
+import com.flytecnologia.core.base.service.plus.FlyEntityClassService;
 import com.flytecnologia.core.model.FlyEntity;
 import org.hibernate.Session;
 
@@ -10,7 +11,7 @@ import static com.flytecnologia.core.base.service.plus.FlyValidateEmptyService.i
 public interface FlyEntityReferenceRepository<T extends FlyEntity> extends
         FlyHibernateSessionRepository,
         FlyEntityManagerRepository,
-        FlyEntityRepository<T> {
+        FlyEntityClassService<T> {
 
     default Optional<T> getReference(Long id) {
         return getReference(id, null);
