@@ -5,7 +5,6 @@ import com.flytecnologia.core.base.repository.plus.FlyBatchSaveRepository;
 import com.flytecnologia.core.base.repository.plus.FlyDeleteByTenantRepository;
 import com.flytecnologia.core.base.repository.plus.FlyEntityManagerRepository;
 import com.flytecnologia.core.base.repository.plus.FlyEntityReferenceRepository;
-import com.flytecnologia.core.base.repository.plus.FlyEntityRepository;
 import com.flytecnologia.core.base.repository.plus.FlyExistsRepository;
 import com.flytecnologia.core.base.repository.plus.FlyFindAllRepository;
 import com.flytecnologia.core.base.repository.plus.FlyFindByInstructionRepository;
@@ -18,20 +17,20 @@ import com.flytecnologia.core.base.repository.plus.FlyRecordCountRepository;
 import com.flytecnologia.core.base.repository.plus.FlyResultListRepository;
 import com.flytecnologia.core.base.repository.plus.FlySearchRepository;
 import com.flytecnologia.core.base.repository.plus.FlyTenantRepository;
+import com.flytecnologia.core.base.service.plus.FlyEntityClassService;
 import com.flytecnologia.core.model.FlyEntity;
 import com.flytecnologia.core.search.FlyFilter;
 import org.springframework.data.repository.NoRepositoryBean;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import java.lang.reflect.ParameterizedType;
 
 @NoRepositoryBean
 public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter> implements
         FlyHibernateSessionRepository,
         FlyEntityReferenceRepository<T>,
-        FlyAutocompleteRepository<T, F>,
         FlyFindByInstructionRepository<T>,
+        FlyAutocompleteRepository<T, F>,
         FlySearchRepository<T, F>,
         FlyFindNextRepository<T, F>,
         FlyEntityManagerRepository,
@@ -44,10 +43,9 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         FlyDeleteByTenantRepository<T>,
         FlyInactiveRepository<T, F>,
         FlyRecordCountRepository<T, F>,
-        FlyEntityRepository<T>,
-        FlyExistsRepository<T> {
+        FlyExistsRepository<T>,
+        FlyEntityClassService<T> {
 
-    private Class<T> entityClass;
     private EntityManager entityManager;
     private EntityManagerFactory entityManagerFactory;
 
@@ -65,16 +63,5 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
     @Override
     public EntityManagerFactory getEntityManagerFactory() {
         return this.entityManagerFactory;
-    }
-
-    @Override
-    public Class<T> getEntityClass() {
-        if (entityClass != null)
-            return entityClass;
-
-        this.entityClass = (Class<T>) ((ParameterizedType) getClass()
-                .getGenericSuperclass()).getActualTypeArguments()[0];
-
-        return entityClass;
     }
 }
