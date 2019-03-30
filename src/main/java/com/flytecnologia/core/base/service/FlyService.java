@@ -13,7 +13,6 @@ import com.flytecnologia.core.base.service.plus.FlyFindValueService;
 import com.flytecnologia.core.base.service.plus.FlyGetRepositoryService;
 import com.flytecnologia.core.base.service.plus.FlyGoToService;
 import com.flytecnologia.core.base.service.plus.FlyInactiveService;
-import com.flytecnologia.core.base.service.plus.FlyPrintService;
 import com.flytecnologia.core.base.service.plus.FlyRecordCountService;
 import com.flytecnologia.core.base.service.plus.FlySaveService;
 import com.flytecnologia.core.base.service.plus.FlySearchService;
@@ -24,7 +23,6 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> implements
-        FlyPrintService<F>,
         FlyGetRepositoryService<T, F>,
         FlyFindService<T, F>,
         FlyFindAllService<T, F>,

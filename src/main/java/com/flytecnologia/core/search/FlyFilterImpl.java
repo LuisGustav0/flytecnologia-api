@@ -22,7 +22,6 @@ public abstract class FlyFilterImpl implements FlyFilter {
     private String entityDetailProperty;
     private Boolean inactive;
     private boolean ignoreInactiveFilter;
-    private String reportName;
     private String pdfName;
     private boolean isPreviousOrNextId;
     private boolean showAllRecordsOnSearch;

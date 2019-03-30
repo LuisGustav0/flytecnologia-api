@@ -62,11 +62,6 @@ public interface FlyFilter {
 
     void setIgnoreInactiveFilter(boolean ignoreInactiveFilter);
 
-
-    String getReportName();
-
-    void setReportName(String reportName);
-
     String getPdfName();
 
     void setPdfName(String pdfName);
