@@ -9,12 +9,12 @@ import javax.sql.DataSource;
 import java.util.List;
 
 @Service
-public class FlyDatabaseMigration {
+public class FlyDatabaseMigrationServiceImpl implements FlyDatabaseMigrationService {
     private FlyUserService flyUserService;
     private DataSource dataSource;
 
-    public FlyDatabaseMigration(DataSource dataSource,
-                                FlyUserService flyUserService) {
+    public FlyDatabaseMigrationServiceImpl(DataSource dataSource,
+                                           FlyUserService flyUserService) {
         this.dataSource = dataSource;
         this.flyUserService = flyUserService;
     }

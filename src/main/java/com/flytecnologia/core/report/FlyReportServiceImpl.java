@@ -17,10 +17,10 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class FlyReportUtil {
+public class FlyReportServiceImpl implements FlyReportService {
     ResourceLoader resourceLoader;
 
-    public FlyReportUtil(ResourceLoader resourceLoader) {
+    public FlyReportServiceImpl(ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
     }
 

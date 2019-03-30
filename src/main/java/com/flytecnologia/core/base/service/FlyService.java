@@ -1,6 +1,7 @@
 package com.flytecnologia.core.base.service;
 
 import com.flytecnologia.core.base.service.plus.FlyAutocompleteService;
+import com.flytecnologia.core.base.service.plus.FlyBatchSaveService;
 import com.flytecnologia.core.base.service.plus.FlyDeleteService;
 import com.flytecnologia.core.base.service.plus.FlyDetachService;
 import com.flytecnologia.core.base.service.plus.FlyEntityInformationService;
@@ -28,6 +29,7 @@ public abstract class FlyService<T extends FlyEntity, F extends FlyFilter> imple
         FlyFindService<T, F>,
         FlyFindAllService<T, F>,
         FlySaveService<T, F>,
+        FlyBatchSaveService<T, F>,
         FlyDeleteService<T, F>,
         FlyEntityInformationService<T, F>,
         FlySearchService<T, F>,

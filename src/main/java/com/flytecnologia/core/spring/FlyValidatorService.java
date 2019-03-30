@@ -7,7 +7,7 @@ import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
-public class FlyValidatorUtil {
+public class FlyValidatorService {
     private static final Validator javaxValidator = Validation.buildDefaultValidatorFactory().getValidator();
     private static final SpringValidatorAdapter validator = new SpringValidatorAdapter(javaxValidator);
 

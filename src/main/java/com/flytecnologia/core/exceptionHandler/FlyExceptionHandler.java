@@ -158,7 +158,7 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
         }
 
         if (flyAppProperty.getApp().isDebug()) {
-            log.error(ex.getMessage());
+            log.error("DEBUG: " + ex.getMessage(), ex.getCause());
         }
 
         return getBodyBadRequest(apiError);

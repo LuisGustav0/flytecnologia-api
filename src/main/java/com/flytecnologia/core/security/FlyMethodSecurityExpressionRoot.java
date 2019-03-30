@@ -26,8 +26,8 @@ public class FlyMethodSecurityExpressionRoot extends OAuth2MethodSecurityExpress
     @Override
     protected MethodSecurityExpressionOperations createSecurityExpressionRoot(
             Authentication authentication, MethodInvocation invocation) {
-        final FlyHasAuthorityMethodSecurityExpressionRoot root =
-                new FlyHasAuthorityMethodSecurityExpressionRoot(authentication, invocation);
+        final FlyHasAuthorityMethodSecurityExpressionRootService root =
+                new FlyHasAuthorityMethodSecurityExpressionRootServiceImpl(authentication, invocation);
 
         root.setPermissionEvaluator(getPermissionEvaluator());
         root.setTrustResolver(this.trustResolver);

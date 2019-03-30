@@ -17,12 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class FlyMailSender {
+public class FlyMailSenderImpl implements FlyMailSenderService{
     private JavaMailSender javaMailSender;
     private JmsTemplate jmsTemplate;
 
-    FlyMailSender(JavaMailSender javaMailSender,
-                  JmsTemplate jmsTemplate) {
+    FlyMailSenderImpl(JavaMailSender javaMailSender,
+                      JmsTemplate jmsTemplate) {
         this.javaMailSender = javaMailSender;
         this.jmsTemplate = jmsTemplate;
     }
@@ -60,7 +60,7 @@ public class FlyMailSender {
         jmsTemplate.send("mailbox", messageCreator);
     }
 
-    protected void sendSyncrono(FlyMailMessage flyMessage) throws MessagingException {
+    public void sendSync(FlyMailMessage flyMessage) throws MessagingException {
         final MimeMessage message = javaMailSender.createMimeMessage();
         final MimeMessageHelper helper = new MimeMessageHelper(message, true);
 

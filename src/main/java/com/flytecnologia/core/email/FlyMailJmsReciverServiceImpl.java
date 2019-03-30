@@ -1,5 +1,6 @@
 package com.flytecnologia.core.email;
 
+import lombok.AllArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamSource;
 import org.springframework.jms.annotation.JmsListener;
@@ -14,12 +15,9 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class FlyMailJmsReciver {
-    private FlyMailSender flyMailSender;
-
-    FlyMailJmsReciver(FlyMailSender flyMailSender) {
-        this.flyMailSender = flyMailSender;
-    }
+@AllArgsConstructor
+public class FlyMailJmsReciverServiceImpl implements FlyMailJmsReciverService{
+    private FlyMailSenderService mailSenderService;
 
     @JmsListener(destination = "mailbox", containerFactory = "flyJmsFactory")
     public void receiveMessage(Message message) {
@@ -48,7 +46,7 @@ public class FlyMailJmsReciver {
 
             flyMailMessage.setMapInputStream(mapInputStream);
 
-            flyMailSender.sendSyncrono(flyMailMessage);
+            mailSenderService.sendSync(flyMailMessage);
         } catch (MessagingException | JMSException ex) {
             ex.printStackTrace();
         }

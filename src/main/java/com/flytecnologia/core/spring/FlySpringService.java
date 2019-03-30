@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Scope("singleton")
 @Component
-public class FlySpringUtils implements ApplicationContextAware {
+public class FlySpringService implements ApplicationContextAware {
 
     private static ApplicationContext applicationContext;
 
@@ -18,23 +18,23 @@ public class FlySpringUtils implements ApplicationContextAware {
     }
 
     private static void initializeApplicationContext(ApplicationContext applicationContext) {
-        FlySpringUtils.applicationContext = applicationContext;
+        FlySpringService.applicationContext = applicationContext;
     }
 
     public static ApplicationContext getApplicationContext() {
-        return FlySpringUtils.applicationContext;
+        return FlySpringService.applicationContext;
     }
 
     public static <T> T getBean(String aName) {
-        if (FlySpringUtils.applicationContext != null) {
-            return (T) FlySpringUtils.applicationContext.getBean(aName);
+        if (FlySpringService.applicationContext != null) {
+            return (T) FlySpringService.applicationContext.getBean(aName);
         }
         return null;
     }
 
     public static <T> T getBean(Class<T> aClass) {
-        if (FlySpringUtils.applicationContext != null) {
-            return FlySpringUtils.applicationContext.getBean(aClass);
+        if (FlySpringService.applicationContext != null) {
+            return FlySpringService.applicationContext.getBean(aClass);
         }
         return null;
     }

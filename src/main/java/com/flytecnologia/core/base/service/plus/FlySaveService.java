@@ -5,7 +5,7 @@ import com.flytecnologia.core.exception.BusinessException;
 import com.flytecnologia.core.model.FlyEntity;
 import com.flytecnologia.core.model.FlyEntityManualIdImpl;
 import com.flytecnologia.core.search.FlyFilter;
-import com.flytecnologia.core.spring.FlyValidatorUtil;
+import com.flytecnologia.core.spring.FlyValidatorService;
 import com.flytecnologia.core.util.FlyReflection;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -15,7 +15,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -24,7 +23,7 @@ import static com.flytecnologia.core.base.service.plus.FlyInvokeBaseLazyAtribute
 import static com.flytecnologia.core.base.service.plus.FlyValidateEmptyService.notNull;
 
 public interface FlySaveService<T extends FlyEntity, F extends FlyFilter>
-        extends FlyPrintService<F>, FlyFindService<T, F>, FlyExistsService<T, F> {
+        extends FlyFindService<T, F>, FlyExistsService<T, F> {
 
     default void beforeSave(final T entity, final T oldEntity) {
     }
@@ -76,7 +75,7 @@ public interface FlySaveService<T extends FlyEntity, F extends FlyFilter>
             beforeValidateSave(entity);
         }
 
-        FlyValidatorUtil.validate(entity);
+        FlyValidatorService.validate(entity);
 
         removeEmptyEntityFromEntity(entity);
         setParentInTheChildrenList(entity);
@@ -176,7 +175,7 @@ public interface FlySaveService<T extends FlyEntity, F extends FlyFilter>
             beforeValidateSave(entity);
         }
 
-        FlyValidatorUtil.validate(entity);
+        FlyValidatorService.validate(entity);
 
         final Optional<T> entitySavedOptional = find(id);
 
@@ -222,32 +221,6 @@ public interface FlySaveService<T extends FlyEntity, F extends FlyFilter>
         }
     }
 
-    default void batchSave(List<T> entities) {
-        batchSave(entities, 250);
-    }
 
-    default void batchSave(List<T> entities, int batchSize) {
-        getRepository().batchSave(entities, batchSize);
-    }
-
-    default void batchSaveComplete(List<T> entities) {
-        batchSaveComplete(entities, 250);
-    }
-
-    default void batchSaveComplete(List<T> entities, int batchSize) {
-        entities.forEach(entity -> {
-            validateBeforeCreate(entity);
-
-            final boolean isIgnoreAfterSave = entity.isIgnoreAfterSave();
-
-            if (!isIgnoreAfterSave) {
-                afterSave(entity, null);
-            }
-
-            entity.setParameters(null);
-        });
-
-        getRepository().batchSave(entities, batchSize);
-    }
 
 }

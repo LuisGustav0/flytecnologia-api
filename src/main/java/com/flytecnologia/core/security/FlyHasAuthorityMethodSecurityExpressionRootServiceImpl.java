@@ -3,34 +3,28 @@ package com.flytecnologia.core.security;
 import com.flytecnologia.core.config.property.FlyAppProperty;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.security.access.expression.SecurityExpressionRoot;
-import org.springframework.security.access.expression.method.MethodSecurityExpressionOperations;
 import org.springframework.security.core.Authentication;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
 
-public class FlyHasAuthorityMethodSecurityExpressionRoot
-        extends SecurityExpressionRoot implements MethodSecurityExpressionOperations {
+public class FlyHasAuthorityMethodSecurityExpressionRootServiceImpl
+        extends SecurityExpressionRoot implements FlyHasAuthorityMethodSecurityExpressionRootService {
     private Method method;
     private Object filterObject;
     private Object returnObject;
     private Object target;
-
     private FlyAppProperty flyAppProperty;
 
     private final String ROLE_MASTER = "ROLE_DEBUG";
 
-    public FlyHasAuthorityMethodSecurityExpressionRoot(Authentication authentication) {
+    public FlyHasAuthorityMethodSecurityExpressionRootServiceImpl(Authentication authentication,
+                                                                  MethodInvocation methodInvocation) {
         super(authentication);
-    }
-
-    public FlyHasAuthorityMethodSecurityExpressionRoot(Authentication authentication,
-                                                       MethodInvocation methodInvocation) {
-        super(authentication);
-
         this.method = methodInvocation.getMethod();
     }
 
+    @Override
     public String getAuthorityCreate() {
         if (flyAppProperty.getApp().isDebug() && !flyAppProperty.getApp().isValidatePermissions())
             return ROLE_MASTER;
@@ -47,6 +41,7 @@ public class FlyHasAuthorityMethodSecurityExpressionRoot
         return "ACCESS_DENIED";
     }
 
+    @Override
     public String getAuthority(String role) {
         if (flyAppProperty.getApp().isDebug() && !flyAppProperty.getApp().isValidatePermissions())
             return ROLE_MASTER;
@@ -54,6 +49,7 @@ public class FlyHasAuthorityMethodSecurityExpressionRoot
         return role;
     }
 
+    @Override
     public String getAuthorityRead() {
         if (flyAppProperty.getApp().isDebug() && !flyAppProperty.getApp().isValidatePermissions())
             return ROLE_MASTER;
@@ -70,6 +66,7 @@ public class FlyHasAuthorityMethodSecurityExpressionRoot
         return "ACCESS_DENIED";
     }
 
+    @Override
     public String getAuthorityUpdate() {
         if (flyAppProperty.getApp().isDebug() && !flyAppProperty.getApp().isValidatePermissions())
             return ROLE_MASTER;
@@ -85,6 +82,7 @@ public class FlyHasAuthorityMethodSecurityExpressionRoot
         return "ACCESS_DENIED";
     }
 
+    @Override
     public String getAuthorityDelete() {
         if (flyAppProperty.getApp().isDebug() && !flyAppProperty.getApp().isValidatePermissions())
             return ROLE_MASTER;
@@ -100,18 +98,22 @@ public class FlyHasAuthorityMethodSecurityExpressionRoot
         return "ACCESS_DENIED";
     }
 
+    @Override
     public void setFilterObject(Object filterObject) {
         this.filterObject = filterObject;
     }
 
+    @Override
     public Object getFilterObject() {
         return filterObject;
     }
 
+    @Override
     public void setReturnObject(Object returnObject) {
         this.returnObject = returnObject;
     }
 
+    @Override
     public Object getReturnObject() {
         return returnObject;
     }
@@ -121,10 +123,12 @@ public class FlyHasAuthorityMethodSecurityExpressionRoot
         return target;
     }
 
+    @Override
     public void setThis(Object target) {
         this.target = target;
     }
 
+    @Override
     public void setFlyAppProperty(FlyAppProperty flyAppProperty) {
         this.flyAppProperty = flyAppProperty;
     }
