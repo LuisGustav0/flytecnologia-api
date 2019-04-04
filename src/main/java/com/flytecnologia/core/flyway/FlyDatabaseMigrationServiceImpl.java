@@ -1,23 +1,24 @@
 package com.flytecnologia.core.flyway;
 
+import com.flytecnologia.core.config.property.FlyAppProperty;
 import com.flytecnologia.core.user.FlyUserService;
+import lombok.AllArgsConstructor;
 import org.flywaydb.core.Flyway;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
+import java.util.Arrays;
 import java.util.List;
 
+import static com.flytecnologia.core.base.service.plus.FlyValidateEmptyService.isEmpty;
+
 @Service
+@AllArgsConstructor
 public class FlyDatabaseMigrationServiceImpl implements FlyDatabaseMigrationService {
     private FlyUserService flyUserService;
     private DataSource dataSource;
-
-    public FlyDatabaseMigrationServiceImpl(DataSource dataSource,
-                                           FlyUserService flyUserService) {
-        this.dataSource = dataSource;
-        this.flyUserService = flyUserService;
-    }
+    private FlyAppProperty appProperty;
 
     @PostConstruct
     private void migrate() {
@@ -28,7 +29,14 @@ public class FlyDatabaseMigrationServiceImpl implements FlyDatabaseMigrationServ
      * Updates all schemas when application is starting
      */
     private void migrateAllSpecificSchemas() {
-        List<String> schemas = flyUserService.listAllSchemas();
+        List<String> schemas;
+
+        if (!isEmpty(appProperty.getApp().getStartSchemas())) {
+            schemas = Arrays.asList(appProperty.getApp().getStartSchemas().split(","));
+        } else {
+            schemas = flyUserService.listAllSchemas();
+        }
+
 
         if (schemas != null && schemas.size() > 0) {
             schemas.forEach(this::migrateSpecificSchema);

@@ -1,21 +1,17 @@
 package com.flytecnologia.core.config.property;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+@Getter
 @ConfigurationProperties("flyapp")
 public class FlyAppProperty {
-
     private final Security security = new Security();
     private final App app = new App();
 
-    public Security getSecurity() {
-        return security;
-    }
-
-    public App getApp() {
-        return app;
-    }
-
+    @Getter
+    @Setter
     public static class Security {
         private boolean enableHttps;
         private String allowOrigin;
@@ -24,46 +20,21 @@ public class FlyAppProperty {
         public boolean isEnableHttps() {
             return enableHttps;
         }
-
-        public void setEnableHttps(boolean enableHttps) {
-            this.enableHttps = enableHttps;
-        }
-
-        public String getAllowOrigin() {
-            return allowOrigin;
-        }
-
-        public void setAllowOrigin(String allowOrigin) {
-            this.allowOrigin = allowOrigin;
-        }
-
-        public String getFrontEndServerOrigin() {
-            return frontEndServerOrigin;
-        }
-
-        public void setFrontEndServerOrigin(String frontEndServerOrigin) {
-            this.frontEndServerOrigin = frontEndServerOrigin;
-        }
     }
 
+    @Getter
+    @Setter
     public static class App {
         private boolean debug;
         private boolean validatePermissions;
+        private String startSchemas;
 
         public boolean isDebug() {
             return debug;
         }
 
-        public void setDebug(boolean debug) {
-            this.debug = debug;
-        }
-
         public boolean isValidatePermissions() {
             return validatePermissions;
-        }
-
-        public void setValidatePermissions(boolean validatePermissions) {
-            this.validatePermissions = validatePermissions;
         }
     }
 }
