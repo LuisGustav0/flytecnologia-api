@@ -1,6 +1,6 @@
 package com.flytecnologia.core.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -10,12 +10,10 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.util.Properties;
 
-
+@AllArgsConstructor
 @Configuration
 @PropertySource("classpath:env/mail.properties")
 public class FlyMailConfig {
-
-    @Autowired
     private Environment env;
 
     @Bean
