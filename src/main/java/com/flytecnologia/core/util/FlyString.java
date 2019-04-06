@@ -3,6 +3,7 @@ package com.flytecnologia.core.util;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.text.Normalizer;
 import java.text.NumberFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -101,5 +102,9 @@ public class FlyString {
         }
 
         return null;
+    }
+
+    public static String normalizeToASCII(String str) {
+        return Normalizer.normalize(str, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
     }
 }
