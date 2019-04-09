@@ -20,7 +20,7 @@ public abstract class FlyFilterImpl implements FlyFilter {
     private Long id;
     private Long masterDetailId;
     private String entityDetailProperty;
-    private Boolean inactive = false;
+    private Boolean inactive;
     private boolean ignoreInactiveFilter;
     private String pdfName;
     private boolean isPreviousOrNextId;
