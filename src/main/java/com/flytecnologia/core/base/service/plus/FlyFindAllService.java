@@ -10,6 +10,10 @@ import java.util.Optional;
 public interface FlyFindAllService<T extends FlyEntity, F extends FlyFilter> {
     FlyRepository<T, Long, F> getRepository();
 
+    default Optional<List<T>> findAll() {
+        return getRepository().findAll(null);
+    }
+
     default Optional<List<T>> findAll(String tenant) {
         return getRepository().findAll(tenant);
     }
