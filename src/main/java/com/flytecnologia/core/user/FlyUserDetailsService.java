@@ -1,7 +1,7 @@
 package com.flytecnologia.core.user;
 
 import com.flytecnologia.core.token.FlyTokenUserDetails;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,9 +17,8 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
+@AllArgsConstructor
 public class FlyUserDetailsService implements UserDetailsService {
-
-    @Autowired
     private FlyUserService userService;
 
     @Override

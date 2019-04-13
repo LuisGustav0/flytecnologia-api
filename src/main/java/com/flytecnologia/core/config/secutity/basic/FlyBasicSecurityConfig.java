@@ -1,7 +1,8 @@
 package com.flytecnologia.core.config.secutity.basic;
 
 import com.flytecnologia.core.user.FlyUserDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.flytecnologia.core.user.FlyUserService;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -15,10 +16,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Profile("basic-security")
 @EnableWebSecurity
+@AllArgsConstructor
 public class FlyBasicSecurityConfig extends WebSecurityConfigurerAdapter {
-
-    @Autowired
     private UserDetailsService userDetailsService;
+    private FlyUserService userService;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -27,7 +28,7 @@ public class FlyBasicSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return new FlyUserDetailsService();
+        return new FlyUserDetailsService(userService);
     }
 
     @Bean

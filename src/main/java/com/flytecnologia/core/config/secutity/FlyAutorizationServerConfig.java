@@ -35,13 +35,13 @@ public class FlyAutorizationServerConfig extends AuthorizationServerConfigurerAd
     @Value("${security.oauth2.resource.jwt.key-value-mobile}")
     private String secretKeyMobile;
 
-    @Autowired
     private AuthenticationManager authenticationManager;
-
     private UserDetailsService userDetailsService;
 
-    public FlyAutorizationServerConfig(UserDetailsService userDetailsService) {
+    public FlyAutorizationServerConfig(UserDetailsService userDetailsService,
+                                       AuthenticationManager authenticationManager) {
         this.userDetailsService = userDetailsService;
+        this.authenticationManager = authenticationManager;
     }
 
     @Override
@@ -53,7 +53,7 @@ public class FlyAutorizationServerConfig extends AuthorizationServerConfigurerAd
                 .authorizedGrantTypes("password", "refresh_token")
                 .accessTokenValiditySeconds(60 * 60 * 2) //duration's token//TODO JULLIERME ao renovar o token, considerar o tenant do token atual....ao renover volta pro tenant do usuario
                 .refreshTokenValiditySeconds(3600 * 24) //1 day
-            .and()
+                .and()
                 .withClient("mobile")
                 .secret(new BCryptPasswordEncoder().encode(secretKeyMobile))
                 .scopes("read", "mobile")

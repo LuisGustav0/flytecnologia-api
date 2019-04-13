@@ -3,6 +3,8 @@ package com.flytecnologia.core.config.secutity;
 import com.flytecnologia.core.config.property.FlyAppProperty;
 import com.flytecnologia.core.security.FlyMethodSecurityExpressionRoot;
 import com.flytecnologia.core.user.FlyUserDetailsService;
+import com.flytecnologia.core.user.FlyUserService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,8 +27,8 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Res
 @EnableWebSecurity
 @EnableResourceServer
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@AllArgsConstructor
 public class FlyResourceServerConfig extends ResourceServerConfigurerAdapter {
-
     private static final String[] AUTH_WHITELIST_OTHERS = {
             "/actuator/health"
     };
@@ -44,14 +46,9 @@ public class FlyResourceServerConfig extends ResourceServerConfigurerAdapter {
             "/login/send-new-password"
     };
 
-    @Autowired
     private FlyAppProperty flyAppProperty;
-
     private UserDetailsService userDetailsService;
-
-    public FlyResourceServerConfig(UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
+    private FlyUserService userService;
 
     @Autowired
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -98,7 +95,7 @@ public class FlyResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return new FlyUserDetailsService();
+        return new FlyUserDetailsService(userService);
     }
 
     @Bean
