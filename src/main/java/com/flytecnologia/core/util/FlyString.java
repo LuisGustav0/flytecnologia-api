@@ -107,4 +107,9 @@ public class FlyString {
     public static String normalizeToASCII(String str) {
         return Normalizer.normalize(str, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
     }
+
+    public static void main(String[] args) {
+        System.out.println(normalizeToASCII("121asdf15481515asdf")); //out = 121asdf15481515asdf
+    }
 }
+
