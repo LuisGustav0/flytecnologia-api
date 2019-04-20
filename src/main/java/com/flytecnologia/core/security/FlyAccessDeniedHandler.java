@@ -17,6 +17,12 @@ public class FlyAccessDeniedHandler implements AccessDeniedHandler {
             HttpServletResponse response,
             AccessDeniedException exc) {
 
+        addLogInformation(request);
+
+        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+    }
+
+    private void addLogInformation(HttpServletRequest request) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         String method = request.getMethod();
@@ -37,7 +43,5 @@ public class FlyAccessDeniedHandler implements AccessDeniedHandler {
         }
 
         log.warn(msg);
-
-        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
     }
 }
