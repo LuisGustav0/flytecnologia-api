@@ -1,6 +1,7 @@
 package com.flytecnologia.core.config.secutity;
 
 import com.flytecnologia.core.config.property.FlyAppProperty;
+import com.flytecnologia.core.security.FlyAccessDeniedHandler;
 import com.flytecnologia.core.security.FlyMethodSecurityExpressionRoot;
 import com.flytecnologia.core.user.FlyUserDetailsService;
 import com.flytecnologia.core.user.FlyUserService;
@@ -21,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
+import org.springframework.security.web.access.AccessDeniedHandler;
 
 @Profile("oauth-security")
 @Configuration
@@ -77,6 +79,8 @@ public class FlyResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .antMatchers(AUTH_WHITELIST_LOGIN).permitAll()
                 .antMatchers(AUTH_WHITELIST_SWAGGER).permitAll()
                 .anyRequest().authenticated()
+            .and()
+                .exceptionHandling().accessDeniedHandler(accessDeniedHandler());
         ;
     }
 
@@ -101,5 +105,10 @@ public class FlyResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Bean
     protected MethodSecurityExpressionHandler createExpressionHandler() {
         return new FlyMethodSecurityExpressionRoot(flyAppProperty);
+    }
+
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler(){
+        return new FlyAccessDeniedHandler();
     }
 }
