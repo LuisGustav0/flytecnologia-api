@@ -1,5 +1,7 @@
 package com.flytecnologia.core.security;
 
+import com.flytecnologia.core.config.property.FlyAppProperty;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
@@ -8,18 +10,30 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+import static com.flytecnologia.core.base.service.plus.FlyValidateEmptyService.isEmpty;
 
 @Slf4j
+@AllArgsConstructor
 public class FlyAccessDeniedHandler implements AccessDeniedHandler {
+    public FlyAppProperty flyAppProperty;
+
     @Override
     public void handle(
             HttpServletRequest request,
             HttpServletResponse response,
-            AccessDeniedException exc) {
+            AccessDeniedException exc) throws IOException {
 
         addLogInformation(request);
 
-        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        String accessDeniedErrorPage = flyAppProperty.getSecurity().getAccessDeniedErrorPage();
+
+        if (!isEmpty(accessDeniedErrorPage)) {
+            response.sendRedirect(request.getContextPath() + accessDeniedErrorPage);
+        } else {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        }
     }
 
     private void addLogInformation(HttpServletRequest request) {
@@ -42,6 +56,6 @@ public class FlyAccessDeniedHandler implements AccessDeniedHandler {
             msg += "Not found";
         }
 
-        log.warn(msg);
+        log.info(msg);
     }
 }

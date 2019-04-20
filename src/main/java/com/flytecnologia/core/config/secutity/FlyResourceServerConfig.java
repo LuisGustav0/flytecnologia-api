@@ -109,6 +109,6 @@ public class FlyResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Bean
     public AccessDeniedHandler accessDeniedHandler(){
-        return new FlyAccessDeniedHandler();
+        return new FlyAccessDeniedHandler(flyAppProperty);
     }
 }

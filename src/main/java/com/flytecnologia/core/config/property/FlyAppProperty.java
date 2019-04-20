@@ -16,6 +16,7 @@ public class FlyAppProperty {
         private boolean enableHttps;
         private String allowOrigin;
         private String frontEndServerOrigin;
+        private String accessDeniedErrorPage;
 
         public boolean isEnableHttps() {
             return enableHttps;
