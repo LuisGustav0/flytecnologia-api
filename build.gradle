@@ -47,7 +47,6 @@ dependencies {
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: lombokVersion
 
     compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.7'
-
     
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-tomcat', version: springBootVersion
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: springBootVersion
