@@ -8,7 +8,11 @@ import java.util.Optional;
 public interface FlyExistsRepository<T extends FlyEntity> extends
         FlyFindValueRepository<T> {
 
-    default boolean existsById(@NonNull Long id, @NonNull String tenant) {
+    default boolean existsById(@NonNull Long id) {
+        return existsById(id, null);
+    }
+
+    default boolean existsById(@NonNull Long id, String tenant) {
         final String entityName = getEntityName();
 
         final String ql =
