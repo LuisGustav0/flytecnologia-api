@@ -13,7 +13,7 @@ import static lombok.AccessLevel.PRIVATE;
 @JsonAutoDetect(fieldVisibility = ANY)
 @RequiredArgsConstructor(access = PRIVATE)
 public class FlyErrorResponse {
-    private final int statusCode;
+    private final int status;
     private final List<ApiError> errors;
 
     static FlyErrorResponse of(List<ApiError> errors) {
