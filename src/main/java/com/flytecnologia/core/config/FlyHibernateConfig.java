@@ -46,22 +46,6 @@ public class FlyHibernateConfig {
         return new HibernateJpaVendorAdapter();
     }
 
-    /**
-     * @Bean public DataSource dataSource() {
-     * HikariConfig config = new HikariConfig();
-     * config.setDriverClassName(driver);
-     * config.setJdbcUrl(url);
-     * config.setUsername(username);
-     * config.setPassword(password);
-     * config.addDataSourceProperty("cachePrepStmts", "true");
-     * config.addDataSourceProperty("prepStmtCacheSize", "250");
-     * config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
-     * config.addDataSourceProperty("useServerPrepStmts", "true");
-     * <p>
-     * return new HikariDataSource(config);
-     * }
-     */
-
     @Bean
     public CurrentTenantIdentifierResolver getCurrentTenantIdentifierResolver() {
         return new FlyTenantIdentifierResolver();
