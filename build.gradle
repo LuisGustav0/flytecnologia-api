@@ -26,7 +26,7 @@ ext {
     logbackClassic = "1.2.3"
     lombokVersion = "1.18.4"
     hikariVersion = "3.3.1"
-    /*tomcatJdbc = "9.0.19"*/
+    tomcatJdbc = "9.0.19"
 }
 
 jar {
@@ -50,7 +50,7 @@ dependencies {
 
     compile group: "org.apache.httpcomponents", name: "httpclient", version: "4.5.7"
 
-    /*compile group: "org.springframework.boot", name: "spring-boot-starter-tomcat"*/
+    compile group: "org.springframework.boot", name: "spring-boot-starter-tomcat"
     compile group: "org.springframework.boot", name: "spring-boot-starter-web"
     compile group: "org.springframework.boot", name: "spring-boot-starter-data-jpa"
     compile group: "org.springframework.boot", name: "spring-boot-starter-data-rest"
@@ -74,8 +74,8 @@ dependencies {
     compile group: "org.hibernate", name: "hibernate-envers", version: hibernateVersion
     compile group: "org.hibernate", name: "hibernate-java8", version: hibernateVersion
 
-    /*compile group: "org.apache.tomcat", name: "tomcat-jdbc", version: tomcatJdbc*/
-    compile group: "com.zaxxer", name: "HikariCP", version: hikariVersion
+    compile group: "org.apache.tomcat", name: "tomcat-jdbc", version: tomcatJdbc
+    /*compile group: "com.zaxxer", name: "HikariCP", version: hikariVersion*/
 
     compile group: "org.hibernate", name: "hibernate-validator", version: hibernateValidator
 
@@ -120,7 +120,7 @@ configurations {
         exclude group: "servlet-api"
         exclude group: "commons-logging"
         exclude module: "jcl-over-slf4j"
-        /*exclude group: "com.zaxxer"*/
+        exclude group: "com.zaxxer"
     }
 }
 
