@@ -30,6 +30,7 @@ ext {
 }
 
 jar {
+    enabled = true
     manifest {
         attributes "Implementation-Title": "Fly-tecnologia-api",
                 "Implementation-Version": version
