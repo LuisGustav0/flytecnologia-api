@@ -2,7 +2,6 @@ package com.flytecnologia.core.util;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
-import org.springframework.stereotype.Component;
 
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
@@ -11,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component
 public class FlyEnumToMap {
 
     public static List<Map<String, Object>> parse(Class<? extends Enum> enumClass) {
@@ -51,12 +49,4 @@ public class FlyEnumToMap {
         }
         return listaDeNomes;
     }
-
-    public static void main(String[] args) {
-       /* Map<String, EnumSet<?>> enumMap = new HashMap<String, EnumSet<?>>();
-        enumMap.put("estado",EnumSet.allOf(EnumEstado.class) );*/
-
-        //parse(EnumTipoUsuario.class);
-    }
-
 }

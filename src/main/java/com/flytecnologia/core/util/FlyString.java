@@ -1,7 +1,5 @@
 package com.flytecnologia.core.util;
 
-import org.springframework.stereotype.Component;
-
 import java.math.BigDecimal;
 import java.text.Normalizer;
 import java.text.NumberFormat;
@@ -12,7 +10,6 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-@Component
 public class FlyString {
     public static String decapitalizeFirstLetter(String string) {
         return string == null || string.isEmpty() ? "" : Character.toLowerCase(string.charAt(0)) + string.substring(1);
@@ -106,10 +103,6 @@ public class FlyString {
 
     public static String normalizeToASCII(String str) {
         return Normalizer.normalize(str, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
-    }
-
-    public static void main(String[] args) {
-        System.out.println(normalizeToASCII("121asdf15481515asdf")); //out = 121asdf15481515asdf
     }
 }
 
