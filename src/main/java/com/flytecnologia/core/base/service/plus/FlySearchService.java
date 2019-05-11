@@ -14,6 +14,6 @@ public interface FlySearchService<T extends FlyEntity, F extends FlyFilter>
     }
 
     default List<T> search(F filter) {
-        return (List<T>) getRepository().search(filter, null).getResult();
+        return (List<T>) search(filter, null).getResult();
     }
 }
