@@ -11,6 +11,7 @@ import com.flytecnologia.core.base.repository.plus.FlyFindByInstructionRepositor
 import com.flytecnologia.core.base.repository.plus.FlyFindNextRepository;
 import com.flytecnologia.core.base.repository.plus.FlyFindRepository;
 import com.flytecnologia.core.base.repository.plus.FlyFindValueRepository;
+import com.flytecnologia.core.base.repository.plus.FlyHibernateExecuteNativeQueryWithoutTransactionRepository;
 import com.flytecnologia.core.base.repository.plus.FlyHibernateSessionRepository;
 import com.flytecnologia.core.base.repository.plus.FlyInactiveRepository;
 import com.flytecnologia.core.base.repository.plus.FlyRecordCountRepository;
@@ -28,6 +29,7 @@ import javax.persistence.EntityManagerFactory;
 @NoRepositoryBean
 public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter> implements
         FlyHibernateSessionRepository,
+        FlyHibernateExecuteNativeQueryWithoutTransactionRepository,
         FlyEntityReferenceRepository<T>,
         FlyFindByInstructionRepository<T>,
         FlyAutocompleteRepository<T, F>,
@@ -42,7 +44,7 @@ public abstract class FlyRepositoryImpl<T extends FlyEntity, F extends FlyFilter
         FlyBatchSaveRepository<T>,
         FlyDeleteByTenantRepository<T>,
         FlyInactiveRepository<T, F>,
-        FlyRecordCountRepository<T, F>,
+        FlyRecordCountRepository<T>,
         FlyExistsRepository<T>,
         FlyEntityClassService<T> {
 

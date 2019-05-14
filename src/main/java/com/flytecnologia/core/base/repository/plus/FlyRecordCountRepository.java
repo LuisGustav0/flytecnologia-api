@@ -2,13 +2,12 @@ package com.flytecnologia.core.base.repository.plus;
 
 import com.flytecnologia.core.base.service.plus.FlyEntityClassService;
 import com.flytecnologia.core.model.FlyEntity;
-import com.flytecnologia.core.search.FlyFilter;
 
 import javax.persistence.TypedQuery;
 import java.util.Objects;
 import java.util.Optional;
 
-public interface FlyRecordCountRepository<T extends FlyEntity, F extends FlyFilter> extends
+public interface FlyRecordCountRepository<T extends FlyEntity> extends
         FlyEntityManagerRepository,
         FlyEntityClassService<T> {
 
