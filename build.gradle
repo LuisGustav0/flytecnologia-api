@@ -12,20 +12,19 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 ext {
-    springSecurityJwt = "1.0.9.RELEASE"
-    springSecurityOauth2 = "2.3.3.RELEASE"
-    springSecurityTest = "5.0.7.RELEASE"
-    activemqBroker = "5.15.3"
+    springSecurityJwt = "1.0.10.RELEASE"
+    springSecurityOauth2 = "2.3.5.RELEASE"
+    springSecurityTest = "5.1.5.RELEASE"
+    activemqBroker = "5.15.9"
     flywayCore = "5.2.4"
     hibernateVersion = "5.4.2.Final"
-    hibernateValidator = "6.0.14.Final"
-    junit = "5.4.0-M1"
-    junitPlatform = "1.4.0-M1"
-    jasperreports = "6.7.0"
+    hibernateValidator = "6.0.16.Final"
+    junit = "5.5.0-M1"
+    junitPlatform = "1.5.0-M1"
+    jasperreports = "6.8.0"
     jacksonDatatypeHibernate5 = "2.9.8"
     logbackClassic = "1.2.3"
-    lombokVersion = "1.18.4"
-    hikariVersion = "3.3.1"
+    lombokVersion = "1.18.8"
     tomcatJdbc = "9.0.19"
 }
 
@@ -76,7 +75,6 @@ dependencies {
     compile group: "org.hibernate", name: "hibernate-java8", version: hibernateVersion
 
     compile group: "org.apache.tomcat", name: "tomcat-jdbc", version: tomcatJdbc
-    /*compile group: "com.zaxxer", name: "HikariCP", version: hikariVersion*/
 
     compile group: "org.hibernate", name: "hibernate-validator", version: hibernateValidator
 
