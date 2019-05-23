@@ -39,7 +39,7 @@ public class FlyDatabaseMigrationServiceImpl implements FlyDatabaseMigrationServ
 
 
         if (schemas != null && schemas.size() > 0) {
-            schemas.stream().parallel().forEach(this::migrateSpecificSchema);
+            schemas.forEach(this::migrateSpecificSchema);
         }
     }
 
