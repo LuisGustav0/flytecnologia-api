@@ -10,6 +10,8 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
+import static com.flytecnologia.core.base.service.plus.FlyValidateEmptyService.isEmpty;
+
 public class FlyString {
     public static String decapitalizeFirstLetter(String string) {
         return string == null || string.isEmpty() ? "" : Character.toLowerCase(string.charAt(0)) + string.substring(1);
@@ -102,6 +104,9 @@ public class FlyString {
     }
 
     public static String normalizeToASCII(String str) {
+        if(isEmpty(str))
+            return str;
+
         return Normalizer.normalize(str, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
     }
 }
