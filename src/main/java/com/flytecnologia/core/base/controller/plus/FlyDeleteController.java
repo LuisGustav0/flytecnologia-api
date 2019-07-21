@@ -14,9 +14,7 @@ public interface FlyDeleteController<T extends FlyEntity, F extends FlyFilter> e
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority(getAuthorityDelete()) and #oauth2.hasScope('write')")
-    default ResponseEntity<Void> delete(@PathVariable Long id) {
+    default void delete(@PathVariable Long id) {
         getService().delete(id);
-
-        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

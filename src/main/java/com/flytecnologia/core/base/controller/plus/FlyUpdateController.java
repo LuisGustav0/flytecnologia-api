@@ -12,8 +12,7 @@ public interface FlyUpdateController<T extends FlyEntity, F extends FlyFilter> e
         FlyGetServiceController<T, F> {
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority(getAuthorityUpdate()) and #oauth2.hasScope('write')")
-    default ResponseEntity<T> update(@PathVariable Long id,
-                                    @RequestBody T entity) {
-        return ResponseEntity.ok(getService().update(id, entity));
+    default T update(@PathVariable Long id, @RequestBody T entity) {
+        return getService().update(id, entity);
     }
 }
