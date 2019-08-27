@@ -164,6 +164,24 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
         return getBodyBadRequest(apiError);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<FlyErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
+        String msg = ex.getMessage();
+
+        ApiError apiError;
+        if(msg != null && !msg.contains(" ")) {
+            apiError = toApiError(ex.getMessage(), ex);
+        } else {
+            apiError = new ApiError("illegalArgumentException", ex.getMessage(), getDevMessage(ex));
+        }
+
+        if (flyAppProperty.getApp().isDebug()) {
+            log.error("DEBUG: " + ex.getMessage(), ex.getCause());
+        }
+
+        return getBodyBadRequest(apiError);
+    }
+
     @ExceptionHandler(value = {ConstraintViolationException.class})
     public ResponseEntity<FlyErrorResponse> handleConstraintViolationException(RuntimeException ex) {
         final String fieldError = ((ConstraintViolationException) ex.getCause()).getConstraintName();

@@ -1,6 +1,5 @@
 package com.flytecnologia.core.base.service.plus;
 
-import com.flytecnologia.core.exception.BusinessException;
 import com.flytecnologia.core.model.FlyEntity;
 import org.hibernate.collection.internal.PersistentBag;
 import org.springframework.util.StringUtils;
@@ -41,13 +40,13 @@ public class FlyValidateEmptyService {
 
     public static void notEmpty(Object object, String message) {
         if (isEmpty(object)) {
-            throw new BusinessException(message);
+            throw new IllegalArgumentException(message);
         }
     }
 
     public static void notNull(Object object, String message) {
         if (object == null) {
-            throw new BusinessException(message);
+            throw new IllegalArgumentException(message);
         }
     }
 }
