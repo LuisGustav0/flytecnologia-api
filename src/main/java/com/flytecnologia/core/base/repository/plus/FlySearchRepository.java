@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +45,14 @@ public interface FlySearchRepository<T extends FlyEntity, F extends FlyFilter> e
         hqlFrom.append("\n").append(hqlJoin).append("\n").append(hqlWhere);
 
         final Long total = getTotalRecords(hqlFrom, parameters, distinctPropertyCount);
+
+        if (total == 0) {
+            return new FlyPageableResult(new ArrayList<>(),
+                    pageable != null && !filter.isShowAllRecordsOnSearch() ? pageable.getPageNumber() : 0,
+                    pageable != null ? pageable.getPageSize() : -1,
+                    total,
+                    0);
+        }
 
         hqlFrom.append(" ").append(hqlOrderBy);
 
