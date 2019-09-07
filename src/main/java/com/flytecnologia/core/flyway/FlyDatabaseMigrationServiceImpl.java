@@ -37,9 +37,12 @@ public class FlyDatabaseMigrationServiceImpl implements FlyDatabaseMigrationServ
             schemas = flyUserService.listAllSchemas();
         }
 
-
         if (schemas != null && schemas.size() > 0) {
-            schemas.forEach(this::migrateSpecificSchema);
+            if (appProperty.getApp().isDebug()) {
+                schemas.parallelStream().forEach(this::migrateSpecificSchema);
+            } else {
+                schemas.forEach(this::migrateSpecificSchema);
+            }
         }
     }
 
