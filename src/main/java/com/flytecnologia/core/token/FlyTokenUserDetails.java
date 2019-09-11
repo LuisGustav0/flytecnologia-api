@@ -1,5 +1,6 @@
 package com.flytecnologia.core.token;
 
+import com.flytecnologia.core.exception.InvalidSessionException;
 import com.flytecnologia.core.hibernate.multitenancy.FlyMultiTenantConstants;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -67,6 +68,9 @@ public class FlyTokenUserDetails {
         }
 
         final RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+
+        if(requestAttributes == null)
+            throw new InvalidSessionException();
 
         return (String) requestAttributes.getAttribute(
                 "username",

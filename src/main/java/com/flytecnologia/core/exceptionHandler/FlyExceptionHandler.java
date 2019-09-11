@@ -76,10 +76,10 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
         return e.getPath()
                 .stream()
                 .map(x -> FlyErrorInvalidFormat.builder()
-                        .withField(x.getFieldName())
-                        .withBean(x.getFrom().getClass().getSimpleName())
-                        .withMessage("field format error")
-                        .withRejectedValue(e.getValue().toString())
+                        .field(x.getFieldName())
+                        .bean(x.getFrom().getClass().getSimpleName())
+                        .message("field format error")
+                        .rejectedValue(e.getValue().toString())
                         .build())
                 .collect(toList());
     }

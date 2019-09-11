@@ -1,6 +1,7 @@
 package com.flytecnologia.core.token;
 
 import com.flytecnologia.core.config.property.FlyAppProperty;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.MethodParameter;
@@ -35,7 +36,8 @@ public class FlyRefreshTokenPostProcessor implements ResponseBodyAdvice<OAuth2Ac
 
     /*only executes the beforeBodyWrite method if it returns true*/
     @Override
-    public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
+    public boolean supports(@NonNull MethodParameter returnType,
+                            @NonNull Class<? extends HttpMessageConverter<?>> converterType) {
         return returnType.getMethod().getName().equals("postAccessToken");
     }
 
@@ -61,23 +63,9 @@ public class FlyRefreshTokenPostProcessor implements ResponseBodyAdvice<OAuth2Ac
     }
 
     private void addRefreshTokenInCookie(String refreshToken, HttpServletRequest req, HttpServletResponse resp) {
-        final int blocSize = refreshToken.length() / 4;
-        final String refreshToken1 = refreshToken.substring(0, blocSize);
-        final String refreshToken2 = refreshToken.substring(blocSize, blocSize*2 );
-        final String refreshToken3 = refreshToken.substring(blocSize*2, blocSize*3);
-        final String refreshToken4 = refreshToken.substring(blocSize*3);
-
         final String path = req.getContextPath() + "/oauth/token";
 
-        addPartsRefreshTokenInCookie("refreshToken1", refreshToken1, resp, path);
-        addPartsRefreshTokenInCookie("refreshToken2", refreshToken2, resp, path);
-        addPartsRefreshTokenInCookie("refreshToken3", refreshToken3, resp, path);
-        addPartsRefreshTokenInCookie("refreshToken4", refreshToken4, resp, path);
-    }
-
-    private void addPartsRefreshTokenInCookie(String refreshTokenName, String refreshToken,
-                                              HttpServletResponse resp, String path) {
-        final Cookie cookie = new Cookie(refreshTokenName, refreshToken);
+        final Cookie cookie = new Cookie("refreshToken", refreshToken);
         cookie.setHttpOnly(true);
         cookie.setSecure(flyAppProperty.getSecurity().isEnableHttps());
         cookie.setPath(path);

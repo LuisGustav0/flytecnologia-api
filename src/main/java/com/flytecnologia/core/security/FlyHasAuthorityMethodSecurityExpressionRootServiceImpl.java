@@ -16,7 +16,7 @@ public class FlyHasAuthorityMethodSecurityExpressionRootServiceImpl
     private Object target;
     private FlyAppProperty flyAppProperty;
 
-    private final String ROLE_MASTER = "ROLE_DEBUG";
+    private final String MASTER = "DEBUG";
 
     public FlyHasAuthorityMethodSecurityExpressionRootServiceImpl(Authentication authentication,
                                                                   MethodInvocation methodInvocation) {
@@ -27,13 +27,13 @@ public class FlyHasAuthorityMethodSecurityExpressionRootServiceImpl
     @Override
     public String getAuthorityCreate() {
         if (flyAppProperty.getApp().isDebug() && !flyAppProperty.getApp().isValidatePermissions())
-            return ROLE_MASTER;
+            return MASTER;
 
         final FlyRoles flyRoles = target.getClass().getAnnotation(FlyRoles.class);
 
         if (flyRoles != null) {
             if (!StringUtils.isEmpty(flyRoles.defaultName()))
-                return "ROLE_" + flyRoles.defaultName().toUpperCase() + "_C";
+                return flyRoles.defaultName().toUpperCase() + "_C";
 
             return flyRoles.create();
         }
@@ -44,7 +44,7 @@ public class FlyHasAuthorityMethodSecurityExpressionRootServiceImpl
     @Override
     public String getAuthority(String role) {
         if (flyAppProperty.getApp().isDebug() && !flyAppProperty.getApp().isValidatePermissions())
-            return ROLE_MASTER;
+            return MASTER;
 
         return role;
     }
@@ -52,13 +52,13 @@ public class FlyHasAuthorityMethodSecurityExpressionRootServiceImpl
     @Override
     public String getAuthorityRead() {
         if (flyAppProperty.getApp().isDebug() && !flyAppProperty.getApp().isValidatePermissions())
-            return ROLE_MASTER;
+            return MASTER;
 
         final FlyRoles flyRoles = target.getClass().getAnnotation(FlyRoles.class);
 
         if (flyRoles != null) {
             if (!StringUtils.isEmpty(flyRoles.defaultName()))
-                return "ROLE_" + flyRoles.defaultName().toUpperCase() + "_R";
+                return flyRoles.defaultName().toUpperCase() + "_R";
 
             return flyRoles.read();
         }
@@ -69,13 +69,13 @@ public class FlyHasAuthorityMethodSecurityExpressionRootServiceImpl
     @Override
     public String getAuthorityUpdate() {
         if (flyAppProperty.getApp().isDebug() && !flyAppProperty.getApp().isValidatePermissions())
-            return ROLE_MASTER;
+            return MASTER;
 
         final FlyRoles flyRoles = target.getClass().getAnnotation(FlyRoles.class);
 
         if (flyRoles != null) {
             if (!StringUtils.isEmpty(flyRoles.defaultName()))
-                return "ROLE_" + flyRoles.defaultName().toUpperCase() + "_U";
+                return flyRoles.defaultName().toUpperCase() + "_U";
             return flyRoles.update();
         }
 
@@ -85,13 +85,13 @@ public class FlyHasAuthorityMethodSecurityExpressionRootServiceImpl
     @Override
     public String getAuthorityDelete() {
         if (flyAppProperty.getApp().isDebug() && !flyAppProperty.getApp().isValidatePermissions())
-            return ROLE_MASTER;
+            return MASTER;
 
         final FlyRoles flyRoles = target.getClass().getAnnotation(FlyRoles.class);
 
         if (flyRoles != null) {
             if (!StringUtils.isEmpty(flyRoles.defaultName()))
-                return "ROLE_" + flyRoles.defaultName().toUpperCase() + "_D";
+                return flyRoles.defaultName().toUpperCase() + "_D";
             return flyRoles.delete();
         }
 

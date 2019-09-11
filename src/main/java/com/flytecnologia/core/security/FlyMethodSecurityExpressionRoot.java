@@ -38,6 +38,11 @@ public class FlyMethodSecurityExpressionRoot extends OAuth2MethodSecurityExpress
         return root;
     }
 
+    @Override
+    protected String getDefaultRolePrefix() {
+        return "";
+    }
+
     public AuthenticationTrustResolver getTrustResolver() {
         return trustResolver;
     }
