@@ -138,7 +138,7 @@ public interface FlyFindByInstructionRepository<T extends FlyEntity> extends
             return Optional.ofNullable((List<N>) provider);
         } catch (Exception e) {
             rollbackSessionTransaction(session);
-            throw new RuntimeException(e.getMessage());
+            throw e;
         }
     }
 }

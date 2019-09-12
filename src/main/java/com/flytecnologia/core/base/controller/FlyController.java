@@ -4,7 +4,7 @@ import com.flytecnologia.core.base.controller.plus.*;
 import com.flytecnologia.core.model.FlyEntity;
 import com.flytecnologia.core.search.FlyFilter;
 
-public abstract class FlyController<T extends FlyEntity, F extends FlyFilter> implements
+public interface FlyController<T extends FlyEntity, F extends FlyFilter> extends
         FlyCreateController<T, F>,
         FlyGoToAfterController<T, F>,
         FlyGoToBeforeController<T, F>,
