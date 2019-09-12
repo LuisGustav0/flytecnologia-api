@@ -1,3 +1,3 @@
 run  sonarqube gitbash
 
-./gradlew sonarqube 
+./gradlew sonarqube
