@@ -34,7 +34,7 @@ public interface FlyResultListRepository<T extends FlyEntity> extends
 
         List list = query.getResultList();
 
-        if (list == null || list.size() == 0)
+        if (list == null || list.isEmpty())
             return Optional.empty();
 
         return Optional.of(list);

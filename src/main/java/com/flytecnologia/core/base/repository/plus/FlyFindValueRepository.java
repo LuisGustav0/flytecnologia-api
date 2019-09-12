@@ -63,9 +63,8 @@ public interface FlyFindValueRepository<T extends FlyEntity> extends
 
             return result;
         } catch (Exception e) {
-            e.printStackTrace();
             rollbackSessionTransaction(session);
-            throw new RuntimeException(e.getMessage());
+            throw e;
         }
     }
 

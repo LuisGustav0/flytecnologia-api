@@ -5,13 +5,15 @@ import com.flytecnologia.core.exception.BusinessException;
 import java.time.LocalDate;
 
 public class FlyValidateDateService {
+    private FlyValidateDateService() {
+    }
+
     public static void validateDateLessOrEquals(LocalDate firstDate, LocalDate lastDate, String message) {
         if (firstDate == null || lastDate == null)
             return;
 
-        if (!lastDate.isEqual(firstDate)) {
-            if (!firstDate.isBefore(lastDate))
-                throw new BusinessException(message);
+        if (!lastDate.isEqual(firstDate) && !firstDate.isBefore(lastDate)) {
+            throw new BusinessException(message);
         }
     }
 

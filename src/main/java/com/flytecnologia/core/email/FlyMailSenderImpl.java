@@ -1,5 +1,6 @@
 package com.flytecnologia.core.email;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Component
 public class FlyMailSenderImpl implements FlyMailSenderService{
     private JavaMailSender javaMailSender;
@@ -47,7 +49,7 @@ public class FlyMailSenderImpl implements FlyMailSenderService{
 
                         attachmentFilenames.add(attachmentFilename);
                     } catch  (JMSException | IOException e) {
-                        e.printStackTrace();
+                        log.error(e.getMessage(), e);
                     }
                 });
             }
@@ -88,7 +90,7 @@ public class FlyMailSenderImpl implements FlyMailSenderService{
                 try {
                     helper.addAttachment(attachmentFilename, inputStreamSource);
                 } catch (MessagingException e) {
-                    e.printStackTrace();
+                    log.error(e.getMessage(), e);
                 }
             });
         }

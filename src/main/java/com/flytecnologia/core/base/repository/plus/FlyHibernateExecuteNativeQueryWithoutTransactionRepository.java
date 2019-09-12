@@ -4,6 +4,8 @@ import lombok.NonNull;
 import org.hibernate.Session;
 import org.hibernate.internal.SessionImpl;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import static com.flytecnologia.core.base.service.plus.FlyValidateEmptyService.isEmpty;
@@ -19,7 +21,10 @@ public interface FlyHibernateExecuteNativeQueryWithoutTransactionRepository exte
 
         Session session = getNewSession(tenant);
         org.hibernate.internal.SessionImpl sessionImpl = (SessionImpl) session;
-        java.sql.Connection connection = sessionImpl.connection();
-        connection.prepareStatement(sql).execute();
+
+        try (Connection connection = sessionImpl.connection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.execute();
+        }
     }
 }

@@ -37,7 +37,8 @@ public class FlyReCaptchaService {
         }
 
         URI verifyUri = URI.create(String.format(
-                reCaptchaSettings.getUrl() + "?secret=%s&response=%s&remoteip=%s",
+                "%s?secret=%s&response=%s&remoteip=%s",
+                reCaptchaSettings.getUrl(),
                 reCaptchaSettings.getSecret(),
                 reCaptchaResponse,
                 request.getRemoteAddr()
@@ -47,10 +48,11 @@ public class FlyReCaptchaService {
             FlyReCaptchaResponse response = restTemplate.getForObject(verifyUri, FlyReCaptchaResponse.class);
             return response != null && response.isSuccess();
         } catch (Exception ignored) {
-            ignored.printStackTrace();
-            //log.error("", ignored);
-            // ignore when google services are not available
-            // maybe add some sort of logging or trigger that'll alert the administrator
+            log.error(ignored.getMessage(), ignored);
+            /*
+            ignore when google services are not available
+            maybe add some sort of logging or trigger that'll alert the administrator
+            */
         }
 
         return true;

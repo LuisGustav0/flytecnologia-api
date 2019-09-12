@@ -9,6 +9,8 @@ import static com.flytecnologia.core.base.service.plus.FlyTenantInformationServi
 import static com.flytecnologia.core.base.service.plus.FlyTenantInformationService.getUserId;
 
 public class FlyParallelForEachService  {
+    private FlyParallelForEachService() {}
+
     public static <E> void parallelForEach(Collection<E> collection, Consumer<E> consumer) {
         final String finalTenantId = getTenant();
         final Long finalUserId = getUserId();

@@ -1,7 +1,6 @@
 package com.flytecnologia.core.token;
 
 import com.flytecnologia.core.exception.InvalidSessionException;
-import com.flytecnologia.core.hibernate.multitenancy.FlyMultiTenantConstants;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,7 +12,12 @@ import org.springframework.web.context.request.RequestContextHolder;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.flytecnologia.core.hibernate.multitenancy.FlyMultiTenantConstants.DEFAULT_TENANT_ID;
+import static com.flytecnologia.core.hibernate.multitenancy.FlyMultiTenantConstants.REQUEST_HEADER_ID;
+
 public class FlyTokenUserDetails {
+    private FlyTokenUserDetails() {}
+
     private static Optional<Authentication> getAuthentication() {
         return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication());
     }
@@ -43,13 +47,14 @@ public class FlyTokenUserDetails {
     }
 
     public static String getCurrentSchemaName() {
-        final Optional<Object> tenant = getAuthenticationInformation(FlyMultiTenantConstants.REQUEST_HEADER_ID);
+        final Optional<Object> tenant = getAuthenticationInformation(
+                REQUEST_HEADER_ID);
 
-        return (String) tenant.orElse(FlyMultiTenantConstants.DEFAULT_TENANT_ID);
+        return (String) tenant.orElse(DEFAULT_TENANT_ID);
     }
 
     public static String getCurrentSchemaNameOrElseNull() {
-        final Optional<Object> tenant = getAuthenticationInformation(FlyMultiTenantConstants.REQUEST_HEADER_ID);
+        final Optional<Object> tenant = getAuthenticationInformation(REQUEST_HEADER_ID);
 
         return (String) tenant.orElse(null);
     }

@@ -9,10 +9,12 @@ public interface FlyInactiveRepository<T extends FlyEntity, F extends FlyFilter>
         FlyFindValueRepository<T> {
 
     default void addInactiveFilter(F filter, StringBuilder hqlWhere, String entityName) {
-        if (!filter.isIgnoreInactiveFilter()) {
-            if (filter.getInactive() != null) {
-                hqlWhere.append("   and ").append(entityName).append(".inactive is ").append(filter.getInactive()).append("\n");
-            }
+        if (!filter.isIgnoreInactiveFilter() && filter.getInactive() != null) {
+            hqlWhere.append("   and ")
+                    .append(entityName)
+                    .append(".inactive is ")
+                    .append(filter.getInactive())
+                    .append("\n");
         }
     }
 

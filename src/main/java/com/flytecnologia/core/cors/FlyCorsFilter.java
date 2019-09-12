@@ -2,17 +2,11 @@ package com.flytecnologia.core.cors;
 
 import com.flytecnologia.core.config.property.FlyAppProperty;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -31,7 +25,7 @@ public class FlyCorsFilter implements Filter {
         final HttpServletResponse response = (HttpServletResponse) resp;
         String allowOrigin = flyAppProperty.getSecurity().getAllowOrigin();
 
-        if(allowOrigin == null || allowOrigin.trim().length() == 0 || "any".equals(allowOrigin)) {
+        if (allowOrigin == null || allowOrigin.trim().length() == 0 || "any".equals(allowOrigin)) {
             allowOrigin = request.getHeader("Origin");
         }
 
@@ -48,13 +42,5 @@ public class FlyCorsFilter implements Filter {
             chain.doFilter(req, resp);
         }
 
-    }
-
-    @Override
-    public void destroy() {
-    }
-
-    @Override
-    public void init(FilterConfig arg0) throws ServletException {
     }
 }

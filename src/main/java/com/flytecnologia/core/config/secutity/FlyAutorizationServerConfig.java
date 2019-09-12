@@ -2,7 +2,6 @@ package com.flytecnologia.core.config.secutity;
 
 import com.flytecnologia.core.token.FlyJwtTokenStore;
 import com.flytecnologia.core.token.FlyTokenEnhancer;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,6 +37,15 @@ public class FlyAutorizationServerConfig extends AuthorizationServerConfigurerAd
     private AuthenticationManager authenticationManager;
     private UserDetailsService userDetailsService;
 
+    private static final String GRANT_TYPES_PASSWORD = "password";
+    private static final String GRANT_TYPES_REFRESH_TOKEN = "refresh_token";
+    private static final String CLIENT_ANGULAR = "angular";
+    private static final String CLIENT_MOBILE = "mobile";
+
+    private static final String SCOPE_READ = "read";
+    private static final String SCOPE_WRITE = "write";
+    private static final String SCOPE_MOBILE = "mobile";
+
     public FlyAutorizationServerConfig(UserDetailsService userDetailsService,
                                        AuthenticationManager authenticationManager) {
         this.userDetailsService = userDetailsService;
@@ -47,17 +55,17 @@ public class FlyAutorizationServerConfig extends AuthorizationServerConfigurerAd
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory()
-                .withClient("angular")
+                .withClient(CLIENT_ANGULAR)
                 .secret(new BCryptPasswordEncoder().encode(secretKeyAngular))
-                .scopes("read", "write")
-                .authorizedGrantTypes("password", "refresh_token")
-                .accessTokenValiditySeconds(60 * 60 * 2) //duration's token//TODO JULLIERME ao renovar o token, considerar o tenant do token atual....ao renover volta pro tenant do usuario
+                .scopes(SCOPE_READ, SCOPE_WRITE)
+                .authorizedGrantTypes(GRANT_TYPES_PASSWORD, GRANT_TYPES_REFRESH_TOKEN)
+                .accessTokenValiditySeconds(60 * 60 * 2) //duration's token -> ao renovar o token, considerar o tenant do token atual....ao renover volta pro tenant do usuario
                 .refreshTokenValiditySeconds(3600 * 24) //1 day
                 .and()
-                .withClient("mobile")
+                .withClient(CLIENT_MOBILE)
                 .secret(new BCryptPasswordEncoder().encode(secretKeyMobile))
-                .scopes("read", "mobile")
-                .authorizedGrantTypes("password", "refresh_token")
+                .scopes(SCOPE_READ, SCOPE_MOBILE)
+                .authorizedGrantTypes(GRANT_TYPES_PASSWORD, GRANT_TYPES_REFRESH_TOKEN)
                 .accessTokenValiditySeconds(60 * 60 * 24 * 365) //duration's token 365 dias
                 .refreshTokenValiditySeconds(60 * 60 * 24 * 365) //duration's token 365 dias
         ;
@@ -84,12 +92,10 @@ public class FlyAutorizationServerConfig extends AuthorizationServerConfigurerAd
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
         final JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
         converter.setSigningKey(secretKey);
-        //converter.setVerifierKey(secretKey);
 
         return converter;
     }
 
-    /*local de armazenagem dos tokens*/
     @Bean
     public TokenStore tokenStore() {
         return new FlyJwtTokenStore(jwtAccessTokenConverter());

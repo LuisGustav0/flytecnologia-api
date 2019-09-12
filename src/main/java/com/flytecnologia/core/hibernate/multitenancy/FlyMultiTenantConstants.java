@@ -1,11 +1,12 @@
 package com.flytecnologia.core.hibernate.multitenancy;
 
-public interface FlyMultiTenantConstants {
+public class FlyMultiTenantConstants {
+    private FlyMultiTenantConstants() {}
 
-    String REQUEST_TOKEN_HEADER = "Authorization";
-    String REQUEST_HEADER_ID = "cl";
-    String REQUEST_HEADER_USER_ID = "userId";
-    String DEFAULT_TENANT_ID = "public";
-    String DEFAULT_TENANT_SUFFIX = "client_";
+    public static final String REQUEST_TOKEN_HEADER = "Authorization";
+    public static final String REQUEST_HEADER_ID = "cl";
+    public static final String REQUEST_HEADER_USER_ID = "userId";
+    public static final String DEFAULT_TENANT_ID = "public";
+    public static final String DEFAULT_TENANT_SUFFIX = "client_";
 
 }

@@ -149,13 +149,11 @@ public interface FlySaveService<T extends FlyEntity, F extends FlyFilter>
 
             return entity;
         } catch (DataIntegrityViolationException de) {
-            de.printStackTrace();
             getRepository().rollbackSessionTransaction(session);
             throw new DataIntegrityViolationException(de.getMessage(), de.getCause());
         } catch (Exception e) {
-            e.printStackTrace();
             getRepository().rollbackSessionTransaction(session);
-            throw new RuntimeException(e.getMessage(), e.getCause());
+            throw e;
         }
     }
 
@@ -187,7 +185,6 @@ public interface FlySaveService<T extends FlyEntity, F extends FlyFilter>
         invokeBaseLazyAtributesService(entitySaved);
 
         validateDifferentId(id, entity);
-        //validateDifferentVersion(entity, entitySaved);
 
         if (!entity.isIgnoreBeforeSave()) {
             beforeSave(entity, entitySaved);

@@ -1,13 +1,17 @@
 package com.flytecnologia.core.base.service.plus;
 
 import com.flytecnologia.core.model.FlyEntity;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.Basic;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+@Slf4j
 public class FlyInvokeBaseLazyAtributesService {
+    private FlyInvokeBaseLazyAtributesService() {}
+
     public static <T extends FlyEntity> void invokeBaseLazyAtributesService(T entity) {
         final Field[] fields = entity.getClass().getDeclaredFields();
 
@@ -26,7 +30,7 @@ public class FlyInvokeBaseLazyAtributesService {
 
                             method.invoke(entity);
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            log.error(e.getMessage(), e);
                         }
                     }
                 }

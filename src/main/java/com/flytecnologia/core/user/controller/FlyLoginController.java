@@ -6,11 +6,7 @@ import com.flytecnologia.core.user.FlyUserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -27,17 +23,14 @@ public class FlyLoginController {
     public void revoke(HttpServletRequest req, HttpServletResponse resp) {
         final String path = req.getContextPath() + "oauth/token";
 
-        _revoke("refreshToken1", path, resp);
-        _revoke("refreshToken2", path, resp);
-        _revoke("refreshToken3", path, resp);
-        _revoke("refreshToken4", path, resp);
+        revoke("refreshToken", path, resp);
 
         resp.setStatus(HttpStatus.NO_CONTENT.value());
 
         FlyTenantThreadLocal.remove();
     }
 
-    private void _revoke(String cookieName, String path, HttpServletResponse resp) {
+    private void revoke(String cookieName, String path, HttpServletResponse resp) {
         final Cookie cookie = new Cookie(cookieName, null);
         cookie.setHttpOnly(true);
         cookie.setSecure(flyAppProperty.getSecurity().isEnableHttps());

@@ -7,6 +7,8 @@ import org.springframework.util.StringUtils;
 import java.util.Collection;
 
 public class FlyValidateEmptyService {
+    private FlyValidateEmptyService() {}
+
     public static boolean isEmpty(Object value) {
         if (value == null)
             return true;

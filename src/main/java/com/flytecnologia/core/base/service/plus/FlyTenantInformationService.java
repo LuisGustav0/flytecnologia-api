@@ -1,12 +1,14 @@
 package com.flytecnologia.core.base.service.plus;
 
-import com.flytecnologia.core.hibernate.multitenancy.FlyMultiTenantConstants;
 import com.flytecnologia.core.hibernate.multitenancy.FlyTenantThreadLocal;
 import com.flytecnologia.core.token.FlyTokenUserDetails;
 
 import static com.flytecnologia.core.base.service.plus.FlyValidateEmptyService.isEmpty;
+import static com.flytecnologia.core.hibernate.multitenancy.FlyMultiTenantConstants.DEFAULT_TENANT_SUFFIX;
 
 public class FlyTenantInformationService {
+    private FlyTenantInformationService() {}
+
     public static String getTenant() {
         String tenantId = FlyTenantThreadLocal.getTenant();
 
@@ -17,7 +19,7 @@ public class FlyTenantInformationService {
                 return currentSchemaName;
             }
 
-            tenantId = FlyMultiTenantConstants.DEFAULT_TENANT_SUFFIX + currentSchemaName;
+            tenantId = DEFAULT_TENANT_SUFFIX + currentSchemaName;
         }
 
         return tenantId;

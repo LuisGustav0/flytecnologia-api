@@ -17,7 +17,7 @@ import static com.flytecnologia.core.base.service.plus.FlyValidateEmptyService.i
 @Slf4j
 @AllArgsConstructor
 public class FlyAccessDeniedHandler implements AccessDeniedHandler {
-    public FlyAppProperty flyAppProperty;
+    private FlyAppProperty flyAppProperty;
 
     @Override
     public void handle(

@@ -1,7 +1,7 @@
 package com.flytecnologia.core.user;
 
 import com.flytecnologia.core.token.FlyTokenUserDetails;
-import lombok.AllArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,12 +12,15 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 @Service
-@AllArgsConstructor
 public class FlyUserDetailsService implements UserDetailsService {
     private FlyUserService userService;
 
+    public FlyUserDetailsService(@Lazy FlyUserService userService) {
+        this.userService = userService;
+    }
+
     @Override
-    public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String login) {
 
         final String loginInvalid = userService.getMessageInvalidLogin();
 
@@ -33,8 +36,9 @@ public class FlyUserDetailsService implements UserDetailsService {
         );
     }
 
-    private Collection<? extends GrantedAuthority> getAuthorities(String loginOrEmail, String tenant, String msgInvalidLogin)
-            throws UsernameNotFoundException {
+    private Collection<? extends GrantedAuthority> getAuthorities(String loginOrEmail,
+                                                                  String tenant,
+                                                                  String msgInvalidLogin) {
         final Set<SimpleGrantedAuthority> authorities = new HashSet<>();
 
         final List<FlyUserPermission> permissions = userService.getPermissions(loginOrEmail, tenant);

@@ -5,6 +5,9 @@ import java.util.Base64;
 import static com.flytecnologia.core.base.service.plus.FlyValidateEmptyService.isEmpty;
 
 public class FlyBase64Service {
+    private FlyBase64Service() {
+    }
+
     public static String removeBase64Information(String encode) {
         if (isEmpty(encode))
             return encode;

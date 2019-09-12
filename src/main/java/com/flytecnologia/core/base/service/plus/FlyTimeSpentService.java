@@ -6,6 +6,9 @@ import java.util.Date;
 import java.util.TimeZone;
 
 public class FlyTimeSpentService {
+    private FlyTimeSpentService() {
+    }
+    
     public static String getMessageTimeSpent(long start, String message) {
         final long end = System.currentTimeMillis();
 

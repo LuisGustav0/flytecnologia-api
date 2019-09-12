@@ -80,9 +80,8 @@ public interface FlySearchRepository<T extends FlyEntity, F extends FlyFilter> e
                     list != null ? list.size() : 0);
 
         } catch (Exception e) {
-            e.printStackTrace();
             rollbackSessionTransaction(session);
-            throw new RuntimeException(e.getMessage());
+            throw e;
         }
     }
 

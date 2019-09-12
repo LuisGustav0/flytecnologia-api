@@ -4,14 +4,7 @@ import org.hibernate.envers.RevisionEntity;
 import org.hibernate.envers.RevisionNumber;
 import org.hibernate.envers.RevisionTimestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -39,8 +32,6 @@ public class FlyRevisionsEntity implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @Column (nullable = false)
     private Date date;
-
-    public FlyRevisionsEntity() { }
 
     public Long getUser() {
         return user;

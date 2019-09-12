@@ -20,9 +20,9 @@ import java.util.Map;
 public abstract class FlyEntityBase implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Transient
-    private Map<String, Object> parameters;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private transient Map<String, Object> parameters;
 
     @Transient
     @JsonIgnore

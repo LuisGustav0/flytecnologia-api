@@ -1,6 +1,8 @@
 package com.flytecnologia.core.base.service.plus;
 
 public class FlyValidateBooleanService {
+    private FlyValidateBooleanService() {}
+
     public static boolean isTrue(Boolean value) {
         return value != null && value;
     }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.flytecnologia.core.hibernate.multitenancy.FlyMultiTenantConnectionProviderImpl;
 import com.flytecnologia.core.hibernate.multitenancy.FlyTenantIdentifierResolver;
+import lombok.AllArgsConstructor;
 import org.hibernate.MultiTenancyStrategy;
 import org.hibernate.cfg.Environment;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
@@ -23,12 +24,10 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
+@AllArgsConstructor
 public class FlyHibernateConfig {
     private JpaProperties jpaProperties;
-
-    public FlyHibernateConfig(JpaProperties jpaProperties) {
-        this.jpaProperties = jpaProperties;
-    }
+    private DataSource dataSource;
 
     @Bean
     public Module datatypeHibernateModule() {
@@ -53,7 +52,7 @@ public class FlyHibernateConfig {
 
     @Bean
     public MultiTenantConnectionProvider getFlyMultiTenantConnectionProviderImpl() {
-        return new FlyMultiTenantConnectionProviderImpl();
+        return new FlyMultiTenantConnectionProviderImpl(dataSource);
     }
 
     @Bean
@@ -82,7 +81,7 @@ public class FlyHibernateConfig {
 
     @Bean
     public MultiTenantConnectionProvider multiTenantConnectionProvider() {
-        return new FlyMultiTenantConnectionProviderImpl();
+        return new FlyMultiTenantConnectionProviderImpl(dataSource);
     }
 
     @Bean

@@ -1,6 +1,7 @@
 package com.flytecnologia.core.report;
 
 import com.flytecnologia.core.exception.BusinessException;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.JasperRunManager;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
+@Slf4j
 public class FlyReportServiceImpl implements FlyReportService {
     ResourceLoader resourceLoader;
 
@@ -67,7 +69,7 @@ public class FlyReportServiceImpl implements FlyReportService {
 
             byte[] bt;
 
-            if (data != null && data.size() > 0) {
+            if (data != null && !data.isEmpty()) {
                 bt = JasperRunManager.runReportToPdf(jasperReport, parameters,
                         new JRBeanCollectionDataSource(data)
                 );
@@ -78,15 +80,15 @@ public class FlyReportServiceImpl implements FlyReportService {
             input.close();
 
             return bt;
-        } catch (FileNotFoundException fne) {
-            fne.printStackTrace();
+        } catch (FileNotFoundException e) {
+            log.error(e.getMessage(), e);
             throw new BusinessException("flyserivice.reportNotFound");
         } catch (Exception ex) {
             if (throwsExceptions) {
-                ex.printStackTrace();
+                log.error(ex.getMessage(), ex);
                 throw new BusinessException("flyserivice.generateReportError");
             } else {
-                return null;
+                return new byte[]{};
             }
         }
     }

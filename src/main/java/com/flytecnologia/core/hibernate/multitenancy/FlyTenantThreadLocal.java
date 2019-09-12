@@ -5,6 +5,8 @@ import java.util.Map;
 
 public class FlyTenantThreadLocal {
 
+    private FlyTenantThreadLocal() {}
+
     private static final ThreadLocal<Map<String, Object>> tenantThreadLocal = new ThreadLocal<>();
 
     public static void remove() {

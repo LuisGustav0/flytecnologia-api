@@ -1,4 +1,4 @@
-package com.flytecnologia.core.exceptionHandler;
+package com.flytecnologia.core.exception.handler;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -21,8 +21,4 @@ public class FlyErrorInvalidFormat {
 
     @JsonProperty
     private String message;
-
-    /*@JsonCreator
-    private FlyErrorInvalidFormat() {
-    }*/
 }

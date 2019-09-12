@@ -81,7 +81,6 @@ public class FlyResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .anyRequest().authenticated()
             .and()
                 .exceptionHandling().accessDeniedHandler(accessDeniedHandler());
-        ;
     }
 
     /**

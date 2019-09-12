@@ -8,12 +8,15 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 
 public class FlyValidatorService {
+    private FlyValidatorService() {
+    }
+
     private static final Validator javaxValidator = Validation.buildDefaultValidatorFactory().getValidator();
     private static final SpringValidatorAdapter validator = new SpringValidatorAdapter(javaxValidator);
 
     public static void validate(Object entry) {
         String entityName = entry.getClass().getSimpleName();
-        entityName = entityName.substring(0,1).toLowerCase().concat(entityName.substring(1));
+        entityName = entityName.substring(0, 1).toLowerCase().concat(entityName.substring(1));
 
         BeanPropertyBindingResult errors = new BeanPropertyBindingResult(entry, entityName);
 

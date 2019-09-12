@@ -43,10 +43,12 @@ public class FlyMethodSecurityExpressionRoot extends OAuth2MethodSecurityExpress
         return "";
     }
 
+    @Override
     public AuthenticationTrustResolver getTrustResolver() {
         return trustResolver;
     }
 
+    @Override
     public void setTrustResolver(AuthenticationTrustResolver trustResolver) {
         this.trustResolver = trustResolver;
     }

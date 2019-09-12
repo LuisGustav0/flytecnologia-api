@@ -1,15 +1,6 @@
 package com.flytecnologia.core.base.controller;
 
-import com.flytecnologia.core.base.controller.plus.FlyAutocompleteController;
-import com.flytecnologia.core.base.controller.plus.FlyCreateController;
-import com.flytecnologia.core.base.controller.plus.FlyDeleteController;
-import com.flytecnologia.core.base.controller.plus.FlyFindByIdController;
-import com.flytecnologia.core.base.controller.plus.FlyFindImageByIdController;
-import com.flytecnologia.core.base.controller.plus.FlyGoToAfterController;
-import com.flytecnologia.core.base.controller.plus.FlyGoToBeforeController;
-import com.flytecnologia.core.base.controller.plus.FlySearchController;
-import com.flytecnologia.core.base.controller.plus.FlyTodayController;
-import com.flytecnologia.core.base.controller.plus.FlyUpdateController;
+import com.flytecnologia.core.base.controller.plus.*;
 import com.flytecnologia.core.model.FlyEntity;
 import com.flytecnologia.core.search.FlyFilter;
 

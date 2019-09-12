@@ -42,9 +42,8 @@ public interface FlyEntityReferenceRepository<T extends FlyEntity> extends
 
             return Optional.of(entity);
         } catch (Exception e) {
-            e.printStackTrace();
             rollbackSessionTransaction(session);
-            throw new RuntimeException(e.getMessage());
+            throw e;
         }
     }
 }

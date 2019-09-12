@@ -4,11 +4,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.boot.Metadata;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.envers.boot.internal.EnversService;
-import org.hibernate.envers.event.spi.EnversListenerDuplicationStrategy;
-import org.hibernate.envers.event.spi.EnversPostCollectionRecreateEventListenerImpl;
-import org.hibernate.envers.event.spi.EnversPreCollectionRemoveEventListenerImpl;
-import org.hibernate.envers.event.spi.EnversPreCollectionUpdateEventListenerImpl;
-import org.hibernate.envers.event.spi.EnversPreUpdateEventListenerImpl;
+import org.hibernate.envers.event.spi.*;
 import org.hibernate.event.service.spi.EventListenerRegistry;
 import org.hibernate.event.spi.EventType;
 import org.hibernate.integrator.spi.Integrator;
@@ -66,6 +62,6 @@ public class FlyEnversIntegrator implements Integrator { //see EnversIntegrator
 
     @Override
     public void disintegrate(SessionFactoryImplementor sessionFactory, SessionFactoryServiceRegistry serviceRegistry) {
-
+        /*obligate to implement*/
     }
 }

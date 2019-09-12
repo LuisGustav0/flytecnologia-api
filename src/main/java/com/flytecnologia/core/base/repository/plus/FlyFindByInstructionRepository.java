@@ -73,9 +73,8 @@ public interface FlyFindByInstructionRepository<T extends FlyEntity> extends
 
             return (Optional<N>) result;
         } catch (Exception e) {
-            e.printStackTrace();
             rollbackSessionTransaction(session);
-            throw new RuntimeException(e.getMessage());
+            throw e;
         }
     }
 
@@ -138,7 +137,6 @@ public interface FlyFindByInstructionRepository<T extends FlyEntity> extends
 
             return Optional.ofNullable((List<N>) provider);
         } catch (Exception e) {
-            e.printStackTrace();
             rollbackSessionTransaction(session);
             throw new RuntimeException(e.getMessage());
         }

@@ -1,6 +1,8 @@
 package com.flytecnologia.core.base.repository.plus;
 
+import com.flytecnologia.core.exception.DeleteByTenantException;
 import com.flytecnologia.core.model.FlyEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 
 import static com.flytecnologia.core.base.service.plus.FlyValidateEmptyService.isEmpty;
@@ -18,9 +20,13 @@ public interface FlyDeleteByTenantRepository<T extends FlyEntity> extends
             session.delete(entity);
             session.getTransaction().commit();
         } catch (Exception e) {
-            e.printStackTrace();
+            LogHolder.log.error(e.getMessage(), e);
             session.getTransaction().rollback();
-            throw new RuntimeException(e.getMessage());
+            throw new DeleteByTenantException(e.getMessage());
         }
     }
+
+    @Slf4j
+    final class LogHolder
+    {}
 }

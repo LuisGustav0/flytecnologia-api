@@ -1,18 +1,22 @@
 package com.flytecnologia.core.hibernate.multitenancy;
 
+import lombok.AllArgsConstructor;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
+
+import static com.flytecnologia.core.hibernate.multitenancy.FlyMultiTenantConstants.DEFAULT_TENANT_ID;
 
 @Component
+@AllArgsConstructor
 public class FlyMultiTenantConnectionProviderImpl implements MultiTenantConnectionProvider {
+    public static final String SET_SCHEMA = "SET SEARCH_PATH TO ";
 
-    @Autowired
     private DataSource dataSource;
 
     @Override
@@ -28,12 +32,20 @@ public class FlyMultiTenantConnectionProviderImpl implements MultiTenantConnecti
     @Override
     public Connection getConnection(String tenantIdentifier) throws SQLException {
         final Connection connection = getAnyConnection();
+
         try {
+            String schema  = DEFAULT_TENANT_ID;
+
             if (tenantIdentifier != null) {
-                connection.createStatement().execute("SET search_path TO  " + tenantIdentifier);
-            } else {
-                connection.createStatement().execute("SET search_path TO  " + FlyMultiTenantConstants.DEFAULT_TENANT_ID);
+                schema  = tenantIdentifier;
             }
+
+            String sql = SET_SCHEMA + schema ;
+
+            try (Statement statement = connection.createStatement()) {
+                statement.execute(sql);
+            }
+
         } catch (SQLException e) {
             throw new HibernateException(
                     "Could not alter JDBC connection to specified schema [" + tenantIdentifier + "]",
@@ -45,14 +57,17 @@ public class FlyMultiTenantConnectionProviderImpl implements MultiTenantConnecti
 
     @Override
     public void releaseConnection(String tenantIdentifier, Connection connection) throws SQLException {
-        try {
-            connection.createStatement().execute("SET search_path TO  " + FlyMultiTenantConstants.DEFAULT_TENANT_ID);
+        String sql = SET_SCHEMA + DEFAULT_TENANT_ID;
+
+        try (Statement statement = connection.createStatement()) {
+            statement.execute(sql);
         } catch (SQLException e) {
             throw new HibernateException(
                     "Could not alter JDBC connection to specified schema [" + tenantIdentifier + "]",
                     e
             );
         }
+
         connection.close();
     }
 

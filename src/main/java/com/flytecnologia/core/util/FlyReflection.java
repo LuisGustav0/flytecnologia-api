@@ -15,6 +15,9 @@ import java.util.Set;
 
 @Component
 public class FlyReflection {
+    private FlyReflection() {
+    }
+
     public static void copyPropertiesIngoreNullProperties(Object src, Object target) {
         BeanUtils.copyProperties(src, target, getNullPropertyNames(src));
     }
@@ -55,10 +58,8 @@ public class FlyReflection {
                 }
             }
 
-            if (obj instanceof FlyEntity) {
-                if (((FlyEntity) obj).getId() == null) {
-                    src.setPropertyValue(pd.getName(), null);
-                }
+            if (obj instanceof FlyEntity && ((FlyEntity) obj).getId() == null) {
+                src.setPropertyValue(pd.getName(), null);
             }
         }
     }
@@ -87,17 +88,17 @@ public class FlyReflection {
                 continue;
             }
 
-            if (pd.getName().toLowerCase().equals(sourceName.toLowerCase())) {
-                if (pd.getPropertyType().getSimpleName().equals(sourceName)) {
-                    src.setPropertyValue(pd.getName(), parent);
-                }
+            if (pd.getName().equalsIgnoreCase(sourceName) &&
+                    pd.getPropertyType().getSimpleName().equalsIgnoreCase(sourceName)) {
+                src.setPropertyValue(pd.getName(), parent);
             }
         }
+
     }
 
 
     public static boolean isListOfFlyEntity(List<?> list) {
-        if (list == null || list.size() == 0)
+        if (list == null || list.isEmpty())
             return false;
 
         return list.get(0) instanceof FlyEntity;

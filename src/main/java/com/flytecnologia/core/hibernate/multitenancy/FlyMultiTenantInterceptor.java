@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
+import static com.flytecnologia.core.hibernate.multitenancy.FlyMultiTenantConstants.*;
+
 public class FlyMultiTenantInterceptor extends HandlerInterceptorAdapter {
 
     @Autowired
@@ -16,7 +18,7 @@ public class FlyMultiTenantInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        String token = request.getHeader(FlyMultiTenantConstants.REQUEST_TOKEN_HEADER);
+        String token = request.getHeader(REQUEST_TOKEN_HEADER);
 
         if (token != null && token.startsWith("Bearer")) {
             OAuth2AccessToken oAuth2AccessToken = tokenStore.readAccessToken(token.substring(7));
@@ -24,11 +26,11 @@ public class FlyMultiTenantInterceptor extends HandlerInterceptorAdapter {
             if (oAuth2AccessToken != null) {
                 Map<String, Object> information = oAuth2AccessToken.getAdditionalInformation();
 
-                String tenant = (String) information.get(FlyMultiTenantConstants.REQUEST_HEADER_ID);
-                Integer userId = (Integer) information.get(FlyMultiTenantConstants.REQUEST_HEADER_USER_ID);
+                String tenant = (String) information.get(REQUEST_HEADER_ID);
+                Integer userId = (Integer) information.get(REQUEST_HEADER_USER_ID);
 
                 if (tenant != null) {
-                    FlyTenantThreadLocal.setTenant(FlyMultiTenantConstants.DEFAULT_TENANT_SUFFIX + tenant);
+                    FlyTenantThreadLocal.setTenant(DEFAULT_TENANT_SUFFIX + tenant);
                 }
 
                 if (userId != null) {

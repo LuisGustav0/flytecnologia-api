@@ -26,6 +26,7 @@ public class FlyBasicSecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
+    @Override
     @Bean
     public UserDetailsService userDetailsService() {
         return new FlyUserDetailsService(userService);

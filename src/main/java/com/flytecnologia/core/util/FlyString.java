@@ -13,6 +13,8 @@ import java.util.Locale;
 import static com.flytecnologia.core.base.service.plus.FlyValidateEmptyService.isEmpty;
 
 public class FlyString {
+    private FlyString() {}
+
     public static String decapitalizeFirstLetter(String string) {
         return string == null || string.isEmpty() ? "" : Character.toLowerCase(string.charAt(0)) + string.substring(1);
     }

@@ -1,21 +1,22 @@
 package com.flytecnologia.core.base.repository.plus;
 
-import com.flytecnologia.core.hibernate.multitenancy.FlyMultiTenantConstants;
 import org.springframework.transaction.annotation.Transactional;
 
-public interface FlyTenantRepository extends FlyEntityManagerRepository {
+import static com.flytecnologia.core.hibernate.multitenancy.FlyMultiTenantConnectionProviderImpl.SET_SCHEMA;
+import static com.flytecnologia.core.hibernate.multitenancy.FlyMultiTenantConstants.DEFAULT_TENANT_ID;
 
+public interface FlyTenantRepository extends FlyEntityManagerRepository {
     @Transactional
     default void setTenantInCurrentConnection(String tenantIdentifier) {
         flush();
 
-        if (tenantIdentifier != null) {
-            tenantIdentifier = "SET search_path TO  " + tenantIdentifier;
-        } else {
-            tenantIdentifier = "SET search_path TO  " + FlyMultiTenantConstants.DEFAULT_TENANT_ID;
+        if (tenantIdentifier == null) {
+            tenantIdentifier = DEFAULT_TENANT_ID;
         }
 
-        getEntityManager().createNativeQuery(tenantIdentifier).executeUpdate();
+        String sql = SET_SCHEMA + tenantIdentifier;
+
+        getEntityManager().createNativeQuery(sql).executeUpdate();
 
         flush();
     }

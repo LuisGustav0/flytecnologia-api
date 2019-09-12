@@ -8,6 +8,8 @@ import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
 
+import static com.flytecnologia.core.security.FlyPermissionService.ACCESS_DENIED;
+
 public class FlyHasAuthorityMethodSecurityExpressionRootServiceImpl
         extends SecurityExpressionRoot implements FlyHasAuthorityMethodSecurityExpressionRootService {
     private Method method;
@@ -16,7 +18,7 @@ public class FlyHasAuthorityMethodSecurityExpressionRootServiceImpl
     private Object target;
     private FlyAppProperty flyAppProperty;
 
-    private final String MASTER = "DEBUG";
+    private static final String MASTER = "DEBUG";
 
     public FlyHasAuthorityMethodSecurityExpressionRootServiceImpl(Authentication authentication,
                                                                   MethodInvocation methodInvocation) {
@@ -38,7 +40,7 @@ public class FlyHasAuthorityMethodSecurityExpressionRootServiceImpl
             return flyRoles.create();
         }
 
-        return "ACCESS_DENIED";
+        return ACCESS_DENIED;
     }
 
     @Override
@@ -63,7 +65,7 @@ public class FlyHasAuthorityMethodSecurityExpressionRootServiceImpl
             return flyRoles.read();
         }
 
-        return "ACCESS_DENIED";
+        return ACCESS_DENIED;
     }
 
     @Override
@@ -79,7 +81,7 @@ public class FlyHasAuthorityMethodSecurityExpressionRootServiceImpl
             return flyRoles.update();
         }
 
-        return "ACCESS_DENIED";
+        return ACCESS_DENIED;
     }
 
     @Override
@@ -95,7 +97,7 @@ public class FlyHasAuthorityMethodSecurityExpressionRootServiceImpl
             return flyRoles.delete();
         }
 
-        return "ACCESS_DENIED";
+        return ACCESS_DENIED;
     }
 
     @Override
@@ -131,5 +133,9 @@ public class FlyHasAuthorityMethodSecurityExpressionRootServiceImpl
     @Override
     public void setFlyAppProperty(FlyAppProperty flyAppProperty) {
         this.flyAppProperty = flyAppProperty;
+    }
+
+    public Method getMethod() {
+        return method;
     }
 }

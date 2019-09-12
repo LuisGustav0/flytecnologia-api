@@ -7,13 +7,7 @@ import lombok.NonNull;
 import org.apache.commons.lang3.ArrayUtils;
 
 import javax.persistence.TypedQuery;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static com.flytecnologia.core.base.service.plus.FlyValidateEmptyService.isEmpty;
 import static com.flytecnologia.core.base.service.plus.FlyValidateEmptyService.notNull;
@@ -133,6 +127,8 @@ public interface FlyAutocompleteRepository<T extends FlyEntity, F extends FlyFil
     }
 
     class FlyACHidden {
+        private FlyACHidden(){}
+
         private static <F extends FlyFilter> void addExtraFieldsToAutocomplete(F filter,
                                                                                String alias,
                                                                                StringBuilder hql) {
@@ -207,7 +203,6 @@ public interface FlyAutocompleteRepository<T extends FlyEntity, F extends FlyFil
 
                 if (key.contains("$")) {
                     Object value = map.get(key);
-                    //map.remove(key);
 
                     String[] children = key.split("\\$");
 

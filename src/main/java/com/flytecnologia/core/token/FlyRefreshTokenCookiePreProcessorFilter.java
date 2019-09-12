@@ -6,19 +6,14 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.IOException;
 import java.util.Map;
 
-/*retirar o refresh token do cookie e adicionar na requisição*/
+/*remove refresh_token from cookie and add it on the request*/
 @Profile("oauth-security")
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -42,7 +37,7 @@ public class FlyRefreshTokenCookiePreProcessorFilter implements Filter {
 
             String refreshToken = extractRefreshToken(req);
 
-            if (refreshToken.length() > 0)
+            if (refreshToken != null && refreshToken.length() > 0)
                 return new MyServletRequestWrapper(req, refreshToken);
         }
 
@@ -51,23 +46,13 @@ public class FlyRefreshTokenCookiePreProcessorFilter implements Filter {
 
     private String extractRefreshToken(HttpServletRequest req) {
         for (Cookie cookie : req.getCookies()) {
-            if ("refreshToken".equals(cookie.getName())) {
-                if (cookie.getValue() != null && cookie.getValue().length() > 0)
-                    return cookie.getValue();
-            }
+            if ("refreshToken".equals(cookie.getName()) &&
+                    cookie.getValue() != null &&
+                    cookie.getValue().length() > 0)
+                return cookie.getValue();
         }
 
         return null;
-    }
-
-    @Override
-    public void init(FilterConfig filterConfig) {
-
-    }
-
-    @Override
-    public void destroy() {
-
     }
 
     /**

@@ -2,6 +2,7 @@ plugins {
     id "java-library"
     id "jacoco"
     id "idea"
+    id "org.sonarqube" version "2.7"
 }
 
 group = "flytecnologia.com.api"
@@ -142,7 +143,7 @@ configurations {
 
 
 jacoco {
-    toolVersion = "0.8.1"
+    toolVersion = "0.8.2"
 }
 jacocoTestReport {
     reports {

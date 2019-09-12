@@ -8,6 +8,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -20,8 +21,8 @@ public interface FlyPrintService<F extends FlyFilter> {
 
     String getReportName();
 
-    default List<?> getProvider(F filter, Map<String, Object> params) {
-        return null;
+    default List getProvider(F filter, Map<String, Object> params) {
+        return Collections.emptyList();
     }
 
     FlyReportService getReportService();

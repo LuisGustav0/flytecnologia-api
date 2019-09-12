@@ -19,7 +19,7 @@ import javax.jms.ConnectionFactory;
 @Configuration
 @EnableJms
 public class FlyJmsConfig {
-    private final static String BROKER_URL = "vm://localhost?broker.persistent=false";
+    private static final String BROKER_URL = "vm://localhost?broker.persistent=false";
 
     @Bean
     public ActiveMQConnectionFactory activeMqConnectionFactory() {
@@ -30,7 +30,7 @@ public class FlyJmsConfig {
     }
 
     @Bean
-    public JmsListenerContainerFactory<?> flyJmsFactory(ConnectionFactory connectionFactory,
+    public JmsListenerContainerFactory flyJmsFactory(ConnectionFactory connectionFactory,
                                                         DefaultJmsListenerContainerFactoryConfigurer configurer) {
         final DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
         // This provides all boot's default to this factory, including the message converter

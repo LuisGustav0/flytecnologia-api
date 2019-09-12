@@ -8,6 +8,10 @@ import java.util.Arrays;
 import java.util.List;
 
 public class FlyPermissionService {
+    public static final String ACCESS_DENIED = "ACCESS_DENIED";
+
+    private FlyPermissionService() {}
+
     public static boolean hasAnyPermission(String... roles) {
         if (roles == null || roles.length == 0) {
             return false;

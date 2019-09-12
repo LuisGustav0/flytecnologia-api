@@ -1,6 +1,7 @@
 package com.flytecnologia.core.email;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamSource;
 import org.springframework.jms.annotation.JmsListener;
@@ -16,6 +17,7 @@ import java.util.Map;
 
 @Component
 @AllArgsConstructor
+@Slf4j
 public class FlyMailJmsReciverServiceImpl implements FlyMailJmsReciverService{
     private FlyMailSenderService mailSenderService;
 
@@ -48,7 +50,7 @@ public class FlyMailJmsReciverServiceImpl implements FlyMailJmsReciverService{
 
             mailSenderService.sendSync(flyMailMessage);
         } catch (MessagingException | JMSException ex) {
-            ex.printStackTrace();
+            log.error(ex.getMessage(), ex);
         }
     }
 }

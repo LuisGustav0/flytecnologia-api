@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @NoRepositoryBean
 public interface FlyRepository<T extends FlyEntity, PK extends Serializable, F extends FlyFilter>
-        extends CrudRepository<T, PK>, FlyRepositorySearch<F> {
+        extends CrudRepository<T, PK>, FlyRepositorySearch {
     EntityManager getEntityManager();
     EntityManagerFactory getEntityManagerFactory();
 

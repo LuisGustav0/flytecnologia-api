@@ -1,23 +1,6 @@
 package com.flytecnologia.core.base.repository;
 
-import com.flytecnologia.core.base.repository.plus.FlyAutocompleteRepository;
-import com.flytecnologia.core.base.repository.plus.FlyBatchSaveRepository;
-import com.flytecnologia.core.base.repository.plus.FlyDeleteByTenantRepository;
-import com.flytecnologia.core.base.repository.plus.FlyEntityManagerRepository;
-import com.flytecnologia.core.base.repository.plus.FlyEntityReferenceRepository;
-import com.flytecnologia.core.base.repository.plus.FlyExistsRepository;
-import com.flytecnologia.core.base.repository.plus.FlyFindAllRepository;
-import com.flytecnologia.core.base.repository.plus.FlyFindByInstructionRepository;
-import com.flytecnologia.core.base.repository.plus.FlyFindNextRepository;
-import com.flytecnologia.core.base.repository.plus.FlyFindRepository;
-import com.flytecnologia.core.base.repository.plus.FlyFindValueRepository;
-import com.flytecnologia.core.base.repository.plus.FlyHibernateExecuteNativeQueryWithoutTransactionRepository;
-import com.flytecnologia.core.base.repository.plus.FlyHibernateSessionRepository;
-import com.flytecnologia.core.base.repository.plus.FlyInactiveRepository;
-import com.flytecnologia.core.base.repository.plus.FlyRecordCountRepository;
-import com.flytecnologia.core.base.repository.plus.FlyResultListRepository;
-import com.flytecnologia.core.base.repository.plus.FlySearchRepository;
-import com.flytecnologia.core.base.repository.plus.FlyTenantRepository;
+import com.flytecnologia.core.base.repository.plus.*;
 import com.flytecnologia.core.base.service.plus.FlyEntityClassService;
 import com.flytecnologia.core.model.FlyEntity;
 import com.flytecnologia.core.search.FlyFilter;

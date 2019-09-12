@@ -1,4 +1,4 @@
-package com.flytecnologia.core.exceptionHandler;
+package com.flytecnologia.core.exception.handler;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import lombok.RequiredArgsConstructor;

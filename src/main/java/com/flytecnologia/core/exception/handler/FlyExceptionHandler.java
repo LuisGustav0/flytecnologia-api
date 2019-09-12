@@ -1,4 +1,4 @@
-package com.flytecnologia.core.exceptionHandler;
+package com.flytecnologia.core.exception.handler;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.flytecnologia.core.config.property.FlyAppProperty;
@@ -31,7 +31,7 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.flytecnologia.core.exceptionHandler.FlyErrorResponse.ApiError;
+import static com.flytecnologia.core.exception.handler.FlyErrorResponse.ApiError;
 import static java.util.stream.Collectors.toList;
 
 @Slf4j
@@ -41,7 +41,6 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
     private static final String NO_MESSSAGE_AVAILABLE = "No message available";
     private MessageSource messageSource;
     private FlyAppProperty flyAppProperty;
-    private FieldError fieldError;
 
     public FlyExceptionHandler(MessageSource messageSource,
                                FlyAppProperty flyAppProperty) {
@@ -53,7 +52,7 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
                                                                   HttpHeaders headers, HttpStatus status,
                                                                   WebRequest request) {
-        ex.printStackTrace();
+        logger.error(ex.getMessage(), ex);
 
         if (ex.getCause() instanceof InvalidFormatException) {
             return invalidFormatExceptionHandler((InvalidFormatException) ex.getCause());
@@ -264,7 +263,7 @@ public class FlyExceptionHandler extends ResponseEntityExceptionHandler {
         return ex != null ? ExceptionUtils.getRootCauseMessage(ex) : null;
     }
 
-    private String getDevMessage(FieldError fieldError, Object... args) {
+    private String getDevMessage(FieldError fieldError) {
         if (!flyAppProperty.getApp().isDebug()) {
             return null;
         }

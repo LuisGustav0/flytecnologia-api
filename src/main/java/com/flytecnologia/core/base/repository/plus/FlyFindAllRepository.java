@@ -42,12 +42,9 @@ public interface FlyFindAllRepository<T extends FlyEntity> extends
                                           String tenant,
                                           boolean isColumnReferenceRequired) {
 
-        if (isColumnReferenceRequired) {
-            if (isEmpty(columnReference)) {
-                return Optional.empty();
-            }
+        if (isColumnReferenceRequired && isEmpty(columnReference)) {
+            return Optional.empty();
         }
-
 
         final String entityName = nClass.getSimpleName();
 
