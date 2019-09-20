@@ -3,8 +3,6 @@ package com.flytecnologia.core.config.secutity;
 import com.flytecnologia.core.config.property.FlyAppProperty;
 import com.flytecnologia.core.security.FlyAccessDeniedHandler;
 import com.flytecnologia.core.security.FlyMethodSecurityExpressionRoot;
-import com.flytecnologia.core.user.FlyUserDetailsService;
-import com.flytecnologia.core.user.FlyUserService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -50,7 +48,6 @@ public class FlyResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     private FlyAppProperty flyAppProperty;
     private UserDetailsService userDetailsService;
-    private FlyUserService userService;
 
     @Autowired
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -94,11 +91,6 @@ public class FlyResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return new FlyUserDetailsService(userService);
     }
 
     @Bean
