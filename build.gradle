@@ -58,6 +58,26 @@ repositories {
     jcenter()
 }
 
+/*Read to publish https://yennicktrevels.com/blog/2013/10/11/automated-gradle-project-deployment-to-sonatype-oss-repository/*/
+
+// javadoc.jar generation
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    archiveClassifier.set("javadoc")
+    from javadoc.destinationDir
+}
+// sources.jar generation
+task sourceJar(type: Jar) {
+    archiveClassifier.set("sources")
+    from sourceSets.main.allSource
+}
+
+// summarize artifacts
+artifacts {
+    archives jar
+    archives sourceJar
+    archives javadocJar
+}
+
 dependencies {
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor group: "org.springframework.boot", name: "spring-boot-configuration-processor", version: springBootVersion
