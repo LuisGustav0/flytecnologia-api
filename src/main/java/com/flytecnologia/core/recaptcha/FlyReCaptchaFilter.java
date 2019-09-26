@@ -64,4 +64,14 @@ public class FlyReCaptchaFilter implements Filter {
 
         return true;
     }
+
+    @Override
+    public void destroy() {
+        // do nothing
+    }
+
+    @Override
+    public void init(FilterConfig arg0) throws ServletException {
+        // do nothing
+    }
 }
