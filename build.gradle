@@ -33,6 +33,7 @@ ext {
     commonsHttpVersion = '4.5.9'
     lombokVersion = "1.18.8"
     mockitoVersion = '3.0.0'
+    h2Version = '1.4.199'
 }
 
 jar {
@@ -145,6 +146,7 @@ dependencies {
     testCompile group: 'org.mockito', name: 'mockito-junit-jupiter', version: mockitoVersion
     testCompile group: 'org.mockito', name: 'mockito-core', version: mockitoVersion
 
+    testCompile group: 'com.h2database', name: 'h2', version: h2Version
 }
 
 configurations {
