@@ -16,4 +16,8 @@ public interface FlySearchService<T extends FlyEntity, F extends FlyFilter>
     default List<T> search(F filter) {
         return (List<T>) search(filter, null).getResult();
     }
+
+    default List<T> searchWithPagination(F filter, Pageable pageable) {
+        return (List<T>) search(filter, pageable).getResult();
+    }
 }
