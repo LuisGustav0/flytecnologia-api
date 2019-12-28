@@ -32,7 +32,7 @@ public interface FlyResultListRepository<T extends FlyEntity> extends
         if (parameters != null)
             parameters.forEach(query::setParameter);
 
-        List list = query.getResultList();
+        List<Map<String, L>> list = query.getResultList();
 
         if (list == null || list.isEmpty())
             return Optional.empty();

@@ -15,12 +15,11 @@ public interface FlyRecordCountRepository<T extends FlyEntity> extends
         final String entityName = getEntityName();
 
         StringBuilder hql = new StringBuilder()
-                .append("select count(entities.id)  \nfrom  ")
+                .append("select count(entities.id)  \n")
+                .append("from\n ")
                 .append(entityName)
                 .append(" super  \n")
-                .append("inner join super.")
-                .append(innerEntityName)
-                .append(" as entities \n")
+                .append("inner join super.").append(innerEntityName).append(" as entities \n")
                 .append("where super.id = :id\n");
 
         final TypedQuery<Long> query = getEntityManager().createQuery(hql.toString(), Long.class);
