@@ -31,7 +31,7 @@ ext {
     lowagieItextVersion = "2.1.7"
     junitVersion = "5.5.1"
     commonsHttpVersion = '4.5.9'
-    lombokVersion = "1.18.8"
+    lombokVersion = "1.18.10"
     mockitoVersion = '3.0.0'
     h2Version = '1.4.199'
 }
