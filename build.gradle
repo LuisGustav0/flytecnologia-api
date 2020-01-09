@@ -13,7 +13,7 @@ targetCompatibility = 1.8
 ext {
     springBootVersion = "2.1.8.RELEASE"
     springSecurityJwtVersion = '1.0.10.RELEASE'
-    springSecurityOauth2Version = '2.3.6.RELEASE'
+    springSecurityOauth2Version = '2.4.0.RELEASE'
     springSecurityTestVersion = '5.1.5.RELEASE'
     activemqBrokerVersion = "5.15.9"
     flywayCoreVersion = "5.2.4"
