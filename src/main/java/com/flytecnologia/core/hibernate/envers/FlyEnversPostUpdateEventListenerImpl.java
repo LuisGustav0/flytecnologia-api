@@ -17,9 +17,9 @@ public class FlyEnversPostUpdateEventListenerImpl extends
     @Override
     public void onPostUpdate(PostUpdateEvent event) {
         if (event.getEntity() instanceof FlyEntity) {
-            boolean isIgnoreAudit = ((FlyEntity) event.getEntity()).isIgnoreAudit();
+            boolean doNotAudit = ((FlyEntity) event.getEntity()).isIgnoreAudit();
 
-            if (!isIgnoreAudit) {
+            if (!doNotAudit) {
                 super.onPostUpdate(event);
             }
         } else {

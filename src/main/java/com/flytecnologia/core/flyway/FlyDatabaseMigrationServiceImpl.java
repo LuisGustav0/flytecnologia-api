@@ -12,11 +12,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.flytecnologia.core.base.service.plus.FlyValidateEmptyService.isEmpty;
+import static com.flytecnologia.core.base.service.plus.FlyValidateEmptyService.isNotEmpty;
 
 @Service
 @AllArgsConstructor
 public class FlyDatabaseMigrationServiceImpl implements FlyDatabaseMigrationService {
-    private FlyUserService flyUserService;
+    private FlyUserService userService;
     private DataSource dataSource;
     private FlyAppProperty appProperty;
 
@@ -34,10 +35,10 @@ public class FlyDatabaseMigrationServiceImpl implements FlyDatabaseMigrationServ
         if (!isEmpty(appProperty.getApp().getStartSchemas())) {
             schemas = Arrays.asList(appProperty.getApp().getStartSchemas().split(","));
         } else {
-            schemas = flyUserService.listAllSchemas();
+            schemas = userService.listAllSchemas();
         }
 
-        if (schemas != null && !schemas.isEmpty()) {
+        if (isNotEmpty(schemas)) {
             if (appProperty.getApp().isDebug()) {
                 schemas.parallelStream().forEach(this::migrateSpecificSchema);
             } else {

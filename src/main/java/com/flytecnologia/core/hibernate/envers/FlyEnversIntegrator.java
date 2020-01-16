@@ -61,7 +61,8 @@ public class FlyEnversIntegrator implements Integrator { //see EnversIntegrator
     }
 
     @Override
-    public void disintegrate(SessionFactoryImplementor sessionFactory, SessionFactoryServiceRegistry serviceRegistry) {
+    public void disintegrate(SessionFactoryImplementor sessionFactory,
+                             SessionFactoryServiceRegistry serviceRegistry) {
         /*obligate to implement*/
     }
 }
